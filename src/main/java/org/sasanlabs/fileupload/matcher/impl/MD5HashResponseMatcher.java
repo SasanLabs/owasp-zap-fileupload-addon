@@ -1,6 +1,5 @@
 package org.sasanlabs.fileupload.matcher.impl;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -42,12 +41,13 @@ public class MD5HashResponseMatcher implements ContentMatcher {
         }
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            byte[] digest = messageDigest.digest(msg.getRequestBody().getBytes());
-            String charSet = msg.getRequestHeader().getCharset();
-            Charset responseCharSet =
-                    charSet != null ? Charset.forName(charSet) : StandardCharsets.UTF_8;
+            // Assumption is ZAP will check the charset and returns the response body as "String" as
+            // per the charset.
+            byte[] digest =
+                    messageDigest.digest(
+                            msg.getResponseBody().toString().getBytes(StandardCharsets.UTF_8));
             return Arrays.equals(
-                    digest, messageDigest.digest(expectedValue.getBytes(responseCharSet)));
+                    digest, messageDigest.digest(expectedValue.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException ex) {
             LOGGER.debug("Error occurred while comparing MD5 Hash ", ex);
         }

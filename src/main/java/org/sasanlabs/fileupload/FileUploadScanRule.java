@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
-import org.parosproxy.paros.core.scanner.AbstractAppVariantPlugin;
 import org.parosproxy.paros.core.scanner.Category;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.core.scanner.Variant;
@@ -25,7 +24,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     private static final String REFERENCE =
             "File Upload"; // JWTI18n.getMessage("jwt.scanner.refs");
     private static final Logger LOGGER = Logger.getLogger(FileUploadScanRule.class);
-
+    private Variant variant = null;
     private static final Set<Integer> ALLOWED_TYPES =
             new HashSet<Integer>(
                     Arrays.asList(
@@ -46,6 +45,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     // @Override
     public void scan(HttpMessage msg, Variant variant) {
         try {
+        	this.variant = variant;
             if (variant instanceof VariantMultipartFormParameters) {
                 List<NameValuePair> nameValuePairs = variant.getParamList();
                 nameValuePairs.forEach(
@@ -124,5 +124,39 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     public void scan(HttpMessage msg, String param, String value) {
         // TODO Auto-generated method stub
         LOGGER.error("Done");
+    }
+    
+    /**
+     * Sets the parameter into the given {@code message}. If both parameter name and value are
+     * {@code null}, the parameter will be removed.
+     *
+     * @param message the message that will be changed
+     * @param originalPair original name value pair
+     * @param param the name of the parameter
+     * @param value the value of the parameter
+     * @return the parameter set
+     * @see #setEscapedParameter(HttpMessage, NameValuePair, String, String)
+     */
+    public String setParameter(
+            HttpMessage message, NameValuePair originalPair, String param, String value) {
+        return variant.setParameter(message, originalPair, param, value);
+    }
+
+    /**
+     * Sets the parameter into the given {@code message}. If both parameter name and value are
+     * {@code null}, the parameter will be removed.
+     *
+     * <p>The value is expected to be properly encoded/escaped.
+     *
+     * @param message the message that will be changed
+     * @param originalPair original name value pair
+     * @param param the name of the parameter
+     * @param value the value of the parameter
+     * @return the parameter set
+     * @see #setParameter(HttpMessage,NameValuePair, String, String)
+     */
+    public String setEscapedParameter(
+            HttpMessage message, NameValuePair originalPair, String param, String value) {
+        return variant.setEscapedParameter(message, originalPair, param, value);
     }
 }
