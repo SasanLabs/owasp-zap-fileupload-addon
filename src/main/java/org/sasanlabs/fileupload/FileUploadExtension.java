@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.parosproxy.paros.extension.ExtensionAdaptor;
 import org.parosproxy.paros.extension.ExtensionHook;
 import org.parosproxy.paros.extension.ViewDelegate;
+import org.sasanlabs.fileupload.ui.FileUploadOptionsPanel;
 
 /**
  * @author KSASAN preetkaran20@gmail.com
@@ -48,6 +49,7 @@ public class FileUploadExtension extends ExtensionAdaptor {
     @Override
     public void hook(ExtensionHook extensionHook) {
         super.hook(extensionHook);
+        extensionHook.getHookView().addOptionPanel(new FileUploadOptionsPanel());
         LOGGER.debug("FileUpload Extension loaded successfully");
     }
 

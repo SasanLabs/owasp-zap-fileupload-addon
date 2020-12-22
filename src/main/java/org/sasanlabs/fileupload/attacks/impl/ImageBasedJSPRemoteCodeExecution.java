@@ -13,13 +13,14 @@ import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.FileUploadException;
+import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 
 public class ImageBasedJSPRemoteCodeExecution implements AttackVector {
 
     private static final String GIF_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED =
             "R0lGODlhAQABAHAAACH5BAUAAAAAIf4mPCU9ICJTYXNhbkxhYnNfIiArICJaQVBfSWRlbnRpZmllciIgJT4ALAAAAAABAAEAAAICRAEAOw==";
-
+    // Need to correct expected value these
     private static final String EXPECTED_VALUE = "SasanLabs_ZAP_Identifier";
     private static final String BASE_FILE_NAME = "ImageBasedJSPRCE_";
 

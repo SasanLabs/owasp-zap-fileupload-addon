@@ -1,4 +1,4 @@
-package org.sasanlabs.fileupload.attacks.impl;
+package org.sasanlabs.fileupload.attacks.beans;
 
 import java.util.Date;
 import java.util.Random;

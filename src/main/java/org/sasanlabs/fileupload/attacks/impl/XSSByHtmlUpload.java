@@ -10,6 +10,7 @@ import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.FileUploadException;
+import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 

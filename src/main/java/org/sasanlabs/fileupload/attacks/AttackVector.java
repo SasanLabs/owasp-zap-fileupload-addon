@@ -10,8 +10,8 @@ import org.apache.commons.httpclient.URIException;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
-import org.sasanlabs.fileupload.PreflightResourceLocatorImpl;
-import org.sasanlabs.fileupload.attacks.impl.FileParameter;
+import org.sasanlabs.fileupload.URILocatorImpl;
+import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 
 /**
@@ -31,7 +31,7 @@ public interface AttackVector {
     default HttpMessage executePreflightRequest(
             HttpMessage modifiedMsg, FileUploadScanRule fileUploadScanRule) throws IOException {
         HttpMessage preflightMsg = new HttpMessage();
-        preflightMsg.getRequestHeader().setURI(new PreflightResourceLocatorImpl().get(modifiedMsg));
+        preflightMsg.getRequestHeader().setURI(new URILocatorImpl().get(modifiedMsg));
         preflightMsg.getRequestHeader().setMethod("GET");
         preflightMsg.getRequestHeader().setCookies(modifiedMsg.getRequestHeader().getHttpCookies());
         fileUploadScanRule.sendAndRecieve(preflightMsg);
@@ -96,7 +96,7 @@ public interface AttackVector {
             ContentMatcher responseMatcher)
             throws URIException, NullPointerException, IOException {
         HttpMessage preflightMsg = new HttpMessage();
-        preflightMsg.getRequestHeader().setURI(new PreflightResourceLocatorImpl().get(modifiedMsg));
+        preflightMsg.getRequestHeader().setURI(new URILocatorImpl().get(modifiedMsg));
         preflightMsg.getRequestHeader().setMethod("GET");
         preflightMsg.getRequestHeader().setCookies(modifiedMsg.getRequestHeader().getHttpCookies());
         fileUploadScanRule.sendAndRecieve(preflightMsg);

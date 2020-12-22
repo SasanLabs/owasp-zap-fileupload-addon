@@ -45,7 +45,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     // @Override
     public void scan(HttpMessage msg, Variant variant) {
         try {
-        	this.variant = variant;
+            this.variant = variant;
             if (variant instanceof VariantMultipartFormParameters) {
                 List<NameValuePair> nameValuePairs = variant.getParamList();
                 nameValuePairs.forEach(
@@ -125,7 +125,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
         // TODO Auto-generated method stub
         LOGGER.error("Done");
     }
-    
+
     /**
      * Sets the parameter into the given {@code message}. If both parameter name and value are
      * {@code null}, the parameter will be removed.

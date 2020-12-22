@@ -4,7 +4,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.Constant;
 import org.parosproxy.paros.core.scanner.AbstractAppPlugin;
-import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.core.scanner.Variant;
 import org.parosproxy.paros.model.Model;
 import org.parosproxy.paros.network.HttpMessage;
@@ -55,11 +54,11 @@ public abstract class AbstractAppVariantPlugin extends AbstractAppPlugin {
             // ZAP: Implement pause and resume
             while (getParent().isPaused() && !isStop()) {
                 try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -84,5 +83,4 @@ public abstract class AbstractAppVariantPlugin extends AbstractAppPlugin {
      * @param variant
      */
     public abstract void scan(HttpMessage msg, Variant variant);
-
 }
