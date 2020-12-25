@@ -10,8 +10,8 @@ import org.apache.commons.httpclient.URIException;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
-import org.sasanlabs.fileupload.URILocatorImpl;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
+import org.sasanlabs.fileupload.configuration.URILocatorImpl;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 
 /**
