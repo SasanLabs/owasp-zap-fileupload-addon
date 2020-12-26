@@ -11,34 +11,33 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sasanlabs.fileupload.attacks.impl;
+package org.sasanlabs.fileupload.attacks.rce.jsp;
 
 import static org.sasanlabs.fileupload.Constants.NULL_BYTE_CHARACTER;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
+import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
-import org.sasanlabs.fileupload.attacks.FileUploadException;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
-import org.sasanlabs.fileupload.matcher.ContentMatcher;
-import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
+import org.sasanlabs.fileupload.exception.FileUploadException;
+import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 
-/** @author KSASAN preetkaran20@gmail.com */
+/** @author preetkaran20@gmail.com KSASAN */
+public class ImageBasedJSPRemoteCodeExecution implements AttackVector {
 
-// TODO check if we need to have case sensitive extensions like JsP or jSP or hTML or HtmL or hTmL
-// etc
-public class PlainOldJSPRemoteCodeExecution implements AttackVector {
-
-    private static final String JSP_UPLOADED_FILE_BASE_NAME = "PlainOldJSPRemoteCodeExecution_";
-    private static final String JSP_PAYLOAD =
-            "<% out.print(\"PlainOldJSPRemoteCodeExecution\"); out.print(\"_SasanLabs_ZAP_Identifier\"); %>";
-
-    private static final ContentMatcher CONTENT_MATCHER =
-            new MD5HashResponseMatcher("PlainOldJSPRemoteCodeExecution_SasanLabs_ZAP_Identifier");
+    private static final String GIF_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED =
+            "R0lGODlhAQABAHAAACH5BAUAAAAAIf4mPCU9ICJTYXNhbkxhYnNfIiArICJaQVBfSWRlbnRpZmllciIgJT4ALAAAAAABAAEAAAICRAEAOw==";
+    // Need to correct expected value these
+    private static final String EXPECTED_VALUE = "SasanLabs_ZAP_Identifier";
+    private static final String BASE_FILE_NAME = "ImageBasedJSPRCE_";
 
     private static final List<FileParameter> FILE_PARAMETERS =
             Arrays.asList(
@@ -64,22 +63,27 @@ public class PlainOldJSPRemoteCodeExecution implements AttackVector {
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
             throws FileUploadException {
-        boolean result = false;
         try {
-            result =
-                    this.genericAttackExecutor(
-                            fileUploadAttackExecutor,
-                            CONTENT_MATCHER,
-                            JSP_PAYLOAD,
-                            JSP_UPLOADED_FILE_BASE_NAME,
-                            FILE_PARAMETERS);
-            if (result) {
+            byte[] imagePayload =
+                    Base64.getDecoder().decode(GIF_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED);
+            HttpMessage originalMessage = fileUploadAttackExecutor.getOriginalHttpMessage();
+            String charSet = originalMessage.getRequestHeader().getCharset();
+            Charset requestCharSet =
+                    charSet != null ? Charset.forName(charSet) : StandardCharsets.ISO_8859_1;
+            String requestPayload = new String(imagePayload, requestCharSet);
+            System.out.print(charSet);
+            if (this.genericAttackExecutor(
+                    fileUploadAttackExecutor,
+                    new ContainsExpectedValueMatcher(EXPECTED_VALUE),
+                    requestPayload,
+                    BASE_FILE_NAME,
+                    FILE_PARAMETERS)) {
                 fileUploadAttackExecutor
                         .getFileUploadScanRule()
                         .raiseAlert(
                                 1,
                                 1,
-                                "",
+                                this.getClass().getName(),
                                 "",
                                 "",
                                 "",
@@ -91,6 +95,6 @@ public class PlainOldJSPRemoteCodeExecution implements AttackVector {
         } catch (IOException e) {
             throw new FileUploadException(e);
         }
-        return result;
+        return false;
     }
 }

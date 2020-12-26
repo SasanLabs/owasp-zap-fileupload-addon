@@ -15,7 +15,7 @@ package org.sasanlabs.fileupload.attacks.beans;
 
 import org.apache.commons.lang3.StringUtils;
 import org.sasanlabs.fileupload.Constants;
-import org.sasanlabs.fileupload.attacks.FileUploadException;
+import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
  * {@code FileExtensionOperation} is used to denote the operation on the file name extensions.

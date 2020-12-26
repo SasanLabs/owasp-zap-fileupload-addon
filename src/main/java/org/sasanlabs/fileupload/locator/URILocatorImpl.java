@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sasanlabs.fileupload.configuration;
+package org.sasanlabs.fileupload.locator;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,8 +23,9 @@ import org.apache.commons.text.StringSubstitutor;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.Constants;
-import org.sasanlabs.fileupload.attacks.ConsumerWithException;
-import org.sasanlabs.fileupload.attacks.FileUploadException;
+import org.sasanlabs.fileupload.configuration.FileUploadConfiguration;
+import org.sasanlabs.fileupload.exception.FileUploadException;
+import org.sasanlabs.fileupload.function.ConsumerWithException;
 
 /** @author preetkaran20@gmail.com KSASAN */
 public class URILocatorImpl implements URILocator {

@@ -12,7 +12,12 @@
  * limitations under the License.
  */
 package org.sasanlabs.fileupload;
-/** @author preetkaran20@gmail.com KSASAN */
+
+/**
+ * Contains the String constants or other utility constants used by the File Upload Addon.
+ *
+ * @author preetkaran20@gmail.com KSASAN
+ */
 public interface Constants {
     String EMPTY_STRING = "";
     String PERIOD = ".";

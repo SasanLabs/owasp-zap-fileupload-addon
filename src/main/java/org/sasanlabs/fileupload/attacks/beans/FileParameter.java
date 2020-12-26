@@ -15,7 +15,7 @@ package org.sasanlabs.fileupload.attacks.beans;
 
 import java.util.Date;
 import java.util.Random;
-import org.sasanlabs.fileupload.attacks.FileUploadException;
+import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
  * {@code FileParameter} class is used to represent the file object ...

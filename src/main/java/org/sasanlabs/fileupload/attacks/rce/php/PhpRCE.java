@@ -11,20 +11,14 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sasanlabs.fileupload;
-
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.URIException;
-import org.parosproxy.paros.network.HttpMessage;
-
+package org.sasanlabs.fileupload.attacks.rce.php;
 /**
- * {@code URILocator} class is used to find the URL either by parsing the {@code HttpMessage} or
- * reading the configuration mentioned in the options tab.
+ * https://vulp3cula.gitbook.io/hackers-grimoire/exploitation/web-application/file-upload-bypass
  *
- * <p>This class also handles the "regex based configuration" e.g "url/$fileName"
- *
- * @author preetkaran20@gmail.com KSASAN
+ * @author KSASAN preetkaran20@gmail.com
+ *     <p>Eicar -> try uploading and downloading file and if you are able to do so that means there
+ *     is no antivirus present on server hence we know that any virus can impact the server.
+ *     https://www.youtube.com/watch?v=gPo-NPvuqbs (For Vulnerable Application we might need to have
+ *     some docker with antivirus in it.)
  */
-public interface URILocator {
-    URI get(HttpMessage msg) throws URIException;
-}
+public class PhpRCE {}

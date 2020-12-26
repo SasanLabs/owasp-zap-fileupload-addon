@@ -15,14 +15,14 @@ package org.sasanlabs.fileupload.attacks;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.parosproxy.paros.core.scanner.Variant;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
-import org.sasanlabs.fileupload.attacks.impl.ImageBasedJSPRemoteCodeExecution;
-import org.sasanlabs.fileupload.attacks.impl.PlainOldJSPRemoteCodeExecution;
-import org.sasanlabs.fileupload.attacks.impl.PlainOldJSPXRemoteCodeExecution;
-import org.sasanlabs.fileupload.attacks.impl.XSSByHtmlUpload;
+import org.sasanlabs.fileupload.attacks.rce.jsp.ImageBasedJSPRemoteCodeExecution;
+import org.sasanlabs.fileupload.attacks.rce.jsp.PlainOldJSPRemoteCodeExecution;
+import org.sasanlabs.fileupload.attacks.rce.jsp.PlainOldJSPXRemoteCodeExecution;
+import org.sasanlabs.fileupload.attacks.xss.HtmlFileUpload;
+import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
  * {@code FileUploadAttackExecutor} class is used to find File Upload vulnerability by executing
@@ -37,7 +37,7 @@ public class FileUploadAttackExecutor {
     private Variant variant;
     private List<AttackVector> attackVectors =
             Arrays.asList(
-                    new XSSByHtmlUpload(),
+                    new HtmlFileUpload(),
                     new PlainOldJSPRemoteCodeExecution(),
                     new PlainOldJSPXRemoteCodeExecution(),
                     new ImageBasedJSPRemoteCodeExecution());

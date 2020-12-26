@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sasanlabs.fileupload.attacks;
+package org.sasanlabs.fileupload.exception;
 
 /**
  * {@code FileUploadException} is an exception class for FileUpload Scan Rule. It wraps around

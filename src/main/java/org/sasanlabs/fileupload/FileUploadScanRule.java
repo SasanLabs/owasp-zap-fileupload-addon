@@ -14,10 +14,8 @@
 package org.sasanlabs.fileupload;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.core.scanner.Category;
 import org.parosproxy.paros.core.scanner.NameValuePair;
@@ -25,26 +23,43 @@ import org.parosproxy.paros.core.scanner.Variant;
 import org.parosproxy.paros.core.scanner.VariantMultipartFormParameters;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
+import org.sasanlabs.fileupload.i18n.FileUploadI18n;
 
 /** @author KSASAN preetkaran20@gmail.com */
 public class FileUploadScanRule extends AbstractAppVariantPlugin {
 
     private static final int PLUGIN_ID = 110009;
-    private static final String NAME = "File Upload"; // JWTI18n.getMessage("jwt.scanner.name");
+    private static final String NAME = FileUploadI18n.getMessage("fileupload.scanrule.name");
     private static final String DESCRIPTION =
-            "File Upload"; // JWTI18n.getMessage("jwt.scanner.description");
-    private static final String SOLUTION = "File Upload"; // JWTI18n.getMessage("jwt.scanner.soln");
-    private static final String REFERENCE =
-            "File Upload"; // JWTI18n.getMessage("jwt.scanner.refs");
+            FileUploadI18n.getMessage("fileupload.scanrule.description");
+    private static final String SOLUTION = FileUploadI18n.getMessage("fileupload.scanrule.soln");
+    private static final String REFERENCE = FileUploadI18n.getMessage("fileupload.scanrule.refs");
     private static final Logger LOGGER = Logger.getLogger(FileUploadScanRule.class);
     private Variant variant = null;
-    private static final Set<Integer> ALLOWED_TYPES =
-            new HashSet<Integer>(
-                    Arrays.asList(
-                            NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE,
-                                    NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME,
-                            NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM,
-                                    NameValuePair.TYPE_MULTIPART_DATA_PARAM));
+
+    private AtomicInteger maxRequestCount;
+
+    @Override
+    public void init() {
+        switch (this.getAttackStrength()) {
+            case LOW:
+                maxRequestCount = new AtomicInteger(20);
+                break;
+            case MEDIUM:
+                maxRequestCount = new AtomicInteger(30);
+                break;
+            case HIGH:
+                maxRequestCount = new AtomicInteger(40);
+                break;
+            case INSANE:
+                maxRequestCount = new AtomicInteger(50);
+                break;
+            default:
+                maxRequestCount = new AtomicInteger(30);
+                break;
+        }
+    }
+
     /*
      * Need to check what to include do we need to include XXE/XSS/Path Traversal in
      * this addon or we need to correct those. Persistent XXS/XXE/PathTraversal
@@ -53,9 +68,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
      * Will not include the reflected XSS because it should work and i have checked
      * it works.
      */
-
-    // debug if all these types will be there in all Multipart requests
-    // @Override
+    @Override
     public void scan(HttpMessage msg, Variant variant) {
         try {
             this.variant = variant;

@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sasanlabs.fileupload.attacks.impl;
+package org.sasanlabs.fileupload.attacks.rce;
 
 /** @author KSASAN preetkaran20@gmail.com */
 public class PathTraversal /*implements AttackVector*/ {

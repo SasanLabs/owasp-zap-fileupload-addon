@@ -11,7 +11,18 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sasanlabs.fileupload.redownloader;
+package org.sasanlabs.fileupload.attacks.antivirus;
 
-/** @author KSASAN preetkaran20@gmail.com */
-public interface Redownloader {}
+import org.sasanlabs.fileupload.attacks.AttackVector;
+import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
+import org.sasanlabs.fileupload.exception.FileUploadException;
+
+public class EicarAntivirusTestFileUpload implements AttackVector {
+
+    @Override
+    public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
+            throws FileUploadException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+}

