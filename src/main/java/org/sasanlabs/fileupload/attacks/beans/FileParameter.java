@@ -15,7 +15,7 @@ package org.sasanlabs.fileupload.attacks.beans;
 
 import java.util.Date;
 import java.util.Random;
-import org.sasanlabs.fileupload.Constants;
+import org.sasanlabs.fileupload.attacks.FileUploadException;
 
 /**
  * {@code FileParameter} class is used to represent the file object ...
@@ -27,7 +27,8 @@ public class FileParameter {
     private String baseFileName;
     private String extension;
     private String contentType;
-    private boolean useOriginalExtention = false;
+    private FileExtensionOperation fileExtensionOperation =
+            FileExtensionOperation.ONLY_PROVIDED_EXTENSION;
 
     public FileParameter(String extension, String contentType) {
         super();
@@ -36,30 +37,24 @@ public class FileParameter {
         this.contentType = contentType;
     }
 
-    public FileParameter(String extension, String contentType, boolean useOriginalExtension) {
+    public FileParameter(
+            String extension, String contentType, FileExtensionOperation fileExtensionOperation) {
         super();
         this.baseFileName = String.valueOf(new Random(new Date().getTime()).nextLong());
         this.extension = extension;
         this.contentType = contentType;
-        this.useOriginalExtention = useOriginalExtension;
+        this.fileExtensionOperation = fileExtensionOperation;
     }
 
     public String getContentType() {
         return contentType;
     }
 
-    public String getFileName(String originalFileName, String newBaseFileName) {
-        String extension;
-        if (this.useOriginalExtention && originalFileName != null) {
-            int firstIndexOfPeriodCharacter = originalFileName.indexOf(Constants.PERIOD);
-            String originalExtension = "";
-            if (firstIndexOfPeriodCharacter >= 0) {
-                originalExtension = originalFileName.substring(firstIndexOfPeriodCharacter + 1);
-            }
-            extension = originalExtension + this.extension;
-        } else {
-            extension = this.extension;
-        }
-        return String.valueOf(newBaseFileName) + this.baseFileName + Constants.PERIOD + extension;
+    public String getFileName(String originalFileName, String newBaseFileName)
+            throws FileUploadException {
+        return String.valueOf(newBaseFileName)
+                + this.baseFileName
+                + FileExtensionOperation.appendPeriodCharacter(
+                        fileExtensionOperation.operator(this.extension, originalFileName));
     }
 }

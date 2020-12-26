@@ -26,12 +26,16 @@ import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.ConsumerWithException;
 import org.sasanlabs.fileupload.attacks.FileUploadException;
 
+/** @author preetkaran20@gmail.com KSASAN */
 public class URILocatorImpl implements URILocator {
 
     protected static final Logger LOGGER = Logger.getLogger(URILocatorImpl.class);
 
     private URI getCompleteURI(String uriRegex, String fileName, HttpMessage msg)
             throws URIException, FileUploadException {
+        if (fileName.contains(Constants.NULL_BYTE_CHARACTER)) {
+            fileName = fileName.substring(0, fileName.indexOf(Constants.NULL_BYTE_CHARACTER));
+        }
         Map<String, String> replacerKeyValuePair = new HashMap<>();
         replacerKeyValuePair.put("filename", fileName);
         StringSubstitutor stringSubstitutor = new StringSubstitutor(replacerKeyValuePair);
@@ -42,7 +46,7 @@ public class URILocatorImpl implements URILocator {
         } else if (uriFragment.startsWith(Constants.SLASH)) {
             String authority = msg.getRequestHeader().getURI().getAuthority();
             String scheme = msg.getRequestHeader().getURI().getScheme();
-            return new URI(scheme, authority + uriFragment, "");
+            return new URI(scheme, authority, uriFragment, "");
         } else {
             throw new FileUploadException("FileUpload configuration is invalid.");
         }

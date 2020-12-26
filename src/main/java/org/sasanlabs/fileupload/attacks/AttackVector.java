@@ -63,7 +63,7 @@ public interface AttackVector {
 
     default boolean genericAttackExecutor(
             FileUploadAttackExecutor fileUploadAttackExecutor,
-            ContentMatcher md5HashResponseMatcher,
+            ContentMatcher contentMatcher,
             String payload,
             String baseFileName,
             List<FileParameter> fileParameters)
@@ -75,37 +75,46 @@ public interface AttackVector {
         for (NameValuePair nameValuePair : nameValuePairs) {
             if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME) {
                 originalFileName = nameValuePair.getValue();
+                break;
             }
         }
         for (FileParameter fileParameter : fileParameters) {
             HttpMessage newMsg = originalMsg.cloneRequest();
-            for (NameValuePair nameValuePair : nameValuePairs) {
+            for (int i = 0; i < nameValuePairs.size(); i++) {
+                NameValuePair nameValuePair = nameValuePairs.get(i);
                 if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME) {
                     fileUploadScanRule.setParameter(
                             newMsg,
                             nameValuePair,
                             nameValuePair.getName(),
                             fileParameter.getFileName(originalFileName, baseFileName));
-                }
-                if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM) {
+                } else if (nameValuePair.getType()
+                        == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM) {
                     fileUploadScanRule.setParameter(
                             newMsg, nameValuePair, nameValuePair.getName(), payload);
-                }
-                if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
+                } else if (nameValuePair.getType()
+                        == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
                     fileUploadScanRule.setParameter(
                             newMsg,
                             nameValuePair,
                             nameValuePair.getName(),
                             fileParameter.getContentType());
+                } else {
+                    continue;
                 }
+                // Reinitialize the name-value pair positions
+                fileUploadAttackExecutor.getVariant().setMessage(newMsg);
+                nameValuePairs = fileUploadAttackExecutor.getVariant().getParamList();
             }
+            // Reset variant
+            fileUploadAttackExecutor.getVariant().setMessage(originalMsg);
             fileUploadScanRule.sendAndRecieve(newMsg);
             HttpMessage preflightMsg =
                     this.executePreflightRequest(
                             newMsg,
                             fileParameter.getFileName(originalFileName, baseFileName),
                             fileUploadScanRule);
-            if (md5HashResponseMatcher.match(preflightMsg)) {
+            if (contentMatcher.match(preflightMsg)) {
                 return true;
             }
         }

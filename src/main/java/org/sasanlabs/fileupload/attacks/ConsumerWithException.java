@@ -13,6 +13,7 @@
  */
 package org.sasanlabs.fileupload.attacks;
 
+/** @author preetkaran20@gmail.com KSASAN */
 @FunctionalInterface
 public interface ConsumerWithException<T, E extends Exception> {
     void accept(T val) throws E;

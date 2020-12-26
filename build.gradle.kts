@@ -34,7 +34,7 @@ description = "Detect File upload requests and scan them to find related vulnera
 
 zapAddOn {
     addOnName.set("File upload Scan Rule")
-    zapVersion.set("2.9.0")
+    zapVersion.set("2.10.0")
     addOnStatus.set(AddOnStatus.ALPHA)
 
     manifest {

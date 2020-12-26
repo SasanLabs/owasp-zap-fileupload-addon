@@ -133,12 +133,6 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
         return Category.MISC;
     }
 
-    // @Override
-    public void scan(HttpMessage msg, String param, String value) {
-        // TODO Auto-generated method stub
-        LOGGER.error("Done");
-    }
-
     /**
      * Sets the parameter into the given {@code message}. If both parameter name and value are
      * {@code null}, the parameter will be removed.

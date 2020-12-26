@@ -22,6 +22,7 @@ import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.FileUploadException;
+import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
@@ -43,10 +44,22 @@ public class PlainOldJSPRemoteCodeExecution implements AttackVector {
             Arrays.asList(
                     new FileParameter("jsp", Constants.EMPTY_STRING),
                     new FileParameter("jsp", "application/x-jsp"),
-                    new FileParameter("jsp.", Constants.EMPTY_STRING, true),
-                    new FileParameter("jsp.", "application/x-jsp", true),
-                    new FileParameter("jsp." + NULL_BYTE_CHARACTER, Constants.EMPTY_STRING, true),
-                    new FileParameter("jsp." + NULL_BYTE_CHARACTER, "application/x-jsp", true));
+                    new FileParameter(
+                            "jsp",
+                            Constants.EMPTY_STRING,
+                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "jsp",
+                            "application/x-jsp",
+                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "jsp" + NULL_BYTE_CHARACTER,
+                            Constants.EMPTY_STRING,
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "jsp" + NULL_BYTE_CHARACTER,
+                            "application/x-jsp",
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)

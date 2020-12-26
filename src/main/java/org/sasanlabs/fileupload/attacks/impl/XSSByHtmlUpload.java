@@ -23,6 +23,7 @@ import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.FileUploadException;
+import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
@@ -59,15 +60,36 @@ public class XSSByHtmlUpload implements AttackVector {
                     new FileParameter("htm", "text/plain"),
                     new FileParameter("html", "text/plain"),
                     new FileParameter("xhtml", "text/plain"),
-                    new FileParameter("htm.", "text/html", true),
-                    new FileParameter("html.", "text/html", true),
-                    new FileParameter("xhtml.", "text/html", true),
-                    new FileParameter("htm." + NULL_BYTE_CHARACTER, "text/html", true),
-                    new FileParameter("html." + NULL_BYTE_CHARACTER, "text/html", true),
-                    new FileParameter("xhtml." + NULL_BYTE_CHARACTER, "text/html", true),
-                    new FileParameter("htm." + NULL_BYTE_CHARACTER, "text/plain", true),
-                    new FileParameter("html." + NULL_BYTE_CHARACTER, "text/plain", true),
-                    new FileParameter("xhtml." + NULL_BYTE_CHARACTER, "text/plain", true));
+                    new FileParameter(
+                            "htm", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "html", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "xhtml", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "htm" + NULL_BYTE_CHARACTER,
+                            "text/html",
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "html" + NULL_BYTE_CHARACTER,
+                            "text/html",
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "xhtml" + NULL_BYTE_CHARACTER,
+                            "text/html",
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "htm" + NULL_BYTE_CHARACTER,
+                            "text/plain",
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "html" + NULL_BYTE_CHARACTER,
+                            "text/plain",
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "xhtml" + NULL_BYTE_CHARACTER,
+                            "text/plain",
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
 
     /**
      * @throws FileUploadException
