@@ -1,3 +1,16 @@
+/**
+ * Copyright 2020 SasanLabs
+ *
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.sasanlabs.fileupload.attacks;
 
 import java.io.IOException;
@@ -27,11 +40,21 @@ public interface AttackVector {
      * @param fileUploadScanRule
      * @return
      * @throws IOException
+     * @throws FileUploadException
      */
     default HttpMessage executePreflightRequest(
-            HttpMessage modifiedMsg, FileUploadScanRule fileUploadScanRule) throws IOException {
+            HttpMessage modifiedMsg, String fileName, FileUploadScanRule fileUploadScanRule)
+            throws IOException, FileUploadException {
         HttpMessage preflightMsg = new HttpMessage();
-        preflightMsg.getRequestHeader().setURI(new URILocatorImpl().get(modifiedMsg));
+        preflightMsg
+                .getRequestHeader()
+                .setURI(
+                        new URILocatorImpl()
+                                .get(
+                                        modifiedMsg,
+                                        fileName,
+                                        (httpmessage) ->
+                                                fileUploadScanRule.sendAndRecieve(httpmessage)));
         preflightMsg.getRequestHeader().setMethod("GET");
         preflightMsg.getRequestHeader().setCookies(modifiedMsg.getRequestHeader().getHttpCookies());
         fileUploadScanRule.sendAndRecieve(preflightMsg);
@@ -44,7 +67,7 @@ public interface AttackVector {
             String payload,
             String baseFileName,
             List<FileParameter> fileParameters)
-            throws IOException {
+            throws IOException, FileUploadException {
         List<NameValuePair> nameValuePairs = fileUploadAttackExecutor.getVariant().getParamList();
         HttpMessage originalMsg = fileUploadAttackExecutor.getOriginalHttpMessage();
         FileUploadScanRule fileUploadScanRule = fileUploadAttackExecutor.getFileUploadScanRule();
@@ -77,7 +100,11 @@ public interface AttackVector {
                 }
             }
             fileUploadScanRule.sendAndRecieve(newMsg);
-            HttpMessage preflightMsg = this.executePreflightRequest(newMsg, fileUploadScanRule);
+            HttpMessage preflightMsg =
+                    this.executePreflightRequest(
+                            newMsg,
+                            fileParameter.getFileName(originalFileName, baseFileName),
+                            fileUploadScanRule);
             if (md5HashResponseMatcher.match(preflightMsg)) {
                 return true;
             }
@@ -96,7 +123,7 @@ public interface AttackVector {
             ContentMatcher responseMatcher)
             throws URIException, NullPointerException, IOException {
         HttpMessage preflightMsg = new HttpMessage();
-        preflightMsg.getRequestHeader().setURI(new URILocatorImpl().get(modifiedMsg));
+        // preflightMsg.getRequestHeader().setURI(new URILocatorImpl().get(modifiedMsg));
         preflightMsg.getRequestHeader().setMethod("GET");
         preflightMsg.getRequestHeader().setCookies(modifiedMsg.getRequestHeader().getHttpCookies());
         fileUploadScanRule.sendAndRecieve(preflightMsg);
