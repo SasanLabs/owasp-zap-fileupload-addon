@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.parosproxy.paros.core.scanner.Plugin.AttackStrength;
-import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
@@ -41,39 +40,36 @@ import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
  */
 public class HtmlFileUpload implements AttackVector {
 
-    private static final String XSS_UPLOADED_FILE_BASE_NAME = "HtmlFileUpload_";
+    private static final String XSS_UPLOADED_FILE_BASE_NAME = "HtmlFileUpload_XSS_";
     private static final String XSS_PAYLOAD_HTML_FILE =
             "<html><head></head><body>Testing XSS</body></html>";
 
-    private static final ContentMatcher CONTENT_MATCHER =
+    static final ContentMatcher CONTENT_MATCHER =
             new MD5HashResponseMatcher(
-                    httpMsg -> isContentDispositionInline(httpMsg), XSS_PAYLOAD_HTML_FILE);
-
-    private static boolean isContentDispositionInline(HttpMessage preflightMsg) {
-        String headerValue = preflightMsg.getResponseHeader().getHeader("Content-Disposition");
-        if (headerValue == null
-                || headerValue.trim().equals(Constants.EMPTY_STRING)
-                || headerValue.equals("inline")) {
-            return true;
-        }
-        return false;
-    }
+                    httpMsg -> Constants.isContentDispositionInline(httpMsg),
+                    XSS_PAYLOAD_HTML_FILE);
 
     // Extended list for breaking black-listing strategy.
     private static final List<FileParameter> FILE_PARAMETERS_EXTENDED =
             Arrays.asList(
-                    new FileParameter("Htm", Constants.EMPTY_STRING),
-                    new FileParameter("hTM", Constants.EMPTY_STRING),
-                    new FileParameter("HTM", Constants.EMPTY_STRING),
-                    new FileParameter("Html", Constants.EMPTY_STRING),
-                    new FileParameter("HtMl", Constants.EMPTY_STRING),
-                    new FileParameter("HTMl", Constants.EMPTY_STRING),
-                    new FileParameter("HTML", Constants.EMPTY_STRING),
-                    new FileParameter("Xhtml", Constants.EMPTY_STRING),
-                    new FileParameter("xHTml", Constants.EMPTY_STRING),
-                    new FileParameter("xhTML", Constants.EMPTY_STRING),
-                    new FileParameter("xHTML", Constants.EMPTY_STRING),
-                    new FileParameter("XHTML", Constants.EMPTY_STRING),
+                    new FileParameter("Htm"),
+                    new FileParameter("hTM"),
+                    new FileParameter("HTM"),
+                    new FileParameter("Html"),
+                    new FileParameter("HtMl"),
+                    new FileParameter("HTMl"),
+                    new FileParameter("HTML"),
+                    new FileParameter("Xhtml"),
+                    new FileParameter("xHTml"),
+                    new FileParameter("xhTML"),
+                    new FileParameter("xHTML"),
+                    new FileParameter("XHTML"),
+                    new FileParameter("dHtml"),
+                    new FileParameter("sHtml"),
+                    new FileParameter("dHTml"),
+                    new FileParameter("sHTml"),
+                    new FileParameter("dHTML"),
+                    new FileParameter("sHTML"),
                     new FileParameter("Htm", "text/html"),
                     new FileParameter("hTM", "text/html"),
                     new FileParameter("HTM", "text/html"),
@@ -86,6 +82,12 @@ public class HtmlFileUpload implements AttackVector {
                     new FileParameter("xhTML", "text/html"),
                     new FileParameter("xHTML", "text/html"),
                     new FileParameter("XHTML", "text/html"),
+                    new FileParameter("dHtml", "text/html"),
+                    new FileParameter("sHtml", "text/html"),
+                    new FileParameter("dHTml", "text/html"),
+                    new FileParameter("sHTml", "text/html"),
+                    new FileParameter("dHTML", "text/html"),
+                    new FileParameter("sHTML", "text/html"),
                     new FileParameter("Htm", "text/plain"),
                     new FileParameter("hTM", "text/plain"),
                     new FileParameter("HTM", "text/plain"),
@@ -98,188 +100,60 @@ public class HtmlFileUpload implements AttackVector {
                     new FileParameter("xhTML", "text/plain"),
                     new FileParameter("xHTML", "text/plain"),
                     new FileParameter("XHTML", "text/plain"),
+                    new FileParameter("dHtml", "text/plain"),
+                    new FileParameter("sHtml", "text/plain"),
+                    new FileParameter("dHTml", "text/plain"),
+                    new FileParameter("sHTml", "text/plain"),
+                    new FileParameter("dHTML", "text/plain"),
+                    new FileParameter("sHTML", "text/plain"),
                     new FileParameter(
                             "Htm", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "hTM", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTM", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Html", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HtMl", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTMl", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
                             "HTML", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
                             "Xhtml", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
-                            "xHTml", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xhTML", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xHTML", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
                             "XHTML", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Htm", "text/plain", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "hTM", "text/plain", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTM", "text/plain", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Html", "text/plain", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HtMl", "text/plain", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTMl", "text/plain", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTML", "text/plain", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Xhtml",
-                            "text/plain",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xHTml",
-                            "text/plain",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xhTML",
-                            "text/plain",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xHTML",
-                            "text/plain",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "XHTML",
-                            "text/plain",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Htm" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "hTM" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTM" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Html" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HtMl" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTMl" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTML" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Xhtml" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xHTml" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xhTML" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xHTML" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "XHTML" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Htm" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "hTM" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTM" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Html" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HtMl" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTMl" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "HTML" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "Xhtml" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xHTml" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xhTML" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xHTML" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "XHTML" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
+                    new FileParameter("Htm", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("HTML", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("Xhtml", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("XHTML", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION));
 
     private static final List<FileParameter> FILE_PARAMETERS_DEFAULT =
             Arrays.asList(
-                    new FileParameter("htm", Constants.EMPTY_STRING),
-                    new FileParameter("html", Constants.EMPTY_STRING),
-                    new FileParameter("xhtml", Constants.EMPTY_STRING),
+                    new FileParameter("htm"),
+                    new FileParameter("html"),
+                    new FileParameter("xhtml"),
+                    /**
+                     * Server Parsed Html for server side includes
+                     * https://stackoverflow.com/questions/519619/what-is-the-purpose-and-uniqueness-shtml
+                     */
+                    new FileParameter("shtml"),
+                    new FileParameter("dhtml"),
                     new FileParameter("htm", "text/html"),
                     new FileParameter("html", "text/html"),
                     new FileParameter("xhtml", "text/html"),
+                    new FileParameter("shtml", "text/html"),
+                    new FileParameter("dhtml", "text/html"),
                     new FileParameter("htm", "text/plain"),
                     new FileParameter("html", "text/plain"),
                     new FileParameter("xhtml", "text/plain"),
+                    new FileParameter("shtml", "text/plain"),
+                    new FileParameter("dhtml", "text/plain"),
                     new FileParameter(
                             "htm", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
                             "html", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
                             "xhtml", "text/html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("htm", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("html", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("xhtml", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
                             "htm" + NULL_BYTE_CHARACTER,
-                            "text/html",
                             FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
-                            "html" + NULL_BYTE_CHARACTER,
-                            "text/html",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xhtml" + NULL_BYTE_CHARACTER,
+                            "htm" + NULL_BYTE_CHARACTER,
                             "text/html",
                             FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
@@ -287,13 +161,36 @@ public class HtmlFileUpload implements AttackVector {
                             "text/plain",
                             FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
-                            "html" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "xhtml" + NULL_BYTE_CHARACTER,
-                            "text/plain",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
+                            "htm" + NULL_BYTE_CHARACTER,
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+
+                    /**
+                     * My thought is that if server is vulnerable to Null Byte then it is sure that
+                     * "htm" only will work and there is no need to verify other extensions *
+                     */
+                    /*
+                     					new FileParameter(
+                                                "html" + NULL_BYTE_CHARACTER,
+                                                "text/html",
+                                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                                        new FileParameter(
+                                                "xhtml" + NULL_BYTE_CHARACTER,
+                                                "text/html",
+                                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                                        new FileParameter(
+                                                "htm" + NULL_BYTE_CHARACTER,
+                                                "text/plain",
+                                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                                        new FileParameter(
+                                                "html" + NULL_BYTE_CHARACTER,
+                                                "text/plain",
+                                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                                        new FileParameter(
+                                                "xhtml" + NULL_BYTE_CHARACTER,
+                                                "text/plain",
+                                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                    */
+                    );
 
     /**
      * @throws FileUploadException

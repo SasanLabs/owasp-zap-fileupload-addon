@@ -17,7 +17,23 @@ import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
+/**
+ * {@code EicarAntivirusTestFileUpload} attack vector is used to check the if antivirus is present
+ * and working properly by upload the Eicar file. General idea is to upload the Eicar Test file and
+ * if we are able to download it again then that means there are chances that Antivirus is either
+ * not present or not working properly.
+ *
+ * <p>For more information about Eicar file please visit <a
+ * href="https://en.wikipedia.org/wiki/EICAR_test_file">Eicar File Wiki link</a>
+ *
+ * @author KSASAN preetkaran20@gmail.com
+ */
 public class EicarAntivirusTestFileUpload implements AttackVector {
+
+    private static final String EICAR_FILE_CONTENT =
+            "WDVPIVAlQEFQWzRcUFpYNTQ"
+                    + "oUF4pN0NDKTd9JEVJQ0FSLVNUQU5EQVJELUFOVEl"
+                    + "WSVJVUy1URVNULUZJTEUhJEgrSCo=";
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)

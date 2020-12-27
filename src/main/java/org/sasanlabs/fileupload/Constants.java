@@ -13,6 +13,8 @@
  */
 package org.sasanlabs.fileupload;
 
+import org.parosproxy.paros.network.HttpMessage;
+
 /**
  * Contains the String constants or other utility constants used by the File Upload Addon.
  *
@@ -25,4 +27,14 @@ public interface Constants {
     String NULL_BYTE_CHARACTER = String.valueOf((char) 0);
     String HTTP_SCHEME = "http://";
     String HTTP_SECURED_SCHEME = "https://";
+
+    static boolean isContentDispositionInline(HttpMessage preflightMsg) {
+        String headerValue = preflightMsg.getResponseHeader().getHeader("Content-Disposition");
+        if (headerValue == null
+                || headerValue.trim().equals(Constants.EMPTY_STRING)
+                || headerValue.equals("inline")) {
+            return true;
+        }
+        return false;
+    }
 }

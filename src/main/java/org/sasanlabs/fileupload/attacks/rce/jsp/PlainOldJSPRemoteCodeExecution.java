@@ -18,7 +18,6 @@ import static org.sasanlabs.fileupload.Constants.NULL_BYTE_CHARACTER;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import org.sasanlabs.fileupload.Constants;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
@@ -42,19 +41,15 @@ public class PlainOldJSPRemoteCodeExecution implements AttackVector {
 
     private static final List<FileParameter> FILE_PARAMETERS =
             Arrays.asList(
-                    new FileParameter("jsp", Constants.EMPTY_STRING),
+                    new FileParameter("jsp"),
                     new FileParameter("jsp", "application/x-jsp"),
-                    new FileParameter(
-                            "jsp",
-                            Constants.EMPTY_STRING,
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("jsp", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
                             "jsp",
                             "application/x-jsp",
                             FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
                             "jsp" + NULL_BYTE_CHARACTER,
-                            Constants.EMPTY_STRING,
                             FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
                     new FileParameter(
                             "jsp" + NULL_BYTE_CHARACTER,

@@ -60,6 +60,15 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
         }
     }
 
+    @Override
+    public boolean isStop() {
+        return super.isStop() || (this.maxRequestCount.get() <= 0);
+    }
+
+    public void decreaseRequestCount() {
+        this.maxRequestCount.getAndDecrement();
+    }
+
     /*
      * Need to check what to include do we need to include XXE/XSS/Path Traversal in
      * this addon or we need to correct those. Persistent XXS/XXE/PathTraversal

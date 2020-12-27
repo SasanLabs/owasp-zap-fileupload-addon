@@ -54,8 +54,12 @@ public class FileUploadAttackExecutor {
 
     public boolean executeAttack() throws FileUploadException {
         for (AttackVector attackVector : attackVectors) {
-            if (attackVector.execute(this)) {
-                return true;
+            if (this.fileUploadScanRule.isStop()) {
+                return false;
+            } else {
+                if (attackVector.execute(this)) {
+                    return true;
+                }
             }
         }
         return false;

@@ -68,13 +68,20 @@ public interface AttackVector {
         HttpMessage originalMsg = fileUploadAttackExecutor.getOriginalHttpMessage();
         FileUploadScanRule fileUploadScanRule = fileUploadAttackExecutor.getFileUploadScanRule();
         String originalFileName = null;
+        String originalContentType = null;
         for (NameValuePair nameValuePair : nameValuePairs) {
             if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME) {
                 originalFileName = nameValuePair.getValue();
-                break;
+            } else if (nameValuePair.getType()
+                    == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
+                originalContentType = nameValuePair.getValue();
             }
         }
         for (FileParameter fileParameter : fileParameters) {
+            if (fileUploadAttackExecutor.getFileUploadScanRule().isStop()) {
+                return false;
+            }
+            fileUploadAttackExecutor.getFileUploadScanRule().decreaseRequestCount();
             HttpMessage newMsg = originalMsg.cloneRequest();
             for (int i = 0; i < nameValuePairs.size(); i++) {
                 NameValuePair nameValuePair = nameValuePairs.get(i);
@@ -94,7 +101,7 @@ public interface AttackVector {
                             newMsg,
                             nameValuePair,
                             nameValuePair.getName(),
-                            fileParameter.getContentType());
+                            fileParameter.getContentType(originalContentType));
                 } else {
                     continue;
                 }

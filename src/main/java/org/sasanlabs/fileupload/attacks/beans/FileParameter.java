@@ -30,24 +30,30 @@ public class FileParameter {
     private FileExtensionOperation fileExtensionOperation =
             FileExtensionOperation.ONLY_PROVIDED_EXTENSION;
 
-    public FileParameter(String extension, String contentType) {
+    public FileParameter(String extension) {
         super();
         this.baseFileName = String.valueOf(new Random(new Date().getTime()).nextLong());
         this.extension = extension;
+    }
+
+    public FileParameter(String extension, String contentType) {
+        this(extension);
         this.contentType = contentType;
+    }
+
+    public FileParameter(String extension, FileExtensionOperation fileExtensionOperation) {
+        this(extension);
+        this.fileExtensionOperation = fileExtensionOperation;
     }
 
     public FileParameter(
             String extension, String contentType, FileExtensionOperation fileExtensionOperation) {
-        super();
-        this.baseFileName = String.valueOf(new Random(new Date().getTime()).nextLong());
-        this.extension = extension;
+        this(extension, fileExtensionOperation);
         this.contentType = contentType;
-        this.fileExtensionOperation = fileExtensionOperation;
     }
 
-    public String getContentType() {
-        return contentType;
+    public String getContentType(String originalContentType) {
+        return contentType == null ? originalContentType : this.contentType;
     }
 
     public String getFileName(String originalFileName, String newBaseFileName)
