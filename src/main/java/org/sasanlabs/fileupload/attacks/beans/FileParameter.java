@@ -30,6 +30,12 @@ public class FileParameter {
     private FileExtensionOperation fileExtensionOperation =
             FileExtensionOperation.ONLY_PROVIDED_EXTENSION;
 
+    public FileParameter() {
+        super();
+        this.baseFileName = String.valueOf(new Random(new Date().getTime()).nextLong());
+        this.fileExtensionOperation = FileExtensionOperation.ONLY_ORIGINAL_EXTENSION;
+    }
+
     public FileParameter(String extension) {
         super();
         this.baseFileName = String.valueOf(new Random(new Date().getTime()).nextLong());

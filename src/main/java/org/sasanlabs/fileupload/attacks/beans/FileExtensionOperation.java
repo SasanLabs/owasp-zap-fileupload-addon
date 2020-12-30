@@ -42,7 +42,14 @@ public enum FileExtensionOperation {
      * only appends the provided extension e.g. if provided extension is {@code html} and original
      * file extension is {@code pdf} then final extension will be {@code .html}
      */
-    ONLY_PROVIDED_EXTENSION;
+    ONLY_PROVIDED_EXTENSION,
+
+    /**
+     * don't change the extension of original file and use the original extension. e.g. if provided
+     * extension is {@code html} and original file extension is {@code pdf} then final extension
+     * will be {@code .pdf}
+     */
+    ONLY_ORIGINAL_EXTENSION;
 
     public static String appendPeriodCharacter(String extension) {
         if (StringUtils.isBlank(extension)) {
@@ -57,8 +64,9 @@ public enum FileExtensionOperation {
 
     public String operator(String providedExtension, String originalFileName)
             throws FileUploadException {
-        if (StringUtils.isBlank(providedExtension)) {
-            throw new FileUploadException("Provided extension is null");
+        if (StringUtils.isBlank(providedExtension) && !this.equals(ONLY_ORIGINAL_EXTENSION)) {
+            throw new FileUploadException(
+                    "Provided extension cannot be null for FileExtensionOperation: " + this.name());
         }
         String extension;
         int firstIndexOfPeriodCharacter;
@@ -79,6 +87,8 @@ public enum FileExtensionOperation {
             case ONLY_PROVIDED_EXTENSION:
                 extension = providedExtension;
                 break;
+            case ONLY_ORIGINAL_EXTENSION:
+                extension = originalExtension;
             default:
                 extension = providedExtension;
         }

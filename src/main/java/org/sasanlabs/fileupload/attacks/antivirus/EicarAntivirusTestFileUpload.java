@@ -13,32 +13,114 @@
  */
 package org.sasanlabs.fileupload.attacks.antivirus;
 
+import static org.sasanlabs.fileupload.Constants.NULL_BYTE_CHARACTER;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
+import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
+import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.exception.FileUploadException;
+import org.sasanlabs.fileupload.matcher.ContentMatcher;
+import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 
 /**
  * {@code EicarAntivirusTestFileUpload} attack vector is used to check the if antivirus is present
- * and working properly by upload the Eicar file. General idea is to upload the Eicar Test file and
- * if we are able to download it again then that means there are chances that Antivirus is either
- * not present or not working properly.
+ * and working properly by uploading the Eicar test file. General idea is to upload the Eicar Test
+ * file and if we are able to download it again then that means there are chances that Antivirus is
+ * either not present or not working properly.
  *
  * <p>For more information about Eicar file please visit <a
  * href="https://en.wikipedia.org/wiki/EICAR_test_file">Eicar File Wiki link</a>
+ *
+ * <p>Tested Eicar test file on {@link https://www.virustotal.com/} 63 out of 67 AV softwares detect
+ * it as a virus.
  *
  * @author KSASAN preetkaran20@gmail.com
  */
 public class EicarAntivirusTestFileUpload implements AttackVector {
 
     private static final String EICAR_FILE_CONTENT =
-            "WDVPIVAlQEFQWzRcUFpYNTQ"
-                    + "oUF4pN0NDKTd9JEVJQ0FSLVNUQU5EQVJELUFOVEl"
-                    + "WSVJVUy1URVNULUZJTEUhJEgrSCo=";
+            new String(
+                    Base64.getDecoder()
+                            .decode(
+                                    "WDVPIVAlQEFQWzRcUFpYNTQ"
+                                            + "oUF4pN0NDKTd9JEVJQ0FSLVNUQU5EQVJELUFOVEl"
+                                            + "WSVJVUy1URVNULUZJTEUhJEgrSCo="),
+                    StandardCharsets.UTF_8);
+    private static final String UPLOADED_BASE_FILE_NAME = "EicarAntivirusTestFileUpload_";
+
+    private static final ContentMatcher CONTENT_MATCHER =
+            new MD5HashResponseMatcher(EICAR_FILE_CONTENT);
+
+    private static final List<FileParameter> FILE_PARAMETERS_DEFAULT =
+            Arrays.asList(
+                    /**
+                     * Tested that the file content only matters in case of Eicar file and any
+                     * extension with the same content will be flagged as a Virus file. Tested this
+                     * hypothesis with {@link https://github.com/malice-plugins/mcafee} as well as
+                     * on {@link https://www.virustotal.com/} Out of 67 antivirus softwares 63
+                     * detect the Eicar file as virus file.
+                     */
+                    new FileParameter(),
+                    // Below file parameters might not be needed but just for a safe side added
+                    // those.
+                    new FileParameter("com"),
+                    new FileParameter("exe"),
+                    new FileParameter("com", "application/octet-stream"),
+                    new FileParameter("exe", "vnd.microsoft.portable-executable"),
+                    new FileParameter(
+                            "com",
+                            "application/octet-stream",
+                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "exe",
+                            "vnd.microsoft.portable-executable",
+                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("com", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter("exe", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "exe" + NULL_BYTE_CHARACTER,
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    new FileParameter(
+                            "exe" + NULL_BYTE_CHARACTER,
+                            "vnd.microsoft.portable-executable",
+                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
             throws FileUploadException {
-        // TODO Auto-generated method stub
-        return false;
+        boolean result = false;
+        try {
+            result =
+                    this.genericAttackExecutor(
+                            fileUploadAttackExecutor,
+                            CONTENT_MATCHER,
+                            EICAR_FILE_CONTENT,
+                            UPLOADED_BASE_FILE_NAME,
+                            FILE_PARAMETERS_DEFAULT);
+            if (result) {
+                fileUploadAttackExecutor
+                        .getFileUploadScanRule()
+                        .raiseAlert(
+                                1,
+                                1,
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                fileUploadAttackExecutor.getOriginalHttpMessage());
+            }
+        } catch (IOException e) {
+            throw new FileUploadException(e);
+        }
+        return result;
     }
 }

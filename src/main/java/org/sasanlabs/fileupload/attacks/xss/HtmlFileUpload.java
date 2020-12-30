@@ -160,6 +160,15 @@ public class HtmlFileUpload implements AttackVector {
                             "htm" + NULL_BYTE_CHARACTER,
                             "text/plain",
                             FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    /**
+                     * *
+                     *
+                     * <p>As per owasp file upload use both NULL BYtes with URL encoded and decoded
+                     *
+                     * <p>we need to do the same in our code. Important.
+                     *
+                     * <p>ADD This
+                     */
                     new FileParameter(
                             "htm" + NULL_BYTE_CHARACTER,
                             FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
