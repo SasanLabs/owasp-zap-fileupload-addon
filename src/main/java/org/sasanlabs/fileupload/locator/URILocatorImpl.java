@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 SasanLabs
+ * Copyright 2021 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.network.HttpMessage;
-import org.sasanlabs.fileupload.Constants;
+import org.sasanlabs.fileupload.FileUploadUtils;
 import org.sasanlabs.fileupload.configuration.FileUploadConfiguration;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.function.ConsumerWithException;
@@ -34,17 +34,17 @@ public class URILocatorImpl implements URILocator {
 
     private URI getCompleteURI(String uriRegex, String fileName, HttpMessage msg)
             throws URIException, FileUploadException {
-        if (fileName.contains(Constants.NULL_BYTE_CHARACTER)) {
-            fileName = fileName.substring(0, fileName.indexOf(Constants.NULL_BYTE_CHARACTER));
+        if (fileName.contains(FileUploadUtils.NULL_BYTE_CHARACTER)) {
+            fileName = fileName.substring(0, fileName.indexOf(FileUploadUtils.NULL_BYTE_CHARACTER));
         }
         Map<String, String> replacerKeyValuePair = new HashMap<>();
         replacerKeyValuePair.put("filename", fileName);
         StringSubstitutor stringSubstitutor = new StringSubstitutor(replacerKeyValuePair);
         String uriFragment = stringSubstitutor.replace(uriRegex);
-        if (uriFragment.startsWith(Constants.HTTP_SCHEME)
-                || uriRegex.startsWith(Constants.HTTP_SECURED_SCHEME)) {
+        if (uriFragment.startsWith(FileUploadUtils.HTTP_SCHEME)
+                || uriRegex.startsWith(FileUploadUtils.HTTP_SECURED_SCHEME)) {
             return new URI(uriFragment, true);
-        } else if (uriFragment.startsWith(Constants.SLASH)) {
+        } else if (uriFragment.startsWith(FileUploadUtils.SLASH)) {
             String authority = msg.getRequestHeader().getURI().getAuthority();
             String scheme = msg.getRequestHeader().getURI().getScheme();
             return new URI(scheme, authority, uriFragment, "");

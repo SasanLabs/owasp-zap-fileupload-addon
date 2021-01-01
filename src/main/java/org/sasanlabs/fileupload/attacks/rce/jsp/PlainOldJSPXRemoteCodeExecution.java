@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 SasanLabs
+ * Copyright 2021 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,7 +13,7 @@
  */
 package org.sasanlabs.fileupload.attacks.rce.jsp;
 
-import static org.sasanlabs.fileupload.Constants.NULL_BYTE_CHARACTER;
+import static org.sasanlabs.fileupload.FileUploadUtils.NULL_BYTE_CHARACTER;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,6 +22,7 @@ import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
+import org.sasanlabs.fileupload.attacks.beans.FileParameterBuilder;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
@@ -48,20 +49,75 @@ public class PlainOldJSPXRemoteCodeExecution implements AttackVector {
     // text/x-jsp
     private static final List<FileParameter> FILE_PARAMETERS =
             Arrays.asList(
-                    new FileParameter("jspx"),
-                    new FileParameter("jspx", "application/x-jsp"),
-                    new FileParameter("jspx", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "jspx",
-                            "application/x-jsp",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "jspx" + NULL_BYTE_CHARACTER,
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "jspx" + NULL_BYTE_CHARACTER,
-                            "application/x-jsp",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
+                    new FileParameterBuilder()
+                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                            .withExtension("jspx")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                            .withExtension("jspx")
+                            .withContentType("application/x-jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                            .withExtension("jspx")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                            .withExtension("jspx")
+                            .withContentType("application/x-jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                            .withExtension("jspx" + NULL_BYTE_CHARACTER)
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                            .withExtension("jspx" + NULL_BYTE_CHARACTER)
+                            .withContentType("application/x-jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                            .withExtension("jspx%00")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                            .withExtension("jspx%00")
+                            .withContentType("application/x-jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build()
+
+                    //                    new FileParameter("jspx"),
+                    //                    new FileParameter("jspx", "application/x-jsp"),
+                    //                    new FileParameter("jspx",
+                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "jspx",
+                    //                            "application/x-jsp",
+                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "jspx" + NULL_BYTE_CHARACTER,
+                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "jspx" + NULL_BYTE_CHARACTER,
+                    //                            "application/x-jsp",
+                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                    );
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
@@ -73,7 +129,6 @@ public class PlainOldJSPXRemoteCodeExecution implements AttackVector {
                             fileUploadAttackExecutor,
                             CONTENT_MATCHER,
                             JSPX_PAYLOAD,
-                            JSPX_UPLOADED_FILE_BASE_NAME,
                             FILE_PARAMETERS);
             if (result) {
                 fileUploadAttackExecutor

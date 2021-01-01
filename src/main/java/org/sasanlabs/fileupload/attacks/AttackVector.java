@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 SasanLabs
+ * Copyright 2021 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -61,7 +61,6 @@ public interface AttackVector {
             FileUploadAttackExecutor fileUploadAttackExecutor,
             ContentMatcher contentMatcher,
             String payload,
-            String baseFileName,
             List<FileParameter> fileParameters)
             throws IOException, FileUploadException {
         List<NameValuePair> nameValuePairs = fileUploadAttackExecutor.getVariant().getParamList();
@@ -90,7 +89,7 @@ public interface AttackVector {
                             newMsg,
                             nameValuePair,
                             nameValuePair.getName(),
-                            fileParameter.getFileName(originalFileName, baseFileName));
+                            fileParameter.getFileName(originalFileName));
                 } else if (nameValuePair.getType()
                         == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM) {
                     fileUploadScanRule.setParameter(
@@ -115,7 +114,7 @@ public interface AttackVector {
             HttpMessage preflightMsg =
                     this.executePreflightRequest(
                             newMsg,
-                            fileParameter.getFileName(originalFileName, baseFileName),
+                            fileParameter.getFileName(originalFileName),
                             fileUploadScanRule);
             if (contentMatcher.match(preflightMsg)) {
                 return true;

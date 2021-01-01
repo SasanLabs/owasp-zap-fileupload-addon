@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 SasanLabs
+ * Copyright 2021 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,7 +13,7 @@
  */
 package org.sasanlabs.fileupload.attacks.antivirus;
 
-import static org.sasanlabs.fileupload.Constants.NULL_BYTE_CHARACTER;
+import static org.sasanlabs.fileupload.FileUploadUtils.NULL_BYTE_CHARACTER;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -24,6 +24,7 @@ import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
+import org.sasanlabs.fileupload.attacks.beans.FileParameterBuilder;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
@@ -66,30 +67,106 @@ public class EicarAntivirusTestFileUpload implements AttackVector {
                      * on {@link https://www.virustotal.com/} Out of 67 antivirus softwares 63
                      * detect the Eicar file as virus file.
                      */
-                    new FileParameter(),
+                    new FileParameterBuilder()
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_ORIGINAL_EXTENSION)
+                            .build(),
+
+                    // new FileParameter(FileExtensionOperation.ONLY_ORIGINAL_EXTENSION),
                     // Below file parameters might not be needed but just for a safe side added
                     // those.
-                    new FileParameter("com"),
-                    new FileParameter("exe"),
-                    new FileParameter("com", "application/octet-stream"),
-                    new FileParameter("exe", "vnd.microsoft.portable-executable"),
-                    new FileParameter(
-                            "com",
-                            "application/octet-stream",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "exe",
-                            "vnd.microsoft.portable-executable",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter("com", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter("exe", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "exe" + NULL_BYTE_CHARACTER,
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "exe" + NULL_BYTE_CHARACTER,
-                            "vnd.microsoft.portable-executable",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("com")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("exe")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("com")
+                            .withContentType("application/octet-stream")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("exe")
+                            .withContentType("vnd.microsoft.portable-executable")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("com")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("exe")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("com")
+                            .withContentType("application/octet-stream")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("exe")
+                            .withContentType("vnd.microsoft.portable-executable")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("com" + NULL_BYTE_CHARACTER)
+                            .withContentType("application/octet-stream")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("exe" + NULL_BYTE_CHARACTER)
+                            .withContentType("vnd.microsoft.portable-executable")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build()
+
+                    //            		new FileParameter("com"),
+                    //                    new FileParameter("exe"),
+                    //                    new FileParameter("com", "application/octet-stream"),
+                    //                    new FileParameter("exe",
+                    // "vnd.microsoft.portable-executable"),
+                    //                    new FileParameter(
+                    //                            "com",
+                    //                            "application/octet-stream",
+                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "exe",
+                    //                            "vnd.microsoft.portable-executable",
+                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter("com",
+                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter("exe",
+                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "exe" + NULL_BYTE_CHARACTER,
+                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "exe" + NULL_BYTE_CHARACTER,
+                    //                            "vnd.microsoft.portable-executable",
+                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                    );
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
@@ -101,7 +178,6 @@ public class EicarAntivirusTestFileUpload implements AttackVector {
                             fileUploadAttackExecutor,
                             CONTENT_MATCHER,
                             EICAR_FILE_CONTENT,
-                            UPLOADED_BASE_FILE_NAME,
                             FILE_PARAMETERS_DEFAULT);
             if (result) {
                 fileUploadAttackExecutor

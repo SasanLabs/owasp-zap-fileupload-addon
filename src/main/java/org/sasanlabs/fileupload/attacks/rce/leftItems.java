@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 SasanLabs
+ * Copyright 2021 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -20,5 +20,7 @@ package org.sasanlabs.fileupload.attacks.rce;
  * <p>https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload
  * https://blog.doyensec.com/2020/04/30/polymorphic-images-for-xss.html
  * https://medium.com/swlh/polyglot-files-a-hackers-best-friend-850bf812dd8a
+ *
+ * <p>BIT MAP based XSS
  */
 public class leftItems {}

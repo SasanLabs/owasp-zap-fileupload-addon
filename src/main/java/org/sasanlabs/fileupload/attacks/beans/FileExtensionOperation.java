@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 SasanLabs
+ * Copyright 2021 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,7 +14,7 @@
 package org.sasanlabs.fileupload.attacks.beans;
 
 import org.apache.commons.lang3.StringUtils;
-import org.sasanlabs.fileupload.Constants;
+import org.sasanlabs.fileupload.FileUploadUtils;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
@@ -24,6 +24,8 @@ import org.sasanlabs.fileupload.exception.FileUploadException;
  */
 public enum FileExtensionOperation {
 
+    /** doesn't append any extension to the filename. */
+    NO_EXTENSION,
     /**
      * appends the Original File Extension before the provided extension. e.g. if provided extension
      * is {@code html} and original file extension is {@code pdf} then the final extension will be
@@ -51,46 +53,40 @@ public enum FileExtensionOperation {
      */
     ONLY_ORIGINAL_EXTENSION;
 
-    public static String appendPeriodCharacter(String extension) {
-        if (StringUtils.isBlank(extension)) {
-            return extension;
-        } else {
-            if (extension.startsWith(Constants.PERIOD)) {
-                return extension;
-            }
-            return Constants.PERIOD + extension;
-        }
-    }
-
-    public String operator(String providedExtension, String originalFileName)
+    public String operate(String providedExtension, String originalFileName)
             throws FileUploadException {
-        if (StringUtils.isBlank(providedExtension) && !this.equals(ONLY_ORIGINAL_EXTENSION)) {
+        if (StringUtils.isBlank(providedExtension)
+                && !(this.equals(ONLY_ORIGINAL_EXTENSION) || this.equals(NO_EXTENSION))) {
             throw new FileUploadException(
                     "Provided extension cannot be null for FileExtensionOperation: " + this.name());
         }
         String extension;
-        int firstIndexOfPeriodCharacter;
         String originalExtension = "";
         if (originalFileName != null) {
-            firstIndexOfPeriodCharacter = originalFileName.indexOf(Constants.PERIOD);
-            if (firstIndexOfPeriodCharacter >= 0) {
-                originalExtension = originalFileName.substring(firstIndexOfPeriodCharacter + 1);
-            }
+            originalExtension = FileUploadUtils.getExtension(originalFileName);
         }
         switch (this) {
             case PREFIX_ORIGINAL_EXTENSION:
-                extension = originalExtension + appendPeriodCharacter(providedExtension);
+                extension =
+                        FileUploadUtils.appendPeriodCharacter(
+                                originalExtension
+                                        + FileUploadUtils.appendPeriodCharacter(providedExtension));
                 break;
             case SUFFIX_ORIGINAL_EXTENSION:
-                extension = providedExtension + appendPeriodCharacter(originalExtension);
+                extension =
+                        FileUploadUtils.appendPeriodCharacter(
+                                providedExtension
+                                        + FileUploadUtils.appendPeriodCharacter(originalExtension));
                 break;
             case ONLY_PROVIDED_EXTENSION:
-                extension = providedExtension;
+                extension = FileUploadUtils.appendPeriodCharacter(providedExtension);
                 break;
             case ONLY_ORIGINAL_EXTENSION:
-                extension = originalExtension;
+                extension = FileUploadUtils.appendPeriodCharacter(originalExtension);
+            case NO_EXTENSION:
+                extension = "";
             default:
-                extension = providedExtension;
+                extension = FileUploadUtils.appendPeriodCharacter(providedExtension);
         }
         return extension;
     }

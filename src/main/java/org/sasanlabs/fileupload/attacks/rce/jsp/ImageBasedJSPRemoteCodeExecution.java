@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 SasanLabs
+ * Copyright 2021 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,7 +13,7 @@
  */
 package org.sasanlabs.fileupload.attacks.rce.jsp;
 
-import static org.sasanlabs.fileupload.Constants.NULL_BYTE_CHARACTER;
+import static org.sasanlabs.fileupload.FileUploadUtils.NULL_BYTE_CHARACTER;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -26,6 +26,7 @@ import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
+import org.sasanlabs.fileupload.attacks.beans.FileParameterBuilder;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 
@@ -40,20 +41,75 @@ public class ImageBasedJSPRemoteCodeExecution implements AttackVector {
 
     private static final List<FileParameter> FILE_PARAMETERS =
             Arrays.asList(
-                    new FileParameter("jsp"),
-                    new FileParameter("jsp", "application/x-jsp"),
-                    new FileParameter("jsp", FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "jsp",
-                            "application/x-jsp",
-                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "jsp" + NULL_BYTE_CHARACTER,
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    new FileParameter(
-                            "jsp" + NULL_BYTE_CHARACTER,
-                            "application/x-jsp",
-                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION));
+                    new FileParameterBuilder()
+                            .withBaseFileName(BASE_FILE_NAME)
+                            .withExtension("jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(BASE_FILE_NAME)
+                            .withExtension("jsp")
+                            .withContentType("application/x-jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(BASE_FILE_NAME)
+                            .withExtension("jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(BASE_FILE_NAME)
+                            .withExtension("jsp")
+                            .withContentType("application/x-jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(BASE_FILE_NAME)
+                            .withExtension("jsp" + NULL_BYTE_CHARACTER)
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(BASE_FILE_NAME)
+                            .withExtension("jsp" + NULL_BYTE_CHARACTER)
+                            .withContentType("application/x-jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(BASE_FILE_NAME)
+                            .withExtension("jsp%00")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build(),
+                    new FileParameterBuilder()
+                            .withBaseFileName(BASE_FILE_NAME)
+                            .withExtension("jsp%00")
+                            .withContentType("application/x-jsp")
+                            .withFileExtensionOperation(
+                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                            .build()
+
+                    //                    new FileParameter("jsp"),
+                    //                    new FileParameter("jsp", "application/x-jsp"),
+                    //                    new FileParameter("jsp",
+                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "jsp",
+                    //                            "application/x-jsp",
+                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "jsp" + NULL_BYTE_CHARACTER,
+                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
+                    //                    new FileParameter(
+                    //                            "jsp" + NULL_BYTE_CHARACTER,
+                    //                            "application/x-jsp",
+                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                    );
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
@@ -71,7 +127,6 @@ public class ImageBasedJSPRemoteCodeExecution implements AttackVector {
                     fileUploadAttackExecutor,
                     new ContainsExpectedValueMatcher(EXPECTED_VALUE),
                     requestPayload,
-                    BASE_FILE_NAME,
                     FILE_PARAMETERS)) {
                 fileUploadAttackExecutor
                         .getFileUploadScanRule()
