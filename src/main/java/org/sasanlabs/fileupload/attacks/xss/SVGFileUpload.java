@@ -249,61 +249,7 @@ public class SVGFileUpload implements AttackVector {
                             .withContentType("text/xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build()
-
-                    //                    new FileParameter("Svg"),
-                    //                    new FileParameter("SvG"),
-                    //                    new FileParameter("SVG"),
-                    //                    new FileParameter("Svgz"),
-                    //                    new FileParameter("SvGz"),
-                    //                    new FileParameter("SVGZ"),
-                    //                    new FileParameter("xML"),
-                    //                    new FileParameter("Xml"),
-                    //                    new FileParameter("XML"),
-                    //                    new FileParameter("Svg", "image/svg+xml"),
-                    //                    new FileParameter("SvG", "image/svg+xml"),
-                    //                    new FileParameter("SVG", "image/svg+xml"),
-                    //                    new FileParameter("Svgz", "image/svg+xml"),
-                    //                    new FileParameter("SvGz", "image/svg+xml"),
-                    //                    new FileParameter("SVGZ", "image/svg+xml"),
-                    //                    new FileParameter("xML", "text/xml"),
-                    //                    new FileParameter("Xml", "text/xml"),
-                    //                    new FileParameter("XML", "text/xml"),
-                    //                    new FileParameter(
-                    //                            "Svg",
-                    //                            "image/svg+xml",
-                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("Svg",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "SVG",
-                    //                            "image/svg+xml",
-                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("SVG",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "Svgz",
-                    //                            "image/svg+xml",
-                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("Svgz",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "SVGZ",
-                    //                            "image/svg+xml",
-                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("SVGZ",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "Xml", "text/xml",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("Xml",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "XML", "text/xml",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("XML",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                    );
+                            .build());
 
     /**
      * Extensions working with SVG payload for XSS: svg,html,xml,htm,xhtml,Null byte
@@ -397,28 +343,7 @@ public class SVGFileUpload implements AttackVector {
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build()
-
-                    //                    new FileParameter("svg"),
-                    //                    new FileParameter("xml"),
-                    //                    new FileParameter("svgz"),
-                    //                    new FileParameter("svg", "image/svg+xml"),
-                    //                    new FileParameter("xml", "text/xml"),
-                    //                    new FileParameter("svgz", "image/svg+xml"),
-                    //                    new FileParameter("svg",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("xml",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("svgz",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "svg" + NULL_BYTE_CHARACTER,
-                    //                            "image/svg+xml",
-                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "svg" + NULL_BYTE_CHARACTER,
-                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                    );
+                            .build());
 
     /**
      * @throws FileUploadException

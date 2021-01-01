@@ -18,9 +18,9 @@ import java.util.List;
 import org.parosproxy.paros.core.scanner.Variant;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
-import org.sasanlabs.fileupload.attacks.rce.jsp.ImageBasedJSPRemoteCodeExecution;
-import org.sasanlabs.fileupload.attacks.rce.jsp.PlainOldJSPRemoteCodeExecution;
-import org.sasanlabs.fileupload.attacks.rce.jsp.PlainOldJSPXRemoteCodeExecution;
+import org.sasanlabs.fileupload.attacks.rce.jsp.ImageWithJSPSnippetFileUpload;
+import org.sasanlabs.fileupload.attacks.rce.jsp.SimpleJSPFileUpload;
+import org.sasanlabs.fileupload.attacks.rce.jsp.SimpleJSPXFileUpload;
 import org.sasanlabs.fileupload.attacks.xss.HtmlFileUpload;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
@@ -38,9 +38,9 @@ public class FileUploadAttackExecutor {
     private List<AttackVector> attackVectors =
             Arrays.asList(
                     new HtmlFileUpload(),
-                    new PlainOldJSPRemoteCodeExecution(),
-                    new PlainOldJSPXRemoteCodeExecution(),
-                    new ImageBasedJSPRemoteCodeExecution());
+                    new SimpleJSPFileUpload(),
+                    new SimpleJSPXFileUpload(),
+                    new ImageWithJSPSnippetFileUpload());
 
     public FileUploadAttackExecutor(
             HttpMessage originalHttpMessage,
