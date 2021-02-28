@@ -15,11 +15,14 @@ package org.sasanlabs.fileupload.attacks;
 
 import java.io.IOException;
 import java.util.List;
+import org.parosproxy.paros.core.scanner.Alert;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
+import org.sasanlabs.fileupload.attacks.beans.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
+import org.sasanlabs.fileupload.i18n.FileUploadI18n;
 import org.sasanlabs.fileupload.locator.URILocatorImpl;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 
@@ -57,11 +60,38 @@ public interface AttackVector {
         return preflightMsg;
     }
 
+    /**
+     * @param fileUploadScanRule
+     * @param vulnerabilityType
+     * @param payload
+     * @param newMsg
+     * @param preflight
+     */
+    default void raiseAlert(
+            FileUploadScanRule fileUploadScanRule,
+            VulnerabilityType vulnerabilityType,
+            String payload,
+            HttpMessage newMsg,
+            HttpMessage preflight) {
+        fileUploadScanRule.raiseAlert(
+                vulnerabilityType.getAlertLevel(),
+                Alert.CONFIDENCE_MEDIUM,
+                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + "name"),
+                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + "desc"),
+                newMsg.getRequestHeader().getURI().toString(),
+                newMsg.toString(),
+                payload,
+                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + "refs"),
+                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + "soln"),
+                preflight);
+    }
+
     default boolean genericAttackExecutor(
             FileUploadAttackExecutor fileUploadAttackExecutor,
             ContentMatcher contentMatcher,
             String payload,
-            List<FileParameter> fileParameters)
+            List<FileParameter> fileParameters,
+            VulnerabilityType vulnerabilityType)
             throws IOException, FileUploadException {
         List<NameValuePair> nameValuePairs = fileUploadAttackExecutor.getVariant().getParamList();
         HttpMessage originalMsg = fileUploadAttackExecutor.getOriginalHttpMessage();
@@ -104,12 +134,8 @@ public interface AttackVector {
                 } else {
                     continue;
                 }
-                // Reinitialize the name-value pair positions
-                fileUploadAttackExecutor.getVariant().setMessage(newMsg);
                 nameValuePairs = fileUploadAttackExecutor.getVariant().getParamList();
             }
-            // Reset variant
-            fileUploadAttackExecutor.getVariant().setMessage(originalMsg);
             fileUploadScanRule.sendAndRecieve(newMsg);
             HttpMessage preflightMsg =
                     this.executePreflightRequest(
@@ -117,6 +143,7 @@ public interface AttackVector {
                             fileParameter.getFileName(originalFileName),
                             fileUploadScanRule);
             if (contentMatcher.match(preflightMsg)) {
+                raiseAlert(fileUploadScanRule, vulnerabilityType, payload, newMsg, preflightMsg);
                 return true;
             }
         }
