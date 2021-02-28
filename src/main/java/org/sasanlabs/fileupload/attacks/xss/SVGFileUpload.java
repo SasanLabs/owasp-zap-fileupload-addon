@@ -24,6 +24,7 @@ import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.attacks.beans.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.beans.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
@@ -359,48 +360,20 @@ public class SVGFileUpload implements AttackVector {
                             fileUploadAttackExecutor,
                             HtmlFileUpload.CONTENT_MATCHER,
                             XSS_PAYLOAD_SVG_FILE,
-                            FILE_PARAMETERS_DEFAULT);
-            if (result) {
-                fileUploadAttackExecutor
-                        .getFileUploadScanRule()
-                        .raiseAlert(
-                                1,
-                                1,
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                fileUploadAttackExecutor.getOriginalHttpMessage());
-            } else {
-                if (fileUploadAttackExecutor
-                        .getFileUploadScanRule()
-                        .getAttackStrength()
-                        .equals(AttackStrength.INSANE)) {
-                    result =
-                            this.genericAttackExecutor(
-                                    fileUploadAttackExecutor,
-                                    HtmlFileUpload.CONTENT_MATCHER,
-                                    XSS_PAYLOAD_SVG_FILE,
-                                    FILE_PARAMETERS_EXTENDED);
-                    if (result) {
-                        fileUploadAttackExecutor
-                                .getFileUploadScanRule()
-                                .raiseAlert(
-                                        1,
-                                        1,
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        fileUploadAttackExecutor.getOriginalHttpMessage());
-                    }
-                }
+                            FILE_PARAMETERS_DEFAULT,
+                            VulnerabilityType.XSS_SVG_FILE);
+            if (!result
+                    && fileUploadAttackExecutor
+                            .getFileUploadScanRule()
+                            .getAttackStrength()
+                            .equals(AttackStrength.INSANE)) {
+                result =
+                        this.genericAttackExecutor(
+                                fileUploadAttackExecutor,
+                                HtmlFileUpload.CONTENT_MATCHER,
+                                XSS_PAYLOAD_SVG_FILE,
+                                FILE_PARAMETERS_EXTENDED,
+                                VulnerabilityType.XSS_SVG_FILE);
             }
         } catch (IOException e) {
             throw new FileUploadException(e);

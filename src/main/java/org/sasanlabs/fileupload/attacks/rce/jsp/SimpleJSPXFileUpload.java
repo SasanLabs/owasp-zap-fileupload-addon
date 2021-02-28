@@ -24,6 +24,7 @@ import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.attacks.beans.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.beans.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
@@ -168,48 +169,20 @@ public class SimpleJSPXFileUpload implements AttackVector {
                             fileUploadAttackExecutor,
                             CONTENT_MATCHER,
                             JSPX_PAYLOAD,
-                            FILE_PARAMETERS);
-            if (result) {
-                fileUploadAttackExecutor
-                        .getFileUploadScanRule()
-                        .raiseAlert(
-                                1,
-                                1,
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                fileUploadAttackExecutor.getOriginalHttpMessage());
-            } else {
-                if (fileUploadAttackExecutor
-                        .getFileUploadScanRule()
-                        .getAttackStrength()
-                        .equals(AttackStrength.INSANE)) {
-                    result =
-                            this.genericAttackExecutor(
-                                    fileUploadAttackExecutor,
-                                    CONTENT_MATCHER,
-                                    JSPX_PAYLOAD,
-                                    FILE_PARAMETERS_EXTENDED);
-                    if (result) {
-                        fileUploadAttackExecutor
-                                .getFileUploadScanRule()
-                                .raiseAlert(
-                                        1,
-                                        1,
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        fileUploadAttackExecutor.getOriginalHttpMessage());
-                    }
-                }
+                            FILE_PARAMETERS,
+                            VulnerabilityType.RCE_JSPX_FILE);
+            if (!result
+                    && fileUploadAttackExecutor
+                            .getFileUploadScanRule()
+                            .getAttackStrength()
+                            .equals(AttackStrength.INSANE)) {
+                result =
+                        this.genericAttackExecutor(
+                                fileUploadAttackExecutor,
+                                CONTENT_MATCHER,
+                                JSPX_PAYLOAD,
+                                FILE_PARAMETERS_EXTENDED,
+                                VulnerabilityType.RCE_JSPX_FILE);
             }
         } catch (IOException e) {
             throw new FileUploadException(e);

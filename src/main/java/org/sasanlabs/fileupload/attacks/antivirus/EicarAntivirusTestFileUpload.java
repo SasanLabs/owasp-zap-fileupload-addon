@@ -25,6 +25,7 @@ import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.attacks.beans.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.beans.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
@@ -171,32 +172,15 @@ public class EicarAntivirusTestFileUpload implements AttackVector {
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
             throws FileUploadException {
-        boolean result = false;
         try {
-            result =
-                    this.genericAttackExecutor(
-                            fileUploadAttackExecutor,
-                            CONTENT_MATCHER,
-                            EICAR_FILE_CONTENT,
-                            FILE_PARAMETERS_DEFAULT);
-            if (result) {
-                fileUploadAttackExecutor
-                        .getFileUploadScanRule()
-                        .raiseAlert(
-                                1,
-                                1,
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                fileUploadAttackExecutor.getOriginalHttpMessage());
-            }
+            return this.genericAttackExecutor(
+                    fileUploadAttackExecutor,
+                    CONTENT_MATCHER,
+                    EICAR_FILE_CONTENT,
+                    FILE_PARAMETERS_DEFAULT,
+                    VulnerabilityType.EICAR_FILE);
         } catch (IOException e) {
             throw new FileUploadException(e);
         }
-        return result;
     }
 }

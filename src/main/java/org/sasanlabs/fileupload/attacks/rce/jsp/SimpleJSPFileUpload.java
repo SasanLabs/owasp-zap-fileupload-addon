@@ -24,14 +24,12 @@ import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
 import org.sasanlabs.fileupload.attacks.beans.FileParameter;
 import org.sasanlabs.fileupload.attacks.beans.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.beans.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 
 /** @author KSASAN preetkaran20@gmail.com */
-
-// TODO check if we need to have case sensitive extensions like JsP or jSP or hTML or HtmL or hTmL
-// etc
 public class SimpleJSPFileUpload implements AttackVector {
 
     private static final String JSP_UPLOADED_FILE_BASE_NAME = "SimpleJSPFileUpload_";
@@ -165,48 +163,21 @@ public class SimpleJSPFileUpload implements AttackVector {
                             fileUploadAttackExecutor,
                             CONTENT_MATCHER,
                             JSP_PAYLOAD,
-                            FILE_PARAMETERS_DEFAULT);
-            if (result) {
-                fileUploadAttackExecutor
-                        .getFileUploadScanRule()
-                        .raiseAlert(
-                                1,
-                                1,
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                fileUploadAttackExecutor.getOriginalHttpMessage());
-            } else {
-                if (fileUploadAttackExecutor
-                        .getFileUploadScanRule()
-                        .getAttackStrength()
-                        .equals(AttackStrength.INSANE)) {
-                    result =
-                            this.genericAttackExecutor(
-                                    fileUploadAttackExecutor,
-                                    CONTENT_MATCHER,
-                                    JSP_PAYLOAD,
-                                    FILE_PARAMETERS_EXTENDED);
-                    if (result) {
-                        fileUploadAttackExecutor
-                                .getFileUploadScanRule()
-                                .raiseAlert(
-                                        1,
-                                        1,
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        "",
-                                        fileUploadAttackExecutor.getOriginalHttpMessage());
-                    }
-                }
+                            FILE_PARAMETERS_DEFAULT,
+                            VulnerabilityType.RCE_JSP_FILE);
+
+            if (!result
+                    && fileUploadAttackExecutor
+                            .getFileUploadScanRule()
+                            .getAttackStrength()
+                            .equals(AttackStrength.INSANE)) {
+                result =
+                        this.genericAttackExecutor(
+                                fileUploadAttackExecutor,
+                                CONTENT_MATCHER,
+                                JSP_PAYLOAD,
+                                FILE_PARAMETERS_EXTENDED,
+                                VulnerabilityType.RCE_JSP_FILE);
             }
         } catch (IOException e) {
             throw new FileUploadException(e);
