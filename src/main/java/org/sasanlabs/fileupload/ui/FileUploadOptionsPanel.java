@@ -230,16 +230,14 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
 
     @Override
     public void validateParam(Object optionParams) throws Exception {
-        FileUploadConfiguration fileUploadConfiguration =
-                ((OptionsParam) optionParams).getParamSet(FileUploadConfiguration.class);
         boolean isStaticUrlPresent =
-                StringUtils.isNotEmpty(fileUploadConfiguration.getStaticLocationURIRegex());
+                StringUtils.isNotEmpty(staticLocationConfigurationURIRegex.getText());
         boolean isDynamicUrlPresent =
-                StringUtils.isNotEmpty(fileUploadConfiguration.getDynamicLocationURIRegex());
+                StringUtils.isNotEmpty(dynamicLocationConfigurationURIRegex.getText());
         boolean isStartIdentifierPresent =
-                StringUtils.isNotEmpty(fileUploadConfiguration.getDynamicLocationStartIdentifier());
+                StringUtils.isNotEmpty(dynamicLocationConfigurationStartIdentifier.getText());
         boolean isEndIdentifierPresent =
-                StringUtils.isNotEmpty(fileUploadConfiguration.getDynamicLocationEndIdentifier());
+                StringUtils.isNotEmpty(dynamicLocationConfigurationEndIdentifier.getText());
 
         if (isStaticUrlPresent
                 && (isDynamicUrlPresent || isStartIdentifierPresent || isEndIdentifierPresent)) {
