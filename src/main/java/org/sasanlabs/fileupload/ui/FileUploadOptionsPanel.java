@@ -27,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
+import org.apache.commons.lang3.StringUtils;
 import org.parosproxy.paros.model.OptionsParam;
 import org.parosproxy.paros.view.AbstractParamPanel;
 import org.sasanlabs.fileupload.configuration.FileUploadConfiguration;
@@ -228,7 +229,30 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     }
 
     @Override
-    public void validateParam(Object optionParams) throws Exception {}
+    public void validateParam(Object optionParams) throws Exception {
+        FileUploadConfiguration fileUploadConfiguration =
+                ((OptionsParam) optionParams).getParamSet(FileUploadConfiguration.class);
+        boolean isStaticUrlPresent =
+                StringUtils.isNotEmpty(fileUploadConfiguration.getStaticLocationURIRegex());
+        boolean isDynamicUrlPresent =
+                StringUtils.isNotEmpty(fileUploadConfiguration.getDynamicLocationURIRegex());
+        boolean isStartIdentifierPresent =
+                StringUtils.isNotEmpty(fileUploadConfiguration.getDynamicLocationStartIdentifier());
+        boolean isEndIdentifierPresent =
+                StringUtils.isNotEmpty(fileUploadConfiguration.getDynamicLocationEndIdentifier());
+
+        if (isStaticUrlPresent
+                && (isDynamicUrlPresent || isStartIdentifierPresent || isEndIdentifierPresent)) {
+            throw new IllegalArgumentException(
+                    FileUploadI18n.getMessage(
+                            "fileupload.settings.alert.static.dynamicconfiguration.both.present"));
+        } else if ((isStartIdentifierPresent && !isEndIdentifierPresent)
+                || (!isStartIdentifierPresent && isEndIdentifierPresent)) {
+            throw new IllegalArgumentException(
+                    FileUploadI18n.getMessage(
+                            "fileupload.settings.alert.invalid.dynamicconfigutation"));
+        }
+    }
 
     @Override
     public void saveParam(Object optionParams) throws Exception {

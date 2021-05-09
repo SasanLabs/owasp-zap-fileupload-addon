@@ -15,6 +15,8 @@ package org.sasanlabs.fileupload.attacks;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import org.apache.commons.httpclient.URI;
 import org.parosproxy.paros.core.scanner.Alert;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
@@ -37,7 +39,7 @@ public interface AttackVector {
     /**
      * @param modifiedMsg
      * @param fileUploadScanRule
-     * @return
+     * @return httpMessage of preflight request
      * @throws IOException
      * @throws FileUploadException
      */
@@ -45,15 +47,17 @@ public interface AttackVector {
             HttpMessage modifiedMsg, String fileName, FileUploadScanRule fileUploadScanRule)
             throws IOException, FileUploadException {
         HttpMessage preflightMsg = new HttpMessage();
-        preflightMsg
-                .getRequestHeader()
-                .setURI(
-                        new URILocatorImpl()
-                                .get(
-                                        modifiedMsg,
-                                        fileName,
-                                        (httpmessage) ->
-                                                fileUploadScanRule.sendAndRecieve(httpmessage)));
+        URI uri =
+                new URILocatorImpl()
+                        .get(
+                                modifiedMsg,
+                                fileName,
+                                (httpmessage) -> fileUploadScanRule.sendAndRecieve(httpmessage));
+        if (Objects.isNull(uri)) {
+            return null;
+        }
+
+        preflightMsg.getRequestHeader().setURI(uri);
         preflightMsg.getRequestHeader().setMethod("GET");
         preflightMsg.getRequestHeader().setCookies(modifiedMsg.getRequestHeader().getHttpCookies());
         fileUploadScanRule.sendAndRecieve(preflightMsg);
@@ -76,13 +80,13 @@ public interface AttackVector {
         fileUploadScanRule.raiseAlert(
                 vulnerabilityType.getAlertLevel(),
                 Alert.CONFIDENCE_MEDIUM,
-                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + "name"),
-                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + "desc"),
+                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".name"),
+                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".desc"),
                 newMsg.getRequestHeader().getURI().toString(),
                 newMsg.toString(),
                 payload,
-                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + "refs"),
-                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + "soln"),
+                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".refs"),
+                FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".soln"),
                 preflight);
     }
 
@@ -142,7 +146,7 @@ public interface AttackVector {
                             newMsg,
                             fileParameter.getFileName(originalFileName),
                             fileUploadScanRule);
-            if (contentMatcher.match(preflightMsg)) {
+            if (Objects.nonNull(preflightMsg) && contentMatcher.match(preflightMsg)) {
                 raiseAlert(fileUploadScanRule, vulnerabilityType, payload, newMsg, preflightMsg);
                 return true;
             }

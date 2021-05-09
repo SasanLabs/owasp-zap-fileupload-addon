@@ -42,8 +42,4 @@ public class PathTraversal /*implements AttackVector*/ {
     //		return false;
     //	}
 
-    /**
-     * Execute the experiment 1. change only content type 2. change only html or htm 3. change html
-     * extension and text/plain 4. change htm extension and text/plain or text/html
-     */
 }

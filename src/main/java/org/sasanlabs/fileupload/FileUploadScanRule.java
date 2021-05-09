@@ -92,7 +92,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
                 fileUploadAttackExecutor.executeAttack();
             }
         } catch (Exception ex) {
-
+            LOGGER.error("Error occurred while scanning", ex);
         }
     }
 

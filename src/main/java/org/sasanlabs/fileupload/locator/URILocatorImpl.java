@@ -27,7 +27,14 @@ import org.sasanlabs.fileupload.configuration.FileUploadConfiguration;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.function.ConsumerWithException;
 
-/** @author preetkaran20@gmail.com KSASAN */
+/**
+ * {@code URILocatorImpl} class is used to find the URL either by 1. returning the static url
+ * mentioned by user in Options tab 2. parsing the original {@code HttpMessage} and using dynamic
+ * configuration to find the complete URI. 3. Invokes the preflight request as mentioned by dynamic
+ * configuration and then parsing the preflighted {@code HttpMessage}
+ *
+ * @author preetkaran20@gmail.com KSASAN
+ */
 public class URILocatorImpl implements URILocator {
 
     protected static final Logger LOGGER = Logger.getLogger(URILocatorImpl.class);
