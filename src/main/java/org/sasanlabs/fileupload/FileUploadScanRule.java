@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
+import org.parosproxy.paros.core.scanner.AbstractAppVariantPlugin;
 import org.parosproxy.paros.core.scanner.Category;
 import org.parosproxy.paros.core.scanner.NameValuePair;
-import org.parosproxy.paros.core.scanner.Variant;
 import org.parosproxy.paros.core.scanner.VariantMultipartFormParameters;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
@@ -35,7 +35,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     private static final String SOLUTION = FileUploadI18n.getMessage("fileupload.scanrule.soln");
     private static final String REFERENCE = FileUploadI18n.getMessage("fileupload.scanrule.refs");
     private static final Logger LOGGER = Logger.getLogger(FileUploadScanRule.class);
-    private Variant variant = null;
+    private List<NameValuePair> nameValuePairs = null;
 
     private AtomicInteger maxRequestCount;
 
@@ -78,17 +78,16 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
      * it works.
      */
     @Override
-    public void scan(HttpMessage msg, Variant variant) {
+    public void scan(HttpMessage msg, List<NameValuePair> nameValuePairs) {
         try {
-            this.variant = variant;
-            if (variant instanceof VariantMultipartFormParameters) {
-                List<NameValuePair> nameValuePairs = variant.getParamList();
+            this.nameValuePairs = nameValuePairs;
+            if (nameValuePairs instanceof VariantMultipartFormParameters) {
                 nameValuePairs.forEach(
                         (nameValuePair) ->
                                 LOGGER.error(
                                         nameValuePair.getName() + " " + nameValuePair.getValue()));
                 FileUploadAttackExecutor fileUploadAttackExecutor =
-                        new FileUploadAttackExecutor(msg, this, variant);
+                        new FileUploadAttackExecutor(msg, this, nameValuePairs);
                 fileUploadAttackExecutor.executeAttack();
             }
         } catch (Exception ex) {
@@ -156,36 +155,20 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     }
 
     /**
-     * Sets the parameter into the given {@code message}. If both parameter name and value are
+     * Sets the parameters into the given {@code message}. If both parameter name and value are
      * {@code null}, the parameter will be removed.
      *
      * @param message the message that will be changed
-     * @param originalPair original name value pair
-     * @param param the name of the parameter
-     * @param value the value of the parameter
+     * @param nameValuePairs of the message
+     * @param params list of name of the parameter
+     * @param values list of value of the parameter
      * @return the parameter set
-     * @see #setEscapedParameter(HttpMessage, NameValuePair, String, String)
      */
-    public String setParameter(
-            HttpMessage message, NameValuePair originalPair, String param, String value) {
-        return variant.setParameter(message, originalPair, param, value);
-    }
-
-    /**
-     * Sets the parameter into the given {@code message}. If both parameter name and value are
-     * {@code null}, the parameter will be removed.
-     *
-     * <p>The value is expected to be properly encoded/escaped.
-     *
-     * @param message the message that will be changed
-     * @param originalPair original name value pair
-     * @param param the name of the parameter
-     * @param value the value of the parameter
-     * @return the parameter set
-     * @see #setParameter(HttpMessage,NameValuePair, String, String)
-     */
-    public String setEscapedParameter(
-            HttpMessage message, NameValuePair originalPair, String param, String value) {
-        return variant.setEscapedParameter(message, originalPair, param, value);
+    public String setParameters(
+            HttpMessage message,
+            List<NameValuePair> nameValuePairs,
+            List<String> params,
+            List<String> values) {
+        return super.setParameters(message, nameValuePairs, params, values);
     }
 }

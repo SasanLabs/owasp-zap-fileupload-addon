@@ -13,9 +13,10 @@
  */
 package org.sasanlabs.fileupload.attacks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.parosproxy.paros.core.scanner.Variant;
+import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
 import org.sasanlabs.fileupload.attacks.rce.jsp.ImageWithJSPSnippetFileUpload;
@@ -34,7 +35,7 @@ public class FileUploadAttackExecutor {
 
     private HttpMessage originalHttpMessage;
     private FileUploadScanRule fileUploadScanRule;
-    private Variant variant;
+    private List<NameValuePair> nameValuePairs = new ArrayList<>();
     private List<AttackVector> attackVectors =
             Arrays.asList(
                     new HtmlFileUpload(),
@@ -45,11 +46,11 @@ public class FileUploadAttackExecutor {
     public FileUploadAttackExecutor(
             HttpMessage originalHttpMessage,
             FileUploadScanRule fileUploadScanRule,
-            Variant variant) {
+            List<NameValuePair> variant) {
         super();
         this.originalHttpMessage = originalHttpMessage;
         this.fileUploadScanRule = fileUploadScanRule;
-        this.variant = variant;
+        this.nameValuePairs = variant;
     }
 
     public boolean executeAttack() throws FileUploadException {
@@ -73,8 +74,12 @@ public class FileUploadAttackExecutor {
         return fileUploadScanRule;
     }
 
-    public Variant getVariant() {
-        return variant;
+    public List<NameValuePair> getNameValuePairs() {
+        return nameValuePairs;
+    }
+
+    public void setNameValuePairs(List<NameValuePair> nameValuePairs) {
+        this.nameValuePairs = nameValuePairs;
     }
 
     public List<AttackVector> getAttackVectors() {
