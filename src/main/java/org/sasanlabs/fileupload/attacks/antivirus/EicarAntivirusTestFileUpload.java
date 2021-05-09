@@ -141,33 +141,7 @@ public class EicarAntivirusTestFileUpload implements AttackVector {
                             .withContentType("vnd.microsoft.portable-executable")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build()
-
-                    //            		new FileParameter("com"),
-                    //                    new FileParameter("exe"),
-                    //                    new FileParameter("com", "application/octet-stream"),
-                    //                    new FileParameter("exe",
-                    // "vnd.microsoft.portable-executable"),
-                    //                    new FileParameter(
-                    //                            "com",
-                    //                            "application/octet-stream",
-                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "exe",
-                    //                            "vnd.microsoft.portable-executable",
-                    //                            FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("com",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter("exe",
-                    // FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "exe" + NULL_BYTE_CHARACTER,
-                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION),
-                    //                    new FileParameter(
-                    //                            "exe" + NULL_BYTE_CHARACTER,
-                    //                            "vnd.microsoft.portable-executable",
-                    //                            FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                    );
+                            .build());
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
