@@ -84,7 +84,7 @@ public interface AttackVector {
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".name"),
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".desc"),
                 newMsg.getRequestHeader().getURI().toString(),
-                newMsg.toString(),
+                newMsg.getRequestBody().toString(),
                 payload,
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".refs"),
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".soln"),
@@ -135,10 +135,10 @@ public interface AttackVector {
                     newParamValues.add(fileParameter.getFileName(originalFileName));
                 } else if (nameValuePair.getType()
                         == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM) {
-                    newParamValues.add(fileParameter.getFileName(payload));
+                    newParamValues.add(payload);
                 } else if (nameValuePair.getType()
                         == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
-                    newParamValues.add(fileParameter.getFileName(originalContentType));
+                    newParamValues.add(fileParameter.getContentType(originalContentType));
                 }
             }
             fileUploadScanRule.setParameters(

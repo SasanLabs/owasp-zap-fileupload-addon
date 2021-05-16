@@ -17,10 +17,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
-import org.parosproxy.paros.core.scanner.AbstractAppVariantPlugin;
 import org.parosproxy.paros.core.scanner.Category;
 import org.parosproxy.paros.core.scanner.NameValuePair;
-import org.parosproxy.paros.core.scanner.VariantMultipartFormParameters;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.i18n.FileUploadI18n;
@@ -35,7 +33,6 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     private static final String SOLUTION = FileUploadI18n.getMessage("fileupload.scanrule.soln");
     private static final String REFERENCE = FileUploadI18n.getMessage("fileupload.scanrule.refs");
     private static final Logger LOGGER = Logger.getLogger(FileUploadScanRule.class);
-    private List<NameValuePair> nameValuePairs = null;
 
     private AtomicInteger maxRequestCount;
 
@@ -43,19 +40,19 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     public void init() {
         switch (this.getAttackStrength()) {
             case LOW:
-                maxRequestCount = new AtomicInteger(20);
+                maxRequestCount = new AtomicInteger(30);
                 break;
             case MEDIUM:
-                maxRequestCount = new AtomicInteger(30);
+                maxRequestCount = new AtomicInteger(60);
                 break;
             case HIGH:
-                maxRequestCount = new AtomicInteger(40);
+                maxRequestCount = new AtomicInteger(90);
                 break;
             case INSANE:
-                maxRequestCount = new AtomicInteger(50);
+                maxRequestCount = new AtomicInteger(150);
                 break;
             default:
-                maxRequestCount = new AtomicInteger(30);
+                maxRequestCount = new AtomicInteger(60);
                 break;
         }
     }
@@ -80,8 +77,23 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     @Override
     public void scan(HttpMessage msg, List<NameValuePair> nameValuePairs) {
         try {
-            this.nameValuePairs = nameValuePairs;
-            if (nameValuePairs instanceof VariantMultipartFormParameters) {
+            boolean isMultipart = false;
+            if (nameValuePairs != null) {
+                isMultipart =
+                        nameValuePairs.stream()
+                                .anyMatch(
+                                        nameValuePair ->
+                                                nameValuePair.getType()
+                                                                == NameValuePair
+                                                                        .TYPE_MULTIPART_DATA_FILE_NAME
+                                                        || nameValuePair.getType()
+                                                                == NameValuePair
+                                                                        .TYPE_MULTIPART_DATA_FILE_PARAM
+                                                        || nameValuePair.getType()
+                                                                == NameValuePair
+                                                                        .TYPE_MULTIPART_DATA_FILE_CONTENTTYPE);
+            }
+            if (isMultipart) {
                 nameValuePairs.forEach(
                         (nameValuePair) ->
                                 LOGGER.error(

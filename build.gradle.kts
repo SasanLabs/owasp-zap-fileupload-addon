@@ -13,6 +13,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 java {
@@ -34,7 +35,7 @@ description = "Detect File upload requests and scan them to find related vulnera
 
 zapAddOn {
     addOnName.set("File upload Scan Rule")
-    zapVersion.set("2.10.0")
+    zapVersion.set("2.11.0-SNAPSHOT")
     addOnStatus.set(AddOnStatus.ALPHA)
 
     manifest {
@@ -47,5 +48,4 @@ zapAddOn {
 }
 
 dependencies {
-	//implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }

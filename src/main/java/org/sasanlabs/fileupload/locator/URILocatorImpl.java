@@ -51,12 +51,13 @@ public class URILocatorImpl implements URILocator {
         if (uriFragment.startsWith(FileUploadUtils.HTTP_SCHEME)
                 || uriRegex.startsWith(FileUploadUtils.HTTP_SECURED_SCHEME)) {
             return new URI(uriFragment, true);
-        } else if (uriFragment.startsWith(FileUploadUtils.SLASH)) {
+        } else {
+            if (!uriFragment.startsWith(FileUploadUtils.SLASH)) {
+                uriFragment = FileUploadUtils.SLASH + uriFragment;
+            }
             String authority = msg.getRequestHeader().getURI().getAuthority();
             String scheme = msg.getRequestHeader().getURI().getScheme();
             return new URI(scheme, authority, uriFragment, "");
-        } else {
-            throw new FileUploadException("FileUpload configuration is invalid.");
         }
     }
 
@@ -82,7 +83,15 @@ public class URILocatorImpl implements URILocator {
                             + " End index:"
                             + endIndex);
         }
-        String uriRegex = msg.getResponseBody().toString().substring(startIndex, endIndex);
+        String uriRegex =
+                msg.getResponseBody()
+                        .toString()
+                        .substring(
+                                startIndex
+                                        + FileUploadConfiguration.getInstance()
+                                                .getDynamicLocationStartIdentifier()
+                                                .length(),
+                                endIndex);
         return this.getCompleteURI(uriRegex, fileName, originalMsg);
     }
 
