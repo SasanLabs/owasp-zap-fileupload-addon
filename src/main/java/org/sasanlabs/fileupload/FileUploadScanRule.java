@@ -23,7 +23,16 @@ import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.i18n.FileUploadI18n;
 
-/** @author KSASAN preetkaran20@gmail.com */
+/**
+ * {@code FileUploadScanRule} is used to find the vulnerabilities in File Upload functionality of
+ * applications. The scan rule uploads multiple types of files containing vulnerable code to check
+ * if the application is vulnerable.
+ *
+ * <p>This addon fires a lot of requests to the target application hence can impacts the performance
+ * of the targeted application. So please run this addon in non-prod environment only.
+ *
+ * @author KSASAN preetkaran20@gmail.com
+ */
 public class FileUploadScanRule extends AbstractAppVariantPlugin {
 
     private static final int PLUGIN_ID = 110009;
@@ -66,14 +75,6 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
         this.maxRequestCount.getAndDecrement();
     }
 
-    /*
-     * Need to check what to include do we need to include XXE/XSS/Path Traversal in
-     * this addon or we need to correct those. Persistent XXS/XXE/PathTraversal
-     * might be different
-     *
-     * Will not include the reflected XSS because it should work and i have checked
-     * it works.
-     */
     @Override
     public void scan(HttpMessage msg, List<NameValuePair> nameValuePairs) {
         try {

@@ -67,6 +67,16 @@ public interface FileUploadUtils {
         return null;
     }
 
+    /**
+     * Checks whether {@code Content-Disposition} header is inline and if so returns {@code True}
+     * else {@code False}
+     *
+     * <p>This utility is useful to find if XSS is possible or not because if {@code
+     * Content-Disposition} header is inline then only XSS is possible.
+     *
+     * @param preflightMsg
+     * @return {@code True} if {@code Content-Disposition} header is inline
+     */
     static boolean isContentDispositionInline(HttpMessage preflightMsg) {
         String headerValue = preflightMsg.getResponseHeader().getHeader("Content-Disposition");
         if (headerValue == null
@@ -82,11 +92,21 @@ public interface FileUploadUtils {
         return StringUtils.isNotBlank(headerValue);
     }
 
+    /**
+     * References {@link
+     * https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#RULE_.233.1_-_HTML_escape_JSON_values_in_an_HTML_context_and_read_the_data_with_JSON.parse:#:~:text=Good%20HTTP%20response:}
+     * and {@link
+     * https://security.stackexchange.com/questions/169427/impact-of-the-response-content-type-on-the-exploitability-of-xss}
+     *
+     * @param preflightMsg
+     * @return {@code True} is content type is one of {@code FileUploadUtils#HTML_MIME_TYPE} or
+     *     {@code FileUploadUtils#XHTML_MIME_TYPE} or {@code FileUploadUtils#SVG_MIME_TYPE}
+     */
     static boolean isContentTypeCausesJavascriptExecution(HttpMessage preflightMsg) {
         String headerValue = preflightMsg.getResponseHeader().getHeader(HttpHeader.CONTENT_TYPE);
         return StringUtils.isNotBlank(headerValue)
                 && (headerValue.equalsIgnoreCase(HTML_MIME_TYPE)
                         || headerValue.equalsIgnoreCase(XHTML_MIME_TYPE)
-                        || headerValue.equalsIgnoreCase(XHTML_MIME_TYPE));
+                        || headerValue.equalsIgnoreCase(SVG_MIME_TYPE));
     }
 }
