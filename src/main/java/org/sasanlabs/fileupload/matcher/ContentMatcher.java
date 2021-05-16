@@ -16,11 +16,17 @@ package org.sasanlabs.fileupload.matcher;
 import org.parosproxy.paros.network.HttpMessage;
 
 /**
- * {@code ContentMatcher} class is used to compare the contents of
+ * {@code ContentMatcher} class is used to match the contents of provided Preflight {@code
+ * HttpMessage}
  *
  * @author preetkaran20@gmail.com KSASAN
  */
+@FunctionalInterface
 public interface ContentMatcher {
 
+    /**
+     * @param msg Preflight {@code HttpMessage}
+     * @return {@code True} if content of Preflight {@code HttpMessage} matches else {@code False}
+     */
     boolean match(HttpMessage msg);
 }

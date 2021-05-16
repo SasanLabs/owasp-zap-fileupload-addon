@@ -19,7 +19,7 @@ import org.parosproxy.paros.network.HttpHeader;
 import org.parosproxy.paros.network.HttpMessage;
 
 /**
- * Contains the String constants or other utility constants used by the File Upload Addon.
+ * Contains the String constants or other utility functions used by the Addon.
  *
  * @author preetkaran20@gmail.com KSASAN
  */

@@ -30,14 +30,22 @@ import org.sasanlabs.fileupload.locator.URILocatorImpl;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 
 /**
- * {@code AttackVector} interface is implemented by various attack vector implementations e.g. XSS,
- * JSP RCE, PHP RCE etc.
+ * {@code AttackVector} is a common interface for file upload attacks which implements this
+ * interface. This interface also contains few utility methods for raising alerts and firing
+ * Preflight requests.
  *
  * @author KSASAN preetkaran20@gmail.com
  */
 public interface AttackVector {
 
     /**
+     * In general file upload functionalities, file is uploaded from a one endpoint and retrieved
+     * from a another endpoint which makes it extremely difficult to automate. Preflight request is
+     * the request to another endpoint for retrieval of uploaded file.
+     *
+     * <p>This method finds the url of the file retrieval endpoint, invokes that endpoint and
+     * returns the {@code HttpMessage}.
+     *
      * @param modifiedMsg
      * @param fileUploadScanRule
      * @return httpMessage of preflight request
@@ -66,6 +74,8 @@ public interface AttackVector {
     }
 
     /**
+     * This method is used to raise the alert if a vulnerability is found.
+     *
      * @param fileUploadScanRule
      * @param vulnerabilityType
      * @param payload
@@ -91,6 +101,25 @@ public interface AttackVector {
                 preflight);
     }
 
+    /**
+     * For File Upload vulnerability there are 3 important steps: 1. modify the actual {@code
+     * HttpMessage} based on the type of attack 2. firing Preflight request 3. response content
+     * matching to validate if vulnerability is present or not.
+     *
+     * <p>This method executes all these steps. It modifies the {@code HttpMessage} based on the
+     * {@code fileParameters} then uses {@link #executePreflightRequest(HttpMessage, String,
+     * FileUploadScanRule)} to execute the Preflight request and then uses the {@code
+     * ContentMatcher} for validating whether vulnerability is present or not.
+     *
+     * @param fileUploadAttackExecutor
+     * @param contentMatcher
+     * @param payload
+     * @param fileParameters
+     * @param vulnerabilityType
+     * @return {@code True} if attack is successful else {@code False}
+     * @throws IOException
+     * @throws FileUploadException
+     */
     default boolean genericAttackExecutor(
             FileUploadAttackExecutor fileUploadAttackExecutor,
             ContentMatcher contentMatcher,
@@ -157,10 +186,13 @@ public interface AttackVector {
         return false;
     }
 
-    // Flexi Injector is quite easy as in case uploaded files are base64 encoded or
-    // something like that
-    // the scanner asks for the input file and then compare the request (whcih might
-    // be encoded) with the input and then operate accordingly.
+    /**
+     * TODO: As we are only handling Multipart requests hence in case User interface of Application
+     * is using Javascript filereader Api or using some other ways our scan rule will not work.
+     *
+     * <p>Upload Scanner addon of Burp has handled this by asking the sample request {@link
+     * https://github.com/portswigger/upload-scanner#flexiinjector---detecting-requests-with-uploads}
+     */
 
     /**
      * Executes the attack and checks if it is successful or not and then raise alert in case of

@@ -24,7 +24,8 @@ import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 
 /**
- * {@code MD5HashResponseMatcher} matches {@code MD5} hashes of both the contents
+ * {@code MD5HashResponseMatcher} matches if the expected value's {@code MD5} hash is same as
+ * provided {@code HttpMessage} response's {@code MD5} hash.
  *
  * @author KSASAN preetkaran20@gmail.com
  */

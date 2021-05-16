@@ -23,6 +23,7 @@ import org.sasanlabs.fileupload.attacks.rce.jsp.ImageWithJSPSnippetFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.jsp.SimpleJSPFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.jsp.SimpleJSPXFileUpload;
 import org.sasanlabs.fileupload.attacks.xss.HtmlFileUpload;
+import org.sasanlabs.fileupload.attacks.xss.SVGFileUpload;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
@@ -39,6 +40,7 @@ public class FileUploadAttackExecutor {
     private List<AttackVector> attackVectors =
             Arrays.asList(
                     new HtmlFileUpload(),
+                    new SVGFileUpload(),
                     new SimpleJSPFileUpload(),
                     new SimpleJSPXFileUpload(),
                     new ImageWithJSPSnippetFileUpload());

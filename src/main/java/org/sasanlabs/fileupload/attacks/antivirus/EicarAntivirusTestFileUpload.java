@@ -31,9 +31,9 @@ import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 
 /**
- * {@code EicarAntivirusTestFileUpload} attack vector is used to check the if antivirus is present
- * and working properly by uploading the Eicar test file. General idea is to upload the Eicar Test
- * file and if we are able to download it again then that means there are chances that Antivirus is
+ * {@code EicarAntivirusTestFileUpload} attack vector is used to check if antivirus is present and
+ * working properly by uploading the Eicar test file. General idea is to upload the Eicar Test file
+ * and if we are able to download it again then that means there are chances that Antivirus is
  * either not present or not working properly.
  *
  * <p>For more information about Eicar file please visit <a

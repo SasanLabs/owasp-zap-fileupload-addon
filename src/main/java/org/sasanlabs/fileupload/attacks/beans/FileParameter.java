@@ -21,7 +21,21 @@ import org.sasanlabs.fileupload.exception.FileUploadException;
  * @author KSASAN preetkaran20@gmail.com
  */
 public interface FileParameter {
+
+    /**
+     * Represents the content type of the file parameter.
+     *
+     * @param originalContentType
+     * @return content type
+     */
     String getContentType(String originalContentType);
 
+    /**
+     * Represents the file name parameter.
+     *
+     * @param originalFileName
+     * @return file name
+     * @throws FileUploadException
+     */
     String getFileName(String originalFileName) throws FileUploadException;
 }
