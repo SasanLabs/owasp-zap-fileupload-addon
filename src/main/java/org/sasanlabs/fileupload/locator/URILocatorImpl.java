@@ -29,7 +29,8 @@ import org.sasanlabs.fileupload.function.ConsumerWithException;
 
 /**
  * {@code URILocatorImpl} class is used to find the URL either by 1. returning the static url
- * mentioned by user in Options tab 2. parsing the original {@code HttpMessage} and using dynamic
+ * mentioned by user in Options tab. This also handles the dynamic file names e.g. <code>
+ * http://<baseurl>/${fileName}</code> 2. parsing the original {@code HttpMessage} and using dynamic
  * configuration to find the complete URI. 3. Invokes the preflight request as mentioned by dynamic
  * configuration and then parsing the preflighted {@code HttpMessage}
  *
