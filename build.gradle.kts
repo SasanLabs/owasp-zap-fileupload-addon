@@ -6,9 +6,9 @@ import org.zaproxy.gradle.addon.misc.ExtractLatestChangesFromChangelog
 
 plugins {
     id("com.diffplug.gradle.spotless") version "3.27.2"
-    id("com.github.ben-manes.versions") version "0.28.0"
+    id("com.github.ben-manes.versions") version "0.38.0"
     `java-library`
-    id("org.zaproxy.add-on") version "0.3.0"
+    id("org.zaproxy.add-on") version "0.5.0"
 }
 
 repositories {

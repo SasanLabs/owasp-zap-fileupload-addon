@@ -9,8 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
  - First version of FileUpload Addon.
    - Contains scan rule for finding vulnerabilities related to File Upload.
    - Types of uploaded files include:
-   	 - Html and its variants 
+   	 - HTML and its variants 
    	 - JSP and its variants
-   	 - Jpeg and Gif images
-   	 - Eicar file
+   	 - JPEG and GIF images
+   	 - EICAR file
    	 - SVG images
