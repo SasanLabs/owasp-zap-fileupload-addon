@@ -99,7 +99,7 @@ public interface FileUploadUtils {
      * https://security.stackexchange.com/questions/169427/impact-of-the-response-content-type-on-the-exploitability-of-xss}
      *
      * @param preflightMsg
-     * @return {@code True} is content type is one of {@code FileUploadUtils#HTML_MIME_TYPE} or
+     * @return {@code True} if content type is one of {@code FileUploadUtils#HTML_MIME_TYPE} or
      *     {@code FileUploadUtils#XHTML_MIME_TYPE} or {@code FileUploadUtils#SVG_MIME_TYPE}
      */
     static boolean isContentTypeCausesJavascriptExecution(HttpMessage preflightMsg) {
