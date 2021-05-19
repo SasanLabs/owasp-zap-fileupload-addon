@@ -13,52 +13,41 @@
  */
 package org.sasanlabs.fileupload;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.extension.ExtensionAdaptor;
 import org.parosproxy.paros.extension.ExtensionHook;
-import org.parosproxy.paros.extension.ViewDelegate;
 import org.sasanlabs.fileupload.configuration.FileUploadConfiguration;
 import org.sasanlabs.fileupload.i18n.FileUploadI18n;
 import org.sasanlabs.fileupload.ui.FileUploadOptionsPanel;
 
 /**
  * @author KSASAN preetkaran20@gmail.com
- * @since TODO add version
+ * @since 1.0.0
  */
-public class FileUploadExtension extends ExtensionAdaptor {
+public class ExtensionFileUpload extends ExtensionAdaptor {
 
-    protected static final Logger LOGGER = Logger.getLogger(FileUploadExtension.class);
+    protected static final Logger LOGGER = LogManager.getLogger(ExtensionFileUpload.class);
 
     @Override
     public String getAuthor() {
         return "KSASAN preetkaran20@gmail.com";
     }
-
-    @Override
-    public void init() {}
-
-    @Override
-    public void initView(ViewDelegate view) {
-        super.initView(view);
-    }
-
+   
     @Override
     public void hook(ExtensionHook extensionHook) {
         FileUploadI18n.init();
         super.hook(extensionHook);
-        extensionHook.getHookView().addOptionPanel(new FileUploadOptionsPanel());
-        LOGGER.debug("FileUpload Extension loaded successfully");
+        if(hasView()) {
+        	extensionHook.getHookView().addOptionPanel(new FileUploadOptionsPanel());
+        }
         extensionHook.addOptionsParamSet(FileUploadConfiguration.getInstance());
+        LOGGER.debug("FileUpload Extension loaded successfully");
     }
 
     @Override
     public void unload() {
         super.unload();
-    }
-
-    @Override
-    public boolean supportsDb(String type) {
-        return true;
     }
 
     @Override
