@@ -33,13 +33,13 @@ public class ExtensionFileUpload extends ExtensionAdaptor {
     public String getAuthor() {
         return "KSASAN preetkaran20@gmail.com";
     }
-   
+
     @Override
     public void hook(ExtensionHook extensionHook) {
         FileUploadI18n.init();
         super.hook(extensionHook);
-        if(hasView()) {
-        	extensionHook.getHookView().addOptionPanel(new FileUploadOptionsPanel());
+        if (hasView()) {
+            extensionHook.getHookView().addOptionPanel(new FileUploadOptionsPanel());
         }
         extensionHook.addOptionsParamSet(FileUploadConfiguration.getInstance());
         LOGGER.debug("FileUpload Extension loaded successfully");

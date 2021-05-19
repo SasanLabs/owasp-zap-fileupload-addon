@@ -38,7 +38,8 @@ public interface FileUploadUtils {
      * Appends the Period Character to the provided String.
      *
      * @param extension
-     * @return appends {@link #PERIOD} to the provided extension if not {@code null} or empty else returns same provided extension.
+     * @return appends {@link #PERIOD} to the provided extension if not {@code null} or empty else
+     *     returns same provided extension.
      */
     static String appendPeriodCharacter(String extension) {
         if (StringUtils.isBlank(extension) || extension.startsWith(FileUploadUtils.PERIOD)) {
@@ -52,7 +53,8 @@ public interface FileUploadUtils {
      * returns the extension of the provided fileName.
      *
      * @param fileName
-     * @return extension of the provided fileName if not null else throws {@code NullPointerException}
+     * @return extension of the provided fileName if not null else throws {@code
+     *     NullPointerException}
      * @throws Null Pointer Exception if fileName is null
      */
     static String getExtension(String fileName) {
