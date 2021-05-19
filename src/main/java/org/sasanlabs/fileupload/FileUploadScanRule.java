@@ -16,6 +16,7 @@ package org.sasanlabs.fileupload;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.core.scanner.Category;
 import org.parosproxy.paros.core.scanner.NameValuePair;
@@ -41,7 +42,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
             FileUploadI18n.getMessage("fileupload.scanrule.description");
     private static final String SOLUTION = FileUploadI18n.getMessage("fileupload.scanrule.soln");
     private static final String REFERENCE = FileUploadI18n.getMessage("fileupload.scanrule.refs");
-    private static final Logger LOGGER = Logger.getLogger(FileUploadScanRule.class);
+    private static final Logger LOGGER = LogManager.getLogger(FileUploadScanRule.class);
 
     private AtomicInteger maxRequestCount;
 

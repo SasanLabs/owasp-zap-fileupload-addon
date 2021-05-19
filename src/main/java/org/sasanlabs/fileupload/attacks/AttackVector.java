@@ -14,6 +14,7 @@
 package org.sasanlabs.fileupload.attacks;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -93,12 +94,18 @@ public interface AttackVector {
                 Alert.CONFIDENCE_MEDIUM,
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".name"),
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".desc"),
-                newMsg.getRequestHeader().getURI().toString(),
-                newMsg.getRequestBody().toString(),
-                payload,
+                preflight.getRequestHeader().getURI().toString(),
+                newMsg.getRequestHeader().toString() + newMsg.getRequestBody().toString(),
+                MessageFormat.format(
+                        FileUploadI18n.getMessage("fileupload.alert.attack"),
+                        newMsg.getRequestHeader().toString() + newMsg.getRequestBody().toString(),
+                        preflight.getRequestHeader().toString()
+                                + preflight.getRequestBody().toString(),
+                        preflight.getResponseHeader().toString()
+                                + preflight.getResponseBody().toString()),
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".refs"),
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".soln"),
-                preflight);
+                newMsg);
     }
 
     /**
