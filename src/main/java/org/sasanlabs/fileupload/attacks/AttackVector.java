@@ -98,7 +98,6 @@ public interface AttackVector {
                 newMsg.getRequestHeader().toString() + newMsg.getRequestBody().toString(),
                 MessageFormat.format(
                         FileUploadI18n.getMessage("fileupload.alert.attack"),
-                        newMsg.getRequestHeader().toString() + newMsg.getRequestBody().toString(),
                         preflight.getRequestHeader().toString()
                                 + preflight.getRequestBody().toString(),
                         preflight.getResponseHeader().toString()
