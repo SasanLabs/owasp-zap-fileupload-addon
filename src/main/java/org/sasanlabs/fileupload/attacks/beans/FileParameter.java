@@ -20,6 +20,7 @@ import org.sasanlabs.fileupload.exception.FileUploadException;
  *
  * @author KSASAN preetkaran20@gmail.com
  */
+@FunctionalInterface
 public interface FileParameter {
 
     /**
@@ -28,7 +29,9 @@ public interface FileParameter {
      * @param originalContentType
      * @return content type
      */
-    String getContentType(String originalContentType);
+    default String getContentType(String originalContentType) {
+        return originalContentType;
+    };
 
     /**
      * Represents the file name parameter.

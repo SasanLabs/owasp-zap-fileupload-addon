@@ -41,7 +41,7 @@ public interface FileUploadUtils {
      * @return appends {@link #PERIOD} to the provided extension if not {@code null} or empty else
      *     returns same provided extension.
      */
-    static String appendPeriodCharacter(String extension) {
+    static String prefixExtensionWithPeriodCharacter(String extension) {
         if (StringUtils.isBlank(extension) || extension.startsWith(FileUploadUtils.PERIOD)) {
             return extension;
         } else {

@@ -48,53 +48,45 @@ public class SimpleJSPXFileUpload implements AttackVector {
 
     private static final List<FileParameter> FILE_PARAMETERS_EXTENDED =
             Arrays.asList(
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JspX")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JSPX")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JspX")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JSPX")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JspX")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JSPX")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JspX")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JSPX")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
@@ -106,53 +98,45 @@ public class SimpleJSPXFileUpload implements AttackVector {
     // text/x-jsp
     private static final List<FileParameter> FILE_PARAMETERS =
             Arrays.asList(
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("jspx")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("jspx")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("jspx")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("jspx")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("jspx" + NULL_BYTE_CHARACTER)
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("jspx" + NULL_BYTE_CHARACTER)
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("jspx%00")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder()
-                            .withBaseFileName(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("jspx%00")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(

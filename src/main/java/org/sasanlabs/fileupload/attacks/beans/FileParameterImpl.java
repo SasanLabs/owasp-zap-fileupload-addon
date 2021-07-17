@@ -15,30 +15,18 @@ package org.sasanlabs.fileupload.attacks.beans;
 
 import java.util.Date;
 import java.util.Random;
-import org.sasanlabs.fileupload.FileUploadUtils;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /** @author KSASAN preetkaran20@gmail.com */
 class FileParameterImpl implements FileParameter {
-    private String fileName;
+
+    private String baseFileName;
     private String extension;
     private String contentType;
-    private boolean originalExtensionAsFileName = false;
     private FileExtensionOperation fileExtensionOperation = FileExtensionOperation.NO_EXTENSION;
 
-    FileParameterImpl() {
-        originalExtensionAsFileName = true;
-    }
-
-    FileParameterImpl(String fileName) {
-        this.fileName = fileName;
-    }
-
-    FileParameterImpl(String baseFileName, boolean appendRandomCharacters) {
-        this.fileName = baseFileName;
-        if (appendRandomCharacters) {
-            this.fileName = this.fileName + new Random(new Date().getTime()).nextLong();
-        }
+    FileParameterImpl(String baseFileName) {
+        this.baseFileName = baseFileName + new Random(new Date().getTime()).nextLong();
     }
 
     void setExtension(String extension) {
@@ -57,10 +45,6 @@ class FileParameterImpl implements FileParameter {
         return extension;
     }
 
-    public boolean isOriginalExtensionAsFileName() {
-        return originalExtensionAsFileName;
-    }
-
     FileExtensionOperation getFileExtensionOperation() {
         return fileExtensionOperation;
     }
@@ -75,9 +59,7 @@ class FileParameterImpl implements FileParameter {
         if (originalFileName == null) {
             throw new FileUploadException("Provided original File Name is null");
         }
-        if (originalExtensionAsFileName) {
-            return FileUploadUtils.getExtension(originalFileName);
-        }
-        return this.fileName + fileExtensionOperation.operate(this.extension, originalFileName);
+
+        return this.baseFileName + fileExtensionOperation.operate(this.extension, originalFileName);
     }
 }

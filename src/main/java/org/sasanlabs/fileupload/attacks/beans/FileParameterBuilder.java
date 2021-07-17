@@ -23,23 +23,9 @@ import java.util.Objects;
 public class FileParameterBuilder {
     private FileParameterImpl fileParameterImpl;
 
-    public FileParameterBuilder() {}
-
-    public FileParameterBuilder withFileNameAsOriginalExtension() {
-        fileParameterImpl = new FileParameterImpl();
-        return this;
-    }
-
-    public FileParameterBuilder withFileName(String fileName) {
-        Objects.requireNonNull(fileName, "BaseFileName cannot be null");
-        fileParameterImpl = new FileParameterImpl(fileName, false);
-        return this;
-    }
-
-    public FileParameterBuilder withBaseFileName(String baseFileName) {
-        Objects.requireNonNull(baseFileName, "BaseFileName cannot be null");
+    public FileParameterBuilder(String baseFileName) {
+        Objects.requireNonNull(baseFileName, "FileName cannot be null");
         fileParameterImpl = new FileParameterImpl(baseFileName);
-        return this;
     }
 
     public FileParameterBuilder withFileExtensionOperation(
@@ -69,8 +55,9 @@ public class FileParameterBuilder {
             throw new RuntimeException(
                     "Invalid combination, For FileExtensionOperation: "
                             + this.fileParameterImpl.getFileExtensionOperation()
-                            + " and ProvidedExtension should be null");
+                            + ", ProvidedExtension should be null");
         }
+
         return fileParameterImpl;
     }
 }

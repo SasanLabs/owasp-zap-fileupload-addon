@@ -24,12 +24,13 @@ import org.sasanlabs.fileupload.exception.FileUploadException;
  */
 public enum FileExtensionOperation {
 
-    /** doesn't append any extension to the filename. */
+    /** don't append any extension to the filename. */
     NO_EXTENSION,
+
     /**
-     * appends the Original File Extension before the provided extension. e.g. if provided extension
-     * is {@code html} and original file extension is {@code pdf} then the final extension will be
-     * {@code pdf.html}
+     * prefixes the Original File Extension before the provided extension. e.g. if provided
+     * extension is {@code html} and original file extension is {@code pdf} then the final extension
+     * will be {@code pdf.html}
      */
     PREFIX_ORIGINAL_EXTENSION,
 
@@ -68,25 +69,27 @@ public enum FileExtensionOperation {
         switch (this) {
             case PREFIX_ORIGINAL_EXTENSION:
                 extension =
-                        FileUploadUtils.appendPeriodCharacter(
+                        FileUploadUtils.prefixExtensionWithPeriodCharacter(
                                 originalExtension
-                                        + FileUploadUtils.appendPeriodCharacter(providedExtension));
+                                        + FileUploadUtils.prefixExtensionWithPeriodCharacter(
+                                                providedExtension));
                 break;
             case SUFFIX_ORIGINAL_EXTENSION:
                 extension =
-                        FileUploadUtils.appendPeriodCharacter(
+                        FileUploadUtils.prefixExtensionWithPeriodCharacter(
                                 providedExtension
-                                        + FileUploadUtils.appendPeriodCharacter(originalExtension));
+                                        + FileUploadUtils.prefixExtensionWithPeriodCharacter(
+                                                originalExtension));
                 break;
             case ONLY_PROVIDED_EXTENSION:
-                extension = FileUploadUtils.appendPeriodCharacter(providedExtension);
+                extension = FileUploadUtils.prefixExtensionWithPeriodCharacter(providedExtension);
                 break;
             case ONLY_ORIGINAL_EXTENSION:
-                extension = FileUploadUtils.appendPeriodCharacter(originalExtension);
+                extension = FileUploadUtils.prefixExtensionWithPeriodCharacter(originalExtension);
             case NO_EXTENSION:
                 extension = "";
             default:
-                extension = FileUploadUtils.appendPeriodCharacter(providedExtension);
+                extension = FileUploadUtils.prefixExtensionWithPeriodCharacter(providedExtension);
         }
         return extension;
     }
