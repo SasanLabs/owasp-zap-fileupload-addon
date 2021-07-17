@@ -99,10 +99,6 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
                                                                         .TYPE_MULTIPART_DATA_FILE_CONTENTTYPE);
             }
             if (isMultipart) {
-                nameValuePairs.forEach(
-                        (nameValuePair) ->
-                                LOGGER.error(
-                                        nameValuePair.getName() + " " + nameValuePair.getValue()));
                 FileUploadAttackExecutor fileUploadAttackExecutor =
                         new FileUploadAttackExecutor(msg, this, nameValuePairs);
                 fileUploadAttackExecutor.executeAttack();
