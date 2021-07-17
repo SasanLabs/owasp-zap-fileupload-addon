@@ -48,11 +48,11 @@ public class FileUploadAttackExecutor {
     public FileUploadAttackExecutor(
             HttpMessage originalHttpMessage,
             FileUploadScanRule fileUploadScanRule,
-            List<NameValuePair> variant) {
+            List<NameValuePair> nameValuePairs) {
         super();
         this.originalHttpMessage = originalHttpMessage;
         this.fileUploadScanRule = fileUploadScanRule;
-        this.nameValuePairs = variant;
+        this.nameValuePairs = nameValuePairs;
     }
 
     public boolean executeAttack() throws FileUploadException {

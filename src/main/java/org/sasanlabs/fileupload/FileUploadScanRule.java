@@ -18,11 +18,14 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.parosproxy.paros.core.scanner.AbstractAppParamPlugin;
 import org.parosproxy.paros.core.scanner.Category;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.i18n.FileUploadI18n;
+import org.zaproxy.zap.core.scanner.InputVector;
+import org.zaproxy.zap.core.scanner.InputVectorBuilder;
 
 /**
  * {@code FileUploadScanRule} is used to find the vulnerabilities in File Upload functionality of
@@ -34,7 +37,7 @@ import org.sasanlabs.fileupload.i18n.FileUploadI18n;
  *
  * @author KSASAN preetkaran20@gmail.com
  */
-public class FileUploadScanRule extends AbstractAppVariantPlugin {
+public class FileUploadScanRule extends AbstractAppParamPlugin {
 
     private static final int PLUGIN_ID = 110009;
     private static final String NAME = FileUploadI18n.getMessage("fileupload.scanrule.name");
@@ -77,7 +80,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     }
 
     @Override
-    public void scan(HttpMessage msg, List<NameValuePair> nameValuePairs) {
+    protected void scan(HttpMessage msg, List<NameValuePair> nameValuePairs) {
         try {
             boolean isMultipart = false;
             if (nameValuePairs != null) {
@@ -109,6 +112,16 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
         }
     }
 
+    @Override
+    public InputVectorBuilder getBuilder() {
+        return super.getBuilder();
+    }
+
+    @Override
+    public void setParameters(HttpMessage message, List<InputVector> inputVectors) {
+        super.setParameters(message, inputVectors);
+    }
+
     public void raiseAlert(
             int risk,
             int confidence,
@@ -135,7 +148,7 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     }
 
     public void sendAndRecieve(HttpMessage msg) throws IOException {
-        this.sendAndReceive(msg);
+        super.sendAndReceive(msg);
     }
 
     @Override
@@ -166,23 +179,5 @@ public class FileUploadScanRule extends AbstractAppVariantPlugin {
     @Override
     public int getCategory() {
         return Category.MISC;
-    }
-
-    /**
-     * Sets the parameters into the given {@code message}. If both parameter name and value are
-     * {@code null}, the parameter will be removed.
-     *
-     * @param message the message that will be changed
-     * @param nameValuePairs of the message
-     * @param params list of name of the parameter
-     * @param values list of value of the parameter
-     * @return the parameter set
-     */
-    public String setParameters(
-            HttpMessage message,
-            List<NameValuePair> nameValuePairs,
-            List<String> params,
-            List<String> values) {
-        return super.setParameters(message, nameValuePairs, params, values);
     }
 }

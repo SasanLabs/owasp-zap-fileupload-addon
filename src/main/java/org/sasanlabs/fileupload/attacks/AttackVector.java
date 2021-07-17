@@ -15,7 +15,6 @@ package org.sasanlabs.fileupload.attacks;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.httpclient.URI;
@@ -29,6 +28,8 @@ import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.i18n.FileUploadI18n;
 import org.sasanlabs.fileupload.locator.URILocatorImpl;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
+import org.zaproxy.zap.core.scanner.InputVector.PayloadFormat;
+import org.zaproxy.zap.core.scanner.InputVectorBuilder;
 
 /**
  * {@code AttackVector} is a common interface for file upload attacks which implements this
@@ -133,51 +134,40 @@ public interface AttackVector {
             List<FileParameter> fileParameters,
             VulnerabilityType vulnerabilityType)
             throws IOException, FileUploadException {
+
         List<NameValuePair> nameValuePairs = fileUploadAttackExecutor.getNameValuePairs();
         HttpMessage originalMsg = fileUploadAttackExecutor.getOriginalHttpMessage();
         FileUploadScanRule fileUploadScanRule = fileUploadAttackExecutor.getFileUploadScanRule();
-        String originalFileName = null;
-        String originalContentType = null;
-        for (NameValuePair nameValuePair : nameValuePairs) {
-            if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME) {
-                originalFileName = nameValuePair.getValue();
-            } else if (nameValuePair.getType()
-                    == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
-                originalContentType = nameValuePair.getValue();
-            }
-        }
         for (FileParameter fileParameter : fileParameters) {
             if (fileUploadAttackExecutor.getFileUploadScanRule().isStop()) {
                 return false;
             }
             fileUploadAttackExecutor.getFileUploadScanRule().decreaseRequestCount();
             HttpMessage newMsg = originalMsg.cloneRequest();
-            List<NameValuePair> newNameValuePairs = new ArrayList<>();
-            List<String> newParamNames = new ArrayList<>();
-            List<String> newParamValues = new ArrayList<>();
-            for (int i = 0; i < nameValuePairs.size(); i++) {
-                NameValuePair nameValuePair = nameValuePairs.get(i);
-                if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME
-                        || nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM
-                        || nameValuePair.getType()
-                                == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
-                    newNameValuePairs.add(nameValuePair);
-                    newParamNames.add(nameValuePair.getName());
-                } else {
-                    continue;
-                }
+            InputVectorBuilder inputVectorBuilder =
+                    fileUploadAttackExecutor.getFileUploadScanRule().getBuilder();
+            String originalFileName = null;
+            for (NameValuePair nameValuePair : nameValuePairs) {
                 if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME) {
-                    newParamValues.add(fileParameter.getFileName(originalFileName));
+                    originalFileName = nameValuePair.getValue();
+                    inputVectorBuilder.setValue(
+                            nameValuePair,
+                            fileParameter.getFileName(originalFileName),
+                            PayloadFormat.ALREADY_ESCAPED);
                 } else if (nameValuePair.getType()
                         == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM) {
-                    newParamValues.add(payload);
+                    inputVectorBuilder.setValue(
+                            nameValuePair, payload, PayloadFormat.ALREADY_ESCAPED);
                 } else if (nameValuePair.getType()
                         == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
-                    newParamValues.add(fileParameter.getContentType(originalContentType));
+                    String originalContentType = nameValuePair.getValue();
+                    inputVectorBuilder.setValue(
+                            nameValuePair,
+                            fileParameter.getContentType(originalContentType),
+                            PayloadFormat.ALREADY_ESCAPED);
                 }
             }
-            fileUploadScanRule.setParameters(
-                    newMsg, newNameValuePairs, newParamNames, newParamValues);
+            fileUploadScanRule.setParameters(newMsg, inputVectorBuilder.build());
             fileUploadScanRule.sendAndRecieve(newMsg);
             HttpMessage preflightMsg =
                     this.executePreflightRequest(
