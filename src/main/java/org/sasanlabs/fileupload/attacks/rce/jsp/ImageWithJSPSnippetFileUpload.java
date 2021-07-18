@@ -27,10 +27,10 @@ import org.parosproxy.paros.core.scanner.Plugin.AttackStrength;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
-import org.sasanlabs.fileupload.attacks.beans.FileExtensionOperation;
-import org.sasanlabs.fileupload.attacks.beans.FileParameter;
-import org.sasanlabs.fileupload.attacks.beans.FileParameterBuilder;
-import org.sasanlabs.fileupload.attacks.beans.VulnerabilityType;
+import org.sasanlabs.fileupload.attacks.model.FileExtensionOperation;
+import org.sasanlabs.fileupload.attacks.model.FileParameter;
+import org.sasanlabs.fileupload.attacks.model.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 

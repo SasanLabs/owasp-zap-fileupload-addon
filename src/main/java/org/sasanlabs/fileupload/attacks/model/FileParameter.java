@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sasanlabs.fileupload.attacks.beans;
+package org.sasanlabs.fileupload.attacks.model;
 
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
