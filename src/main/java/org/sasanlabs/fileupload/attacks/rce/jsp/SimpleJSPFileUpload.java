@@ -33,11 +33,11 @@ import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 public class SimpleJSPFileUpload implements AttackVector {
 
     private static final String JSP_UPLOADED_FILE_BASE_NAME = "SimpleJSPFileUpload_";
-    /**
-     * using tag based attack too here. e.g. "${'InJeCtTe'}" _jsp_gen_payload_expression_lang in
-     * burp extension
-     */
-    private static final String JSP_PAYLOAD =
+
+    private static final String JSP_EL_PAYLOAD =
+            "${\"SimpleJSPFileUpload\"}${\"_SasanLabs_ZAP_Identifier\"}";
+
+    private static final String JSP_SCRIPTLET_PAYLOAD =
             "<% out.print(\"SimpleJSPFileUpload\"); out.print(\"_SasanLabs_ZAP_Identifier\"); %>";
 
     private static final ContentMatcher CONTENT_MATCHER =
@@ -146,10 +146,18 @@ public class SimpleJSPFileUpload implements AttackVector {
                     this.genericAttackExecutor(
                             fileUploadAttackExecutor,
                             CONTENT_MATCHER,
-                            JSP_PAYLOAD,
+                            JSP_SCRIPTLET_PAYLOAD,
                             FILE_PARAMETERS_DEFAULT,
                             VulnerabilityType.RCE_JSP_FILE);
-
+            if (!result) {
+                result =
+                        this.genericAttackExecutor(
+                                fileUploadAttackExecutor,
+                                CONTENT_MATCHER,
+                                JSP_EL_PAYLOAD,
+                                FILE_PARAMETERS_DEFAULT,
+                                VulnerabilityType.RCE_JSP_FILE);
+            }
             if (!result
                     && fileUploadAttackExecutor
                             .getFileUploadScanRule()
@@ -159,9 +167,18 @@ public class SimpleJSPFileUpload implements AttackVector {
                         this.genericAttackExecutor(
                                 fileUploadAttackExecutor,
                                 CONTENT_MATCHER,
-                                JSP_PAYLOAD,
+                                JSP_SCRIPTLET_PAYLOAD,
                                 FILE_PARAMETERS_EXTENDED,
                                 VulnerabilityType.RCE_JSP_FILE);
+                if (!result) {
+                    result =
+                            this.genericAttackExecutor(
+                                    fileUploadAttackExecutor,
+                                    CONTENT_MATCHER,
+                                    JSP_EL_PAYLOAD,
+                                    FILE_PARAMETERS_EXTENDED,
+                                    VulnerabilityType.RCE_JSP_FILE);
+                }
             }
         } catch (IOException e) {
             throw new FileUploadException(e);

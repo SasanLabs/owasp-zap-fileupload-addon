@@ -26,7 +26,7 @@ class FileParameterImpl implements FileParameter {
     private FileExtensionOperation fileExtensionOperation = FileExtensionOperation.NO_EXTENSION;
 
     FileParameterImpl(String baseFileName) {
-        this.baseFileName = baseFileName + new Random(new Date().getTime()).nextLong();
+        this.baseFileName = baseFileName + (new Random(new Date().getTime()).nextLong());
     }
 
     void setExtension(String extension) {

@@ -19,6 +19,7 @@ import java.util.List;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
+import org.sasanlabs.fileupload.attacks.antivirus.EicarAntivirusTestFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.jsp.ImageWithJSPSnippetFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.jsp.SimpleJSPFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.jsp.SimpleJSPXFileUpload;
@@ -43,7 +44,8 @@ public class FileUploadAttackExecutor {
                     new SVGFileUpload(),
                     new SimpleJSPFileUpload(),
                     new SimpleJSPXFileUpload(),
-                    new ImageWithJSPSnippetFileUpload());
+                    new ImageWithJSPSnippetFileUpload(),
+                    new EicarAntivirusTestFileUpload());
 
     public FileUploadAttackExecutor(
             HttpMessage originalHttpMessage,
