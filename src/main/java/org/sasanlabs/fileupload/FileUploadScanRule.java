@@ -80,7 +80,7 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
     }
 
     @Override
-    protected void scan(HttpMessage msg, List<NameValuePair> nameValuePairs) {
+    protected void scan(List<NameValuePair> nameValuePairs) {
         try {
             boolean isMultipart = false;
             if (nameValuePairs != null) {
@@ -100,7 +100,7 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
             }
             if (isMultipart) {
                 FileUploadAttackExecutor fileUploadAttackExecutor =
-                        new FileUploadAttackExecutor(msg, this, nameValuePairs);
+                        new FileUploadAttackExecutor(this.getNewMsg(), this, nameValuePairs);
                 fileUploadAttackExecutor.executeAttack();
             }
         } catch (Exception ex) {
