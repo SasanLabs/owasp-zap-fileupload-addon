@@ -32,8 +32,8 @@ import org.zaproxy.zap.core.scanner.InputVector.PayloadFormat;
 import org.zaproxy.zap.core.scanner.InputVectorBuilder;
 
 /**
- * {@code AttackVector} is a common interface for file upload attacks which implements this
- * interface. This interface also contains few utility methods for raising alerts and firing
+ * {@code AttackVector} is a common interface for file upload attacks.
+ * This interface also contains few utility methods for raising alerts and firing
  * Preflight requests.
  *
  * @author KSASAN preetkaran20@gmail.com
