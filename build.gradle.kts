@@ -43,7 +43,6 @@ zapAddOn {
 		repo.set("https://github.com/SasanLabs/owasp-zap-fileupload-addon/")
         dependencies {
         }
-        changesFile.set(tasks.named<ConvertMarkdownToHtml>("generateManifestChanges").flatMap { it.html })
     }
 }
 

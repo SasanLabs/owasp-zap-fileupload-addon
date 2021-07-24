@@ -22,6 +22,7 @@ import org.parosproxy.paros.network.HttpMessage;
  * Contains the String constants or other utility functions used by the Addon.
  *
  * @author preetkaran20@gmail.com KSASAN
+ * @since 1.0.0
  */
 public interface FileUploadUtils {
     String EMPTY_STRING = "";
@@ -37,7 +38,7 @@ public interface FileUploadUtils {
     /**
      * Appends the Period Character to the provided String.
      *
-     * @param extension
+     * @param extension, extension of the file
      * @return appends {@link #PERIOD} to the provided extension if not {@code null} or empty else
      *     returns same provided extension.
      */
@@ -52,10 +53,9 @@ public interface FileUploadUtils {
     /**
      * returns the extension of the provided fileName.
      *
-     * @param fileName
+     * @param fileName, name of the file
      * @return extension of the provided fileName if not null else throws {@code
      *     NullPointerException}
-     * @throws Null Pointer Exception if fileName is null
      */
     static String getExtension(String fileName) {
         Objects.requireNonNull(fileName, "FileName cannot be null");
@@ -73,11 +73,11 @@ public interface FileUploadUtils {
      * <p>This utility is useful to find if XSS is possible or not because if {@code
      * Content-Disposition} header is inline then only XSS is possible.
      *
-     * @param preflightMsg
+     * @param httpMsg, HttpMessage representing request and response
      * @return {@code True} if {@code Content-Disposition} header is inline
      */
-    static boolean isContentDispositionInline(HttpMessage preflightMsg) {
-        String headerValue = preflightMsg.getResponseHeader().getHeader("Content-Disposition");
+    static boolean isContentDispositionInline(HttpMessage httpMsg) {
+        String headerValue = httpMsg.getResponseHeader().getHeader("Content-Disposition");
         if (headerValue == null
                 || headerValue.trim().equals(FileUploadUtils.EMPTY_STRING)
                 || headerValue.equals("inline")) {
@@ -86,8 +86,13 @@ public interface FileUploadUtils {
         return false;
     }
 
-    static boolean isContentTypeHeaderPresent(HttpMessage preflightMsg) {
-        String headerValue = preflightMsg.getResponseHeader().getHeader(HttpHeader.CONTENT_TYPE);
+    /**
+     * Utility to check if the {@code HttpHeader#CONTENT_TYPE} header is present in the {@code HttpMessage}
+     * @param httpMsg, HttpMessage representing request and response
+     * @return {@code True} if {@code HttpHeader#CONTENT_TYPE} header is present in httpMsg else {@code False}
+     */
+    static boolean isContentTypeHeaderPresent(HttpMessage httpMsg) {
+        String headerValue = httpMsg.getResponseHeader().getHeader(HttpHeader.CONTENT_TYPE);
         return StringUtils.isNotBlank(headerValue);
     }
 
@@ -97,12 +102,12 @@ public interface FileUploadUtils {
      * and {@link
      * https://security.stackexchange.com/questions/169427/impact-of-the-response-content-type-on-the-exploitability-of-xss}
      *
-     * @param preflightMsg
+     * @param httpMsg, HttpMessage representing request and response
      * @return {@code True} if content type is one of {@code FileUploadUtils#HTML_MIME_TYPE} or
      *     {@code FileUploadUtils#XHTML_MIME_TYPE} or {@code FileUploadUtils#SVG_MIME_TYPE}
      */
-    static boolean isContentTypeCausesJavascriptExecution(HttpMessage preflightMsg) {
-        String headerValue = preflightMsg.getResponseHeader().getHeader(HttpHeader.CONTENT_TYPE);
+    static boolean isContentTypeCausesJavascriptExecution(HttpMessage httpMsg) {
+        String headerValue = httpMsg.getResponseHeader().getHeader(HttpHeader.CONTENT_TYPE);
         return StringUtils.isNotBlank(headerValue)
                 && (headerValue.equalsIgnoreCase(HTML_MIME_TYPE)
                         || headerValue.equalsIgnoreCase(XHTML_MIME_TYPE)

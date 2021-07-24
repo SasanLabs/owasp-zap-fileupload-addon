@@ -36,6 +36,7 @@ import org.zaproxy.zap.core.scanner.InputVectorBuilder;
  * of the targeted application. So please run this addon in non-prod environment only.
  *
  * @author KSASAN preetkaran20@gmail.com
+ * @since 1.0.0
  */
 public class FileUploadScanRule extends AbstractAppParamPlugin {
 
