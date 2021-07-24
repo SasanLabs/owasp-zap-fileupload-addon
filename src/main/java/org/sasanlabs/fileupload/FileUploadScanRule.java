@@ -32,7 +32,7 @@ import org.zaproxy.zap.core.scanner.InputVectorBuilder;
  * applications. The scan rule uploads multiple types of files containing vulnerable code to check
  * if the application is vulnerable.
  *
- * <p>This addon fires a lot of requests to the target application hence can impacts the performance
+ * <p>This addon fires a lot of requests to the target application hence can impact the performance
  * of the targeted application. So please run this addon in non-prod environment only.
  *
  * @author KSASAN preetkaran20@gmail.com
