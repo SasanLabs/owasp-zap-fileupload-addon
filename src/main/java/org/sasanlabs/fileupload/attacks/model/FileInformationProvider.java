@@ -16,15 +16,15 @@ package org.sasanlabs.fileupload.attacks.model;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
- * {@code FileParameter} interface is used to represent the new file properties.
+ * {@code FileInformationProvider} interface is used to represent the new file properties.
  *
  * @author KSASAN preetkaran20@gmail.com
  */
 @FunctionalInterface
-public interface FileParameter {
+public interface FileInformationProvider {
 
     /**
-     * Represents the content type of the file parameter.
+     * Represents the content type of the file.
      *
      * @param originalContentType
      * @return content type
@@ -34,7 +34,7 @@ public interface FileParameter {
     };
 
     /**
-     * Represents the file name parameter.
+     * Represents the file name.
      *
      * @param originalFileName
      * @return file name

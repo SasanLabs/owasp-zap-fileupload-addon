@@ -13,9 +13,6 @@
  */
 package org.sasanlabs.fileupload.attacks.rce.jsp;
 
-import static org.sasanlabs.fileupload.FileUploadUtils.NULL_BYTE_CHARACTER;
-
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -25,17 +22,16 @@ import java.util.List;
 import java.util.Map;
 import org.parosproxy.paros.core.scanner.Plugin.AttackStrength;
 import org.parosproxy.paros.network.HttpMessage;
+import org.sasanlabs.fileupload.FileUploadUtils;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
-import org.sasanlabs.fileupload.attacks.model.FileExtensionOperation;
-import org.sasanlabs.fileupload.attacks.model.FileParameter;
-import org.sasanlabs.fileupload.attacks.model.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
 import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 
 /** @author preetkaran20@gmail.com KSASAN */
-public class ImageWithJSPSnippetFileUpload implements AttackVector {
+public class ImageWithJSPSnippetFileUpload extends AttackVector {
 
     private static final String GIF_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED =
             "R0lGODlhAQABAIAAAP///wAAACH5BAAAAAAAIf5JPCU9ICJJbWFnZVdpdGhKU1BTbmlwcGV0RmlsZVVwbG9hZF8iICsgIlNhc2FuTGFic18iICsgIlpBUF9JZGVudGlmaWVyIiAlPgAsAAAAAAEAAQAAAgJEAQA7";
@@ -55,114 +51,28 @@ public class ImageWithJSPSnippetFileUpload implements AttackVector {
 
     private static final String BASE_FILE_NAME = "ImageWithJSPSnippetFileUpload_";
 
-    private static final Map<VulnerabilityType, List<String>> PAYLOADS = new HashMap<>();
+    private static final Map<VulnerabilityType, List<String>> PAYLOADS = getPayloads();
 
-    {
-        PAYLOADS.put(
+    private static Map<VulnerabilityType, List<String>> getPayloads() {
+        Map<VulnerabilityType, List<String>> payloads = new HashMap<>();
+        payloads.put(
                 VulnerabilityType.RCE_GIF_JSP_FILE,
                 Arrays.asList(
                         GIF_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED,
                         GIF_IMAGE_APPENDED_WITH_JSP_SNIPPET_BASE64_ENCODED));
-        PAYLOADS.put(
+        payloads.put(
                 VulnerabilityType.RCE_JPEG_JSP_FILE,
                 Arrays.asList(
                         JPEG_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED,
                         JPEG_IMAGE_APPENDED_WITH_JSP_SNIPPET_BASE64_ENCODED));
+        return payloads;
     }
 
-    private static final List<FileParameter> FILE_PARAMETERS_EXTENDED =
-            Arrays.asList(
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("Jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("JSP")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("Jsp")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("JSP")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("Jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("JSP")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("Jsp")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("JSP")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build());
-
-    private static final List<FileParameter> FILE_PARAMETERS_DEFAULT =
-            Arrays.asList(
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("jsp")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("jsp")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("jsp" + NULL_BYTE_CHARACTER)
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("jsp" + NULL_BYTE_CHARACTER)
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("jsp%00")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(BASE_FILE_NAME)
-                            .withExtension("jsp%00")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build());
+    private static final List<FileInformationProvider> FILE_PARAMETERS_EXTENDED =
+            FileUploadUtils.getFileInformationProvidersExtendedJsp(BASE_FILE_NAME);
+    private static final List<FileInformationProvider> FILE_PARAMETERS_DEFAULT =
+            FileUploadUtils.getFileInformationProvidersDefaultJsp(
+                    BASE_FILE_NAME, FileUploadUtils.JSP_FILE_EXTENSION);
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
@@ -170,41 +80,35 @@ public class ImageWithJSPSnippetFileUpload implements AttackVector {
         boolean result = false;
         for (VulnerabilityType vulnerabilityType : PAYLOADS.keySet()) {
             for (String payloads : PAYLOADS.get(vulnerabilityType)) {
-                try {
-                    byte[] imagePayload = Base64.getDecoder().decode(payloads);
-                    HttpMessage originalMessage = fileUploadAttackExecutor.getOriginalHttpMessage();
-                    String charSet = originalMessage.getRequestHeader().getCharset();
-                    Charset requestCharSet =
-                            charSet != null
-                                    ? Charset.forName(charSet)
-                                    : StandardCharsets.ISO_8859_1;
-                    String requestPayload = new String(imagePayload, requestCharSet);
+                byte[] imagePayload = Base64.getDecoder().decode(payloads);
+                HttpMessage originalMessage = fileUploadAttackExecutor.getOriginalHttpMessage();
+                String charSet = originalMessage.getRequestHeader().getCharset();
+                Charset requestCharSet =
+                        charSet != null ? Charset.forName(charSet) : StandardCharsets.ISO_8859_1;
+                String requestPayload = new String(imagePayload, requestCharSet);
+                result =
+                        this.genericAttackExecutor(
+                                fileUploadAttackExecutor,
+                                requestPayload,
+                                FILE_PARAMETERS_DEFAULT,
+                                new ContainsExpectedValueMatcher(FILE_EXPECTED_VALUE),
+                                vulnerabilityType);
+
+                if (!result
+                        && fileUploadAttackExecutor
+                                .getFileUploadScanRule()
+                                .getAttackStrength()
+                                .equals(AttackStrength.INSANE)) {
                     result =
                             this.genericAttackExecutor(
                                     fileUploadAttackExecutor,
-                                    new ContainsExpectedValueMatcher(FILE_EXPECTED_VALUE),
                                     requestPayload,
-                                    FILE_PARAMETERS_DEFAULT,
+                                    FILE_PARAMETERS_EXTENDED,
+                                    new ContainsExpectedValueMatcher(FILE_EXPECTED_VALUE),
                                     vulnerabilityType);
-
-                    if (!result
-                            && fileUploadAttackExecutor
-                                    .getFileUploadScanRule()
-                                    .getAttackStrength()
-                                    .equals(AttackStrength.INSANE)) {
-                        result =
-                                this.genericAttackExecutor(
-                                        fileUploadAttackExecutor,
-                                        new ContainsExpectedValueMatcher(FILE_EXPECTED_VALUE),
-                                        requestPayload,
-                                        FILE_PARAMETERS_EXTENDED,
-                                        vulnerabilityType);
-                    }
-                    if (result) {
-                        return result;
-                    }
-                } catch (IOException e) {
-                    throw new FileUploadException(e);
+                }
+                if (result) {
+                    return result;
                 }
             }
         }

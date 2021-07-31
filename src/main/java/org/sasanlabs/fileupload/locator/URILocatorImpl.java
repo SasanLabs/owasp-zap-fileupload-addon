@@ -14,7 +14,7 @@
 package org.sasanlabs.fileupload.locator;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
@@ -45,8 +45,7 @@ public class URILocatorImpl implements URILocator {
         if (fileName.contains(FileUploadUtils.NULL_BYTE_CHARACTER)) {
             fileName = fileName.substring(0, fileName.indexOf(FileUploadUtils.NULL_BYTE_CHARACTER));
         }
-        Map<String, String> replacerKeyValuePair = new HashMap<>();
-        replacerKeyValuePair.put("filename", fileName);
+        Map<String, String> replacerKeyValuePair = Collections.singletonMap("filename", fileName);
         StringSubstitutor stringSubstitutor = new StringSubstitutor(replacerKeyValuePair);
         String uriFragment = stringSubstitutor.replace(uriRegex);
         if (uriFragment.startsWith(FileUploadUtils.HTTP_SCHEME)
@@ -101,7 +100,7 @@ public class URILocatorImpl implements URILocator {
             HttpMessage msg,
             String fileName,
             ConsumerWithException<HttpMessage, IOException> sendAndRecieve)
-            throws FileUploadException, IOException {
+            throws FileUploadException {
         URI uri = null;
         try {
             if (StringUtils.isNotBlank(
@@ -139,7 +138,7 @@ public class URILocatorImpl implements URILocator {
                     }
                 }
             }
-        } catch (URIException ex) {
+        } catch (IOException ex) {
             throw new FileUploadException(ex);
         }
         return uri;

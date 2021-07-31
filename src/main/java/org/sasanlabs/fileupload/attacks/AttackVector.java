@@ -18,13 +18,17 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.httpclient.URI;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.parosproxy.paros.core.scanner.Alert;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
-import org.sasanlabs.fileupload.attacks.model.FileParameter;
+import org.sasanlabs.fileupload.attacks.antivirus.EicarAntivirusTestFileUpload;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
 import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
+import org.sasanlabs.fileupload.function.ConsumerWithException;
 import org.sasanlabs.fileupload.i18n.FileUploadI18n;
 import org.sasanlabs.fileupload.locator.URILocatorImpl;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
@@ -32,150 +36,212 @@ import org.zaproxy.zap.core.scanner.InputVector.PayloadFormat;
 import org.zaproxy.zap.core.scanner.InputVectorBuilder;
 
 /**
- * {@code AttackVector} is a common interface for file upload attacks.
- * This interface also contains few utility methods for raising alerts and firing
- * Preflight requests.
+ * {@code AttackVector} is an abstract template class for file upload attacks. This class also
+ * contains few utility methods for raising alerts and firing Http requests.
  *
  * @author KSASAN preetkaran20@gmail.com
  */
-public interface AttackVector {
+public abstract class AttackVector {
+
+    private static final Logger LOGGER = LogManager.getLogger(EicarAntivirusTestFileUpload.class);
 
     /**
-     * In general file upload functionalities, file is uploaded from a one endpoint and retrieved
-     * from a another endpoint which makes it extremely difficult to automate. Preflight request is
-     * the request to another endpoint for retrieval of uploaded file.
+     * In general, for file upload functionalities, file is uploaded from one endpoint and retrieved
+     * from another endpoint. This method finds the url of the file retrieval endpoint, invokes that
+     * endpoint to retrieve the uploaded file and returns the {@code HttpMessage}.
      *
-     * <p>This method finds the url of the file retrieval endpoint, invokes that endpoint and
-     * returns the {@code HttpMessage}.
-     *
-     * @param modifiedMsg
-     * @param fileUploadScanRule
-     * @return httpMessage of preflight request
-     * @throws IOException
-     * @throws FileUploadException
+     * @param httpMsg, HttpMessage containing uploaded file's request and response
+     * @param fileName, uploaded file's name
+     * @param sendAndRecieveHttpMsg, consumer to send and Receive {@code HttpMessage}
+     * @return {@code HttpMessage}, representing the file retrieval request and response. It returns
+     *     {@code null} if unable to find the uploaded file.
+     * @throws FileUploadException, in case of failure in retrieval of uploaded file.
      */
-    default HttpMessage executePreflightRequest(
-            HttpMessage modifiedMsg, String fileName, FileUploadScanRule fileUploadScanRule)
-            throws IOException, FileUploadException {
-        HttpMessage preflightMsg = new HttpMessage();
-        URI uri =
-                new URILocatorImpl()
-                        .get(
-                                modifiedMsg,
-                                fileName,
-                                (httpmessage) -> fileUploadScanRule.sendAndRecieve(httpmessage));
-        if (Objects.isNull(uri)) {
-            return null;
-        }
+    private HttpMessage getUploadedFileHttpMessage(
+            HttpMessage httpMsg,
+            String fileName,
+            ConsumerWithException<HttpMessage, IOException> sendAndRecieveHttpMsg)
+            throws FileUploadException {
+        HttpMessage uploadedFileRetrievalMsg = new HttpMessage();
+        URI uri;
+        try {
+            uri =
+                    new URILocatorImpl()
+                            .get(
+                                    httpMsg,
+                                    fileName,
+                                    (httpmessage) -> sendAndRecieveHttpMsg.accept(httpmessage));
 
-        preflightMsg.getRequestHeader().setURI(uri);
-        preflightMsg.getRequestHeader().setMethod("GET");
-        preflightMsg.getRequestHeader().setCookies(modifiedMsg.getRequestHeader().getHttpCookies());
-        fileUploadScanRule.sendAndRecieve(preflightMsg);
-        return preflightMsg;
+            if (Objects.isNull(uri)) {
+                return null;
+            }
+
+            uploadedFileRetrievalMsg.getRequestHeader().setURI(uri);
+            uploadedFileRetrievalMsg.getRequestHeader().setMethod("GET");
+            uploadedFileRetrievalMsg
+                    .getRequestHeader()
+                    .setCookies(httpMsg.getRequestHeader().getHttpCookies());
+            sendAndRecieveHttpMsg.accept(uploadedFileRetrievalMsg);
+        } catch (IOException e) {
+            throw new FileUploadException(
+                    "Following exception occurred while retrieving uploaded file ", e);
+        }
+        return uploadedFileRetrievalMsg;
     }
 
     /**
-     * This method is used to raise the alert if a vulnerability is found.
+     * This method is used to raise the alert with the provided details.
      *
-     * @param fileUploadScanRule
-     * @param vulnerabilityType
-     * @param payload
-     * @param newMsg
-     * @param preflight
+     * @param fileUploadScanRule, File Upload scan rule
+     * @param vulnerabilityType, type of the vulnerability exposed by the {@code modifiedMsg}
+     * @param modifiedMsg, {@code HttpMessage} representing the uploaded file's request and
+     *     response.
+     * @param uploadedFileRetrievalMsg, {@code HttpMessage} representing the file retrieval's
+     *     request and response.
      */
-    default void raiseAlert(
+    private void raiseAlert(
             FileUploadScanRule fileUploadScanRule,
             VulnerabilityType vulnerabilityType,
-            String payload,
-            HttpMessage newMsg,
-            HttpMessage preflight) {
+            HttpMessage modifiedMsg,
+            HttpMessage uploadedFileRetrievalMsg) {
         fileUploadScanRule.raiseAlert(
                 vulnerabilityType.getAlertLevel(),
                 Alert.CONFIDENCE_MEDIUM,
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".name"),
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".desc"),
-                preflight.getRequestHeader().getURI().toString(),
-                newMsg.getRequestHeader().toString() + newMsg.getRequestBody().toString(),
+                uploadedFileRetrievalMsg.getRequestHeader().getURI().toString(),
+                modifiedMsg.getRequestHeader().toString() + modifiedMsg.getRequestBody().toString(),
                 MessageFormat.format(
                         FileUploadI18n.getMessage("fileupload.alert.attack"),
-                        preflight.getRequestHeader().toString()
-                                + preflight.getRequestBody().toString(),
-                        preflight.getResponseHeader().toString()
-                                + preflight.getResponseBody().toString()),
+                        uploadedFileRetrievalMsg.getRequestHeader().toString()
+                                + uploadedFileRetrievalMsg.getRequestBody().toString(),
+                        uploadedFileRetrievalMsg.getResponseHeader().toString()
+                                + uploadedFileRetrievalMsg.getResponseBody().toString()),
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".refs"),
                 FileUploadI18n.getMessage(vulnerabilityType.getMessageKey() + ".soln"),
-                newMsg);
+                modifiedMsg);
     }
 
     /**
-     * For File Upload vulnerability there are 3 important steps: 1. modify the actual {@code
-     * HttpMessage} based on the type of attack 2. firing Preflight request 3. response content
-     * matching to validate if vulnerability is present or not.
+     * Utility method to upload the provided file. It modifies the {@code HttpMessage} based on the
+     * provided {@code fileInformationProvider}, {@code payload} and then sends the HttpMessage.
      *
-     * <p>This method executes all these steps. It modifies the {@code HttpMessage} based on the
-     * {@code fileParameters} then uses {@link #executePreflightRequest(HttpMessage, String,
-     * FileUploadScanRule)} to execute the Preflight request and then uses the {@code
-     * ContentMatcher} for validating whether vulnerability is present or not.
-     *
-     * @param fileUploadAttackExecutor
-     * @param contentMatcher
-     * @param payload
-     * @param fileParameters
-     * @param vulnerabilityType
-     * @return {@code True} if attack is successful else {@code False}
-     * @throws IOException
-     * @throws FileUploadException
+     * @param fileUploadAttackExecutor, holds original {@code HttpMessage}, {@code NameValuePair}
+     *     and {@code FileUploadScanRule}
+     * @param payload, the content of the file which needs to be uploaded
+     * @param fileInformationProvider, the modifications provider for a file.
+     * @return {@code HttpMessage}, representing the file retrieval request and response. It returns
+     *     {@code null} if unable to find the uploaded file.
+     * @throws FileUploadException, in case of any failure while uploadingfile.
      */
-    default boolean genericAttackExecutor(
+    private HttpMessage uploadFile(
             FileUploadAttackExecutor fileUploadAttackExecutor,
-            ContentMatcher contentMatcher,
             String payload,
-            List<FileParameter> fileParameters,
-            VulnerabilityType vulnerabilityType)
-            throws IOException, FileUploadException {
-
+            FileInformationProvider fileInformationProvider)
+            throws FileUploadException {
         List<NameValuePair> nameValuePairs = fileUploadAttackExecutor.getNameValuePairs();
         HttpMessage originalMsg = fileUploadAttackExecutor.getOriginalHttpMessage();
         FileUploadScanRule fileUploadScanRule = fileUploadAttackExecutor.getFileUploadScanRule();
-        for (FileParameter fileParameter : fileParameters) {
+        HttpMessage uploadFileMsg = originalMsg.cloneRequest();
+        InputVectorBuilder inputVectorBuilder =
+                fileUploadAttackExecutor.getFileUploadScanRule().getBuilder();
+        for (NameValuePair nameValuePair : nameValuePairs) {
+            if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME) {
+                inputVectorBuilder.setValue(
+                        nameValuePair,
+                        fileInformationProvider.getFileName(
+                                fileUploadAttackExecutor.getOriginalFileName()),
+                        PayloadFormat.ALREADY_ESCAPED);
+            } else if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM) {
+                inputVectorBuilder.setValue(nameValuePair, payload, PayloadFormat.ALREADY_ESCAPED);
+            } else if (nameValuePair.getType()
+                    == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
+                inputVectorBuilder.setValue(
+                        nameValuePair,
+                        fileInformationProvider.getContentType(
+                                fileUploadAttackExecutor.getOriginalContentType()),
+                        PayloadFormat.ALREADY_ESCAPED);
+            }
+        }
+        fileUploadScanRule.setParameters(uploadFileMsg, inputVectorBuilder.build());
+        try {
+            fileUploadScanRule.sendAndRecieve(uploadFileMsg);
+        } catch (IOException ex) {
+            throw new FileUploadException("Exception occurred while sending modified message", ex);
+        }
+        return uploadFileMsg;
+    }
+
+    /**
+     * Generic Attack Executor utility method is used to execute attack by uploading a file, finding
+     * uploaded file and then raising alerts in case attack is successful.
+     *
+     * @param fileUploadAttackExecutor, holds original {@code HttpMessage}, {@code NameValuePair}
+     *     and {@code FileUploadScanRule}
+     * @param payload, content of the file which will be uploaded
+     * @param fileInformationProvider, provides information about modifications to the file.
+     * @param contentMatcher, for matching the uploaded file's content with expected file content.
+     * @param vulnerabilityType, type of the vulnerability in case attack is successful
+     * @return {@code True} if attack is successful, else {@code False}
+     */
+    private boolean genericAttackExecutor(
+            FileUploadAttackExecutor fileUploadAttackExecutor,
+            String payload,
+            FileInformationProvider fileInformationProvider,
+            ContentMatcher contentMatcher,
+            VulnerabilityType vulnerabilityType) {
+        try {
+            HttpMessage uploadFileMsg =
+                    this.uploadFile(fileUploadAttackExecutor, payload, fileInformationProvider);
+            HttpMessage retrieveUploadedFile =
+                    this.getUploadedFileHttpMessage(
+                            uploadFileMsg,
+                            fileUploadAttackExecutor.getOriginalFileName(),
+                            fileUploadAttackExecutor.getFileUploadScanRule()::sendAndRecieve);
+            if (Objects.nonNull(retrieveUploadedFile)
+                    && contentMatcher.match(retrieveUploadedFile)) {
+                raiseAlert(
+                        fileUploadAttackExecutor.getFileUploadScanRule(),
+                        vulnerabilityType,
+                        uploadFileMsg,
+                        retrieveUploadedFile);
+                return true;
+            }
+        } catch (FileUploadException e) {
+            LOGGER.debug("Following exception occurred: ", e);
+        }
+        return false;
+    }
+
+    /**
+     * Generic Attack Executor utility method is used to execute attack by uploading files, finding
+     * uploaded files and then raising alerts in case attack is successful.
+     *
+     * @param fileUploadAttackExecutor, holds original {@code HttpMessage}, {@code NameValuePair}
+     *     and {@code FileUploadScanRule}
+     * @param payload, content of the file which will be uploaded
+     * @param fileInformationProviders, provides list of file property modification details.
+     * @param contentMatcher, for matching the uploaded file's content with expected file content.
+     * @param vulnerabilityType, type of the vulnerability in case attack is successful
+     * @return {@code True} if attack is successful, else {@code False}
+     */
+    protected boolean genericAttackExecutor(
+            FileUploadAttackExecutor fileUploadAttackExecutor,
+            String payload,
+            List<FileInformationProvider> fileInformationProviders,
+            ContentMatcher contentMatcher,
+            VulnerabilityType vulnerabilityType) {
+        for (FileInformationProvider fileInformationProvider : fileInformationProviders) {
             if (fileUploadAttackExecutor.getFileUploadScanRule().isStop()) {
                 return false;
             }
             fileUploadAttackExecutor.getFileUploadScanRule().decreaseRequestCount();
-            HttpMessage newMsg = originalMsg.cloneRequest();
-            InputVectorBuilder inputVectorBuilder =
-                    fileUploadAttackExecutor.getFileUploadScanRule().getBuilder();
-            String originalFileName = null;
-            for (NameValuePair nameValuePair : nameValuePairs) {
-                if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME) {
-                    originalFileName = nameValuePair.getValue();
-                    inputVectorBuilder.setValue(
-                            nameValuePair,
-                            fileParameter.getFileName(originalFileName),
-                            PayloadFormat.ALREADY_ESCAPED);
-                } else if (nameValuePair.getType()
-                        == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM) {
-                    inputVectorBuilder.setValue(
-                            nameValuePair, payload, PayloadFormat.ALREADY_ESCAPED);
-                } else if (nameValuePair.getType()
-                        == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
-                    String originalContentType = nameValuePair.getValue();
-                    inputVectorBuilder.setValue(
-                            nameValuePair,
-                            fileParameter.getContentType(originalContentType),
-                            PayloadFormat.ALREADY_ESCAPED);
-                }
-            }
-            fileUploadScanRule.setParameters(newMsg, inputVectorBuilder.build());
-            fileUploadScanRule.sendAndRecieve(newMsg);
-            HttpMessage preflightMsg =
-                    this.executePreflightRequest(
-                            newMsg,
-                            fileParameter.getFileName(originalFileName),
-                            fileUploadScanRule);
-            if (Objects.nonNull(preflightMsg) && contentMatcher.match(preflightMsg)) {
-                raiseAlert(fileUploadScanRule, vulnerabilityType, payload, newMsg, preflightMsg);
+            if (this.genericAttackExecutor(
+                    fileUploadAttackExecutor,
+                    payload,
+                    fileInformationProvider,
+                    contentMatcher,
+                    vulnerabilityType)) {
                 return true;
             }
         }
@@ -194,9 +260,11 @@ public interface AttackVector {
      * Executes the attack and checks if it is successful or not and then raise alert in case of
      * successful execution.
      *
-     * @param fileUploadAttackExecutor
+     * @param fileUploadAttackExecutor, holds original {@code HttpMessage}, {@code NameValuePair}
+     *     and {@code FileUploadScanRule}
      * @return {@code true} if attack is successful else {@code false}
-     * @throws FileUploadException
+     * @throws FileUploadException, in case of any failure while executing attack
      */
-    boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor) throws FileUploadException;
+    public abstract boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
+            throws FileUploadException;
 }

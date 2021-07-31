@@ -13,24 +13,22 @@
  */
 package org.sasanlabs.fileupload.attacks.rce.jsp;
 
-import static org.sasanlabs.fileupload.FileUploadUtils.NULL_BYTE_CHARACTER;
-
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.parosproxy.paros.core.scanner.Plugin.AttackStrength;
+import org.sasanlabs.fileupload.FileUploadUtils;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.model.FileExtensionOperation;
-import org.sasanlabs.fileupload.attacks.model.FileParameter;
-import org.sasanlabs.fileupload.attacks.model.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProviderBuilder;
 import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 
 /** @author KSASAN preetkaran20@gmail.com */
-public class SimpleJSPXFileUpload implements AttackVector {
+public class SimpleJSPXFileUpload extends AttackVector {
 
     private static final String JSPX_UPLOADED_FILE_BASE_NAME = "SimpleJSPXFileUpload_";
     // Payload from resource file: "jspx_payload.jspx"
@@ -46,47 +44,47 @@ public class SimpleJSPXFileUpload implements AttackVector {
     private static final ContentMatcher CONTENT_MATCHER =
             new MD5HashResponseMatcher("SimpleJSPXFileUpload_SasanLabs_ZAP_Identifier");
 
-    private static final List<FileParameter> FILE_PARAMETERS_EXTENDED =
+    private static final List<FileInformationProvider> FILE_PARAMETERS_EXTENDED =
             Arrays.asList(
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JspX")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JSPX")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JspX")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JSPX")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JspX")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JSPX")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JspX")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
                             .withExtension("JSPX")
                             .withContentType("application/x-jsp")
                             .withFileExtensionOperation(
@@ -96,81 +94,34 @@ public class SimpleJSPXFileUpload implements AttackVector {
     // Need to validate
     // application/x-httpd-jsp
     // text/x-jsp
-    private static final List<FileParameter> FILE_PARAMETERS =
-            Arrays.asList(
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("jspx")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("jspx")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("jspx")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("jspx")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("jspx" + NULL_BYTE_CHARACTER)
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("jspx" + NULL_BYTE_CHARACTER)
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("jspx%00")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(JSPX_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("jspx%00")
-                            .withContentType("application/x-jsp")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
-                            .build());
+    private static final List<FileInformationProvider> FILE_PARAMETERS =
+            FileUploadUtils.getFileInformationProvidersDefaultJsp(
+                    JSPX_UPLOADED_FILE_BASE_NAME, FileUploadUtils.JSPX_FILE_EXTENSION);
 
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
             throws FileUploadException {
-        boolean result = false;
-        try {
+        boolean result =
+                this.genericAttackExecutor(
+                        fileUploadAttackExecutor,
+                        JSPX_PAYLOAD,
+                        FILE_PARAMETERS,
+                        CONTENT_MATCHER,
+                        VulnerabilityType.RCE_JSPX_FILE);
+        if (!result
+                && fileUploadAttackExecutor
+                        .getFileUploadScanRule()
+                        .getAttackStrength()
+                        .equals(AttackStrength.INSANE)) {
             result =
                     this.genericAttackExecutor(
                             fileUploadAttackExecutor,
-                            CONTENT_MATCHER,
                             JSPX_PAYLOAD,
-                            FILE_PARAMETERS,
+                            FILE_PARAMETERS_EXTENDED,
+                            CONTENT_MATCHER,
                             VulnerabilityType.RCE_JSPX_FILE);
-            if (!result
-                    && fileUploadAttackExecutor
-                            .getFileUploadScanRule()
-                            .getAttackStrength()
-                            .equals(AttackStrength.INSANE)) {
-                result =
-                        this.genericAttackExecutor(
-                                fileUploadAttackExecutor,
-                                CONTENT_MATCHER,
-                                JSPX_PAYLOAD,
-                                FILE_PARAMETERS_EXTENDED,
-                                VulnerabilityType.RCE_JSPX_FILE);
-            }
-        } catch (IOException e) {
-            throw new FileUploadException(e);
         }
+
         return result;
     }
 }

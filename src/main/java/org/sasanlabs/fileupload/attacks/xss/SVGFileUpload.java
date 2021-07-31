@@ -15,17 +15,15 @@ package org.sasanlabs.fileupload.attacks.xss;
 
 import static org.sasanlabs.fileupload.FileUploadUtils.NULL_BYTE_CHARACTER;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.parosproxy.paros.core.scanner.Plugin.AttackStrength;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.model.FileExtensionOperation;
-import org.sasanlabs.fileupload.attacks.model.FileParameter;
-import org.sasanlabs.fileupload.attacks.model.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProviderBuilder;
 import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
-import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
  * {@code SVGFileUpload} attack vector will upload {@code svg} and its various different extension
@@ -37,7 +35,7 @@ import org.sasanlabs.fileupload.exception.FileUploadException;
  *
  * @author preetkaran20@gmail.com KSASAN
  */
-public class SVGFileUpload implements AttackVector {
+public class SVGFileUpload extends AttackVector {
 
     private static final String XSS_UPLOADED_FILE_BASE_NAME = "SVGFileUpload_XSS_";
     private static final String XSS_PAYLOAD_SVG_FILE =
@@ -48,178 +46,142 @@ public class SVGFileUpload implements AttackVector {
                     + "</svg>";
 
     // Extended list for breaking black-listing strategy.
-    private static final List<FileParameter> FILE_PARAMETERS_EXTENDED =
+    private static final List<FileInformationProvider> FILE_PARAMETERS_EXTENDED =
             Arrays.asList(
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Svg")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SvG")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SVG")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Svgz")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SvGz")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SVGZ")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("XML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Svg")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SvG")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SVG")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Svgz")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SvGz")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SVGZ")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xML")
                             .withContentType("text/xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Xml")
                             .withContentType("text/xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("XML")
                             .withContentType("text/xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Svg")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SVG")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Svgz")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("SVGZ")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xML")
                             .withContentType("text/xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("XML")
                             .withContentType("text/xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("Svg")
-                            .withContentType("image/svg+xml")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("SVG")
-                            .withContentType("image/svg+xml")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("Svgz")
-                            .withContentType("image/svg+xml")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("SVGZ")
-                            .withContentType("image/svg+xml")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("xML")
-                            .withContentType("text/xml")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("XML")
-                            .withContentType("text/xml")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build());
 
     /**
@@ -229,112 +191,103 @@ public class SVGFileUpload implements AttackVector {
      * <p>Didn't pick html and its related variant extensions because those attack vectors will be
      * covered under {@link HtmlFileUpload}.
      */
-    private static final List<FileParameter> FILE_PARAMETERS_DEFAULT =
+    private static final List<FileInformationProvider> FILE_PARAMETERS_DEFAULT =
             Arrays.asList(
                     // Not adding empty extension for svg because it is not working in browsers
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svg")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svgz")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svg")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xml")
                             .withContentType("text/xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svgz")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svg")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svgz")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svg" + NULL_BYTE_CHARACTER)
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svg" + NULL_BYTE_CHARACTER)
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svg%00")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("svg%00")
                             .withContentType("image/svg+xml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build());
 
-    /**
-     * @throws FileUploadException
-     * @throws IOException
-     */
     @Override
-    public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
-            throws FileUploadException {
-        boolean result = false;
-        try {
+    public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor) {
+        boolean result =
+                this.genericAttackExecutor(
+                        fileUploadAttackExecutor,
+                        XSS_PAYLOAD_SVG_FILE,
+                        FILE_PARAMETERS_DEFAULT,
+                        HtmlFileUpload.CONTENT_MATCHER,
+                        VulnerabilityType.XSS_SVG_FILE);
+        if (!result
+                && fileUploadAttackExecutor
+                        .getFileUploadScanRule()
+                        .getAttackStrength()
+                        .equals(AttackStrength.INSANE)) {
             result =
                     this.genericAttackExecutor(
                             fileUploadAttackExecutor,
-                            HtmlFileUpload.CONTENT_MATCHER,
                             XSS_PAYLOAD_SVG_FILE,
-                            FILE_PARAMETERS_DEFAULT,
+                            FILE_PARAMETERS_EXTENDED,
+                            HtmlFileUpload.CONTENT_MATCHER,
                             VulnerabilityType.XSS_SVG_FILE);
-            if (!result
-                    && fileUploadAttackExecutor
-                            .getFileUploadScanRule()
-                            .getAttackStrength()
-                            .equals(AttackStrength.INSANE)) {
-                result =
-                        this.genericAttackExecutor(
-                                fileUploadAttackExecutor,
-                                HtmlFileUpload.CONTENT_MATCHER,
-                                XSS_PAYLOAD_SVG_FILE,
-                                FILE_PARAMETERS_EXTENDED,
-                                VulnerabilityType.XSS_SVG_FILE);
-            }
-        } catch (IOException e) {
-            throw new FileUploadException(e);
         }
+
         return result;
     }
 }

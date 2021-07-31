@@ -13,10 +13,15 @@
  */
 package org.sasanlabs.fileupload;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.parosproxy.paros.network.HttpHeader;
 import org.parosproxy.paros.network.HttpMessage;
+import org.sasanlabs.fileupload.attacks.model.FileExtensionOperation;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProviderBuilder;
 
 /**
  * Contains the String constants or other utility functions used by the Addon.
@@ -34,6 +39,9 @@ public interface FileUploadUtils {
     String HTML_MIME_TYPE = "text/html";
     String XHTML_MIME_TYPE = "application/xhtml+xml";
     String SVG_MIME_TYPE = "image/svg+xml";
+    String GET_HTTP_METHOD = "GET";
+    String JSP_FILE_EXTENSION = "jsp";
+    String JSPX_FILE_EXTENSION = "jspx";
 
     /**
      * Appends the Period Character to the provided String.
@@ -87,9 +95,12 @@ public interface FileUploadUtils {
     }
 
     /**
-     * Utility to check if the {@code HttpHeader#CONTENT_TYPE} header is present in the {@code HttpMessage}
+     * Utility to check if the {@code HttpHeader#CONTENT_TYPE} header is present in the {@code
+     * HttpMessage}
+     *
      * @param httpMsg, HttpMessage representing request and response
-     * @return {@code True} if {@code HttpHeader#CONTENT_TYPE} header is present in httpMsg else {@code False}
+     * @return {@code True} if {@code HttpHeader#CONTENT_TYPE} header is present in httpMsg else
+     *     {@code False}
      */
     static boolean isContentTypeHeaderPresent(HttpMessage httpMsg) {
         String headerValue = httpMsg.getResponseHeader().getHeader(HttpHeader.CONTENT_TYPE);
@@ -97,7 +108,10 @@ public interface FileUploadUtils {
     }
 
     /**
-     * References {@link
+     * Documents with active scripts can be executed by browser based on the {@code
+     * HttpHeader#CONTENT_TYPE} header.
+     *
+     * <p>References {@link
      * https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#RULE_.233.1_-_HTML_escape_JSON_values_in_an_HTML_context_and_read_the_data_with_JSON.parse:#:~:text=Good%20HTTP%20response:}
      * and {@link
      * https://security.stackexchange.com/questions/169427/impact-of-the-response-content-type-on-the-exploitability-of-xss}
@@ -112,5 +126,88 @@ public interface FileUploadUtils {
                 && (headerValue.equalsIgnoreCase(HTML_MIME_TYPE)
                         || headerValue.equalsIgnoreCase(XHTML_MIME_TYPE)
                         || headerValue.equalsIgnoreCase(SVG_MIME_TYPE));
+    }
+
+    /**
+     * Provides extended list of FileInformationProvider for JSP.
+     *
+     * @param baseFileName, base file name of uploaded jsp file.
+     * @return list of FileInformationProvider for JSP
+     */
+    static List<FileInformationProvider> getFileInformationProvidersExtendedJsp(
+            String baseFileName) {
+        return Arrays.asList(
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension("Jsp")
+                        .withFileExtensionOperation(FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension("JSP")
+                        .withFileExtensionOperation(FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension("Jsp")
+                        .withContentType("application/x-jsp")
+                        .withFileExtensionOperation(FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension("JSP")
+                        .withContentType("application/x-jsp")
+                        .withFileExtensionOperation(FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                        .build());
+    }
+
+    /**
+     * Provides default list of FileInformationProvider for JSP.
+     *
+     * @param baseFileName, base file name of uploaded jsp file.
+     * @param extension, extension of the uploaded jsp file.
+     * @return list of FileInformationProvider for JSP
+     */
+    static List<FileInformationProvider> getFileInformationProvidersDefaultJsp(
+            String baseFileName, String extension) {
+        return Arrays.asList(
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(extension)
+                        .withFileExtensionOperation(FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(extension)
+                        .withContentType("application/x-jsp")
+                        .withFileExtensionOperation(FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(extension)
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(extension)
+                        .withContentType("application/x-jsp")
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(extension + NULL_BYTE_CHARACTER)
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(extension + NULL_BYTE_CHARACTER)
+                        .withContentType("application/x-jsp")
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(extension + "%00")
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(extension + "%00")
+                        .withContentType("application/x-jsp")
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                        .build());
     }
 }

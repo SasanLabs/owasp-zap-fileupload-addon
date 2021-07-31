@@ -15,7 +15,6 @@ package org.sasanlabs.fileupload.attacks.antivirus;
 
 import static org.sasanlabs.fileupload.FileUploadUtils.NULL_BYTE_CHARACTER;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
@@ -23,10 +22,9 @@ import java.util.List;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.model.FileExtensionOperation;
-import org.sasanlabs.fileupload.attacks.model.FileParameter;
-import org.sasanlabs.fileupload.attacks.model.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProviderBuilder;
 import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
-import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 
@@ -44,8 +42,7 @@ import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
  *
  * @author KSASAN preetkaran20@gmail.com
  */
-public class EicarAntivirusTestFileUpload implements AttackVector {
-
+public class EicarAntivirusTestFileUpload extends AttackVector {
     private static final String EICAR_FILE_CONTENT =
             new String(
                     Base64.getDecoder()
@@ -59,7 +56,7 @@ public class EicarAntivirusTestFileUpload implements AttackVector {
     private static final ContentMatcher CONTENT_MATCHER =
             new MD5HashResponseMatcher(EICAR_FILE_CONTENT);
 
-    private static final List<FileParameter> FILE_PARAMETERS_DEFAULT =
+    private static final List<FileInformationProvider> FILE_PARAMETERS_DEFAULT =
             Arrays.asList(
                     /**
                      * Tested that the file content only matters in case of Eicar file and any
@@ -72,75 +69,52 @@ public class EicarAntivirusTestFileUpload implements AttackVector {
 
                     // Below file parameters might not be needed but just for a safe side added
                     // those.
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
+                    new FileInformationProviderBuilder(UPLOADED_BASE_FILE_NAME)
                             .withExtension("com")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
+                    new FileInformationProviderBuilder(UPLOADED_BASE_FILE_NAME)
                             .withExtension("exe")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
+                    new FileInformationProviderBuilder(UPLOADED_BASE_FILE_NAME)
                             .withExtension("com")
                             .withContentType("application/octet-stream")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
+                    new FileInformationProviderBuilder(UPLOADED_BASE_FILE_NAME)
                             .withExtension("exe")
                             .withContentType("vnd.microsoft.portable-executable")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
+                    new FileInformationProviderBuilder(UPLOADED_BASE_FILE_NAME)
                             .withExtension("com")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
-                            .withExtension("exe")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
-                            .withExtension("com")
-                            .withContentType("application/octet-stream")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
-                            .withExtension("exe")
-                            .withContentType("vnd.microsoft.portable-executable")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
+                    new FileInformationProviderBuilder(UPLOADED_BASE_FILE_NAME)
                             .withExtension("com" + NULL_BYTE_CHARACTER)
-                            .withContentType("application/octet-stream")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(UPLOADED_BASE_FILE_NAME)
-                            .withExtension("exe" + NULL_BYTE_CHARACTER)
-                            .withContentType("vnd.microsoft.portable-executable")
+                    new FileInformationProviderBuilder(UPLOADED_BASE_FILE_NAME)
+                            .withExtension("com" + NULL_BYTE_CHARACTER)
+                            .withContentType("application/octet-stream")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build());
 
     @Override
-    public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
-            throws FileUploadException {
-        try {
-            return this.genericAttackExecutor(
-                    fileUploadAttackExecutor,
-                    CONTENT_MATCHER,
-                    EICAR_FILE_CONTENT,
-                    FILE_PARAMETERS_DEFAULT,
-                    VulnerabilityType.EICAR_FILE);
-        } catch (IOException e) {
-            throw new FileUploadException(e);
-        }
+    public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor) {
+        return this.genericAttackExecutor(
+                fileUploadAttackExecutor,
+                EICAR_FILE_CONTENT,
+                FILE_PARAMETERS_DEFAULT,
+                CONTENT_MATCHER,
+                VulnerabilityType.EICAR_FILE);
     }
 }

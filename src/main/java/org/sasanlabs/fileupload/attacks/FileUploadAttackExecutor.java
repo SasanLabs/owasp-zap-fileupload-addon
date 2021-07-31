@@ -15,6 +15,7 @@ package org.sasanlabs.fileupload.attacks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
@@ -29,7 +30,7 @@ import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
  * {@code FileUploadAttackExecutor} class is used to find File Upload vulnerability by executing
- * list of attack vector.
+ * list of {@code AttackVector}.
  *
  * @author KSASAN preetkaran20@gmail.com
  */
@@ -38,6 +39,8 @@ public class FileUploadAttackExecutor {
     private HttpMessage originalHttpMessage;
     private FileUploadScanRule fileUploadScanRule;
     private List<NameValuePair> nameValuePairs = new ArrayList<>();
+    private String originalFileName;
+    private String originalContentType;
     private List<AttackVector> attackVectors =
             Arrays.asList(
                     new HtmlFileUpload(),
@@ -48,13 +51,16 @@ public class FileUploadAttackExecutor {
                     new EicarAntivirusTestFileUpload());
 
     public FileUploadAttackExecutor(
-            HttpMessage originalHttpMessage,
             FileUploadScanRule fileUploadScanRule,
-            List<NameValuePair> nameValuePairs) {
+            List<NameValuePair> nameValuePairs,
+            String originalFileName,
+            String originalContentType) {
         super();
-        this.originalHttpMessage = originalHttpMessage;
+        this.originalHttpMessage = fileUploadScanRule.getBaseMsg();
         this.fileUploadScanRule = fileUploadScanRule;
-        this.nameValuePairs = nameValuePairs;
+        this.nameValuePairs.addAll(nameValuePairs);
+        this.originalFileName = originalFileName;
+        this.originalContentType = originalContentType;
     }
 
     public boolean executeAttack() throws FileUploadException {
@@ -71,7 +77,7 @@ public class FileUploadAttackExecutor {
     }
 
     public HttpMessage getOriginalHttpMessage() {
-        return originalHttpMessage;
+        return originalHttpMessage.cloneAll();
     }
 
     public FileUploadScanRule getFileUploadScanRule() {
@@ -79,14 +85,14 @@ public class FileUploadAttackExecutor {
     }
 
     public List<NameValuePair> getNameValuePairs() {
-        return nameValuePairs;
+        return Collections.unmodifiableList(nameValuePairs);
     }
 
-    public void setNameValuePairs(List<NameValuePair> nameValuePairs) {
-        this.nameValuePairs = nameValuePairs;
+    public String getOriginalFileName() {
+        return originalFileName;
     }
 
-    public List<AttackVector> getAttackVectors() {
-        return attackVectors;
+    public String getOriginalContentType() {
+        return originalContentType;
     }
 }

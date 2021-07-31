@@ -15,7 +15,6 @@ package org.sasanlabs.fileupload.attacks.xss;
 
 import static org.sasanlabs.fileupload.FileUploadUtils.NULL_BYTE_CHARACTER;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.parosproxy.paros.core.scanner.Plugin.AttackStrength;
@@ -23,10 +22,9 @@ import org.sasanlabs.fileupload.FileUploadUtils;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
 import org.sasanlabs.fileupload.attacks.model.FileExtensionOperation;
-import org.sasanlabs.fileupload.attacks.model.FileParameter;
-import org.sasanlabs.fileupload.attacks.model.FileParameterBuilder;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProviderBuilder;
 import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
-import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 
@@ -40,7 +38,7 @@ import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
  *
  * @author preetkaran20@gmail.com KSASAN
  */
-public class HtmlFileUpload implements AttackVector {
+public class HtmlFileUpload extends AttackVector {
 
     private static final String XSS_UPLOADED_FILE_BASE_NAME = "HtmlFileUpload_XSS_";
     private static final String XSS_PAYLOAD_HTML_FILE =
@@ -65,371 +63,316 @@ public class HtmlFileUpload implements AttackVector {
                     XSS_PAYLOAD_HTML_FILE);
 
     // Extended list for breaking black-listing strategy.
-    private static final List<FileParameter> FILE_PARAMETERS_EXTENDED =
+    private static final List<FileInformationProvider> FILE_PARAMETERS_EXTENDED =
             Arrays.asList(
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Htm")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("hTM")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTM")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HtML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTMl")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Xhtml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xHTml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xhTML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xHTML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("XHTML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHtml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHtml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHTml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHTml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHTML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHTML")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Htm")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("hTM")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTM")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Html")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HtML")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTMl")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTML")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Xhtml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xHTml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xhTML")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xHTML")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("XHTML")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHtml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHtml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHTml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHTml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHTML")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHTML")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Htm")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("hTM")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTM")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Html")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HtML")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTMl")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("HTML")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("Xhtml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xHTml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xhTML")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xHTML")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("XHTML")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHtml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHtml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHTml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHTml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dHTML")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("sHTML")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("Htm")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("HTML")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("Xhtml")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("XHTML")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("Htm")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("Htm")
-                            .withContentType("text/html")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("HTML")
-                            .withContentType("text/html")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("Xhtml")
-                            .withContentType("text/html")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("XHTML")
-                            .withContentType("text/html")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
-                            .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
-                            .withExtension("Htm")
-                            .withContentType("text/html")
-                            .withFileExtensionOperation(
-                                    FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build());
 
-    private static final List<FileParameter> FILE_PARAMETERS_DEFAULT =
+    private static final List<FileInformationProvider> FILE_PARAMETERS_DEFAULT =
             Arrays.asList(
                     /**
                      * No extension is required, actually browser reads the content-type header of
@@ -450,20 +393,20 @@ public class HtmlFileUpload implements AttackVector {
                      * strtolower(end(explode('.',$_FILES['image']['name'])));}
                      */
                     originalFileName -> FileUploadUtils.getExtension(originalFileName),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withFileExtensionOperation(FileExtensionOperation.NO_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xhtml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
@@ -472,12 +415,12 @@ public class HtmlFileUpload implements AttackVector {
                      * Server Parsed Html for server side includes
                      * https://stackoverflow.com/questions/519619/what-is-the-purpose-and-uniqueness-shtml
                      */
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dhtml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("shtml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
@@ -488,66 +431,66 @@ public class HtmlFileUpload implements AttackVector {
                      * blacklist validation of extensions. For more information {@link
                      * https://www.acunetix.com/websitesecurity/upload-forms-threat/#:~:text=Double%20Extensions}
                      */
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("html.123")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("html")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xhtml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("shtml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dhtml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("html")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xhtml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("shtml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("dhtml")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
@@ -558,68 +501,68 @@ public class HtmlFileUpload implements AttackVector {
                      * .gif.html} If validator only validates contains {@code .gif} extension then
                      * validator will be bypassed.
                      */
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("html")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xhtml")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("xhtml")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm" + NULL_BYTE_CHARACTER)
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm" + NULL_BYTE_CHARACTER)
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm" + NULL_BYTE_CHARACTER)
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm%00")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm%00")
                             .withContentType("text/html")
                             .withFileExtensionOperation(
                                     FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                             .build(),
-                    new FileParameterBuilder(XSS_UPLOADED_FILE_BASE_NAME)
+                    new FileInformationProviderBuilder(XSS_UPLOADED_FILE_BASE_NAME)
                             .withExtension("htm%00")
                             .withContentType("text/plain")
                             .withFileExtensionOperation(
@@ -631,37 +574,28 @@ public class HtmlFileUpload implements AttackVector {
                      */
                     );
 
-    /**
-     * @throws FileUploadException
-     * @throws IOException
-     */
     @Override
-    public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
-            throws FileUploadException {
-        boolean result = false;
-        try {
+    public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor) {
+
+        boolean result =
+                this.genericAttackExecutor(
+                        fileUploadAttackExecutor,
+                        XSS_PAYLOAD_HTML_FILE,
+                        FILE_PARAMETERS_DEFAULT,
+                        CONTENT_MATCHER,
+                        VulnerabilityType.XSS_HTML_FILE);
+        if (!result
+                && fileUploadAttackExecutor
+                        .getFileUploadScanRule()
+                        .getAttackStrength()
+                        .equals(AttackStrength.INSANE)) {
             result =
                     this.genericAttackExecutor(
                             fileUploadAttackExecutor,
-                            CONTENT_MATCHER,
                             XSS_PAYLOAD_HTML_FILE,
-                            FILE_PARAMETERS_DEFAULT,
+                            FILE_PARAMETERS_EXTENDED,
+                            CONTENT_MATCHER,
                             VulnerabilityType.XSS_HTML_FILE);
-            if (!result
-                    && fileUploadAttackExecutor
-                            .getFileUploadScanRule()
-                            .getAttackStrength()
-                            .equals(AttackStrength.INSANE)) {
-                result =
-                        this.genericAttackExecutor(
-                                fileUploadAttackExecutor,
-                                CONTENT_MATCHER,
-                                XSS_PAYLOAD_HTML_FILE,
-                                FILE_PARAMETERS_EXTENDED,
-                                VulnerabilityType.XSS_HTML_FILE);
-            }
-        } catch (IOException e) {
-            throw new FileUploadException(e);
         }
         return result;
     }

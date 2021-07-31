@@ -16,48 +16,49 @@ package org.sasanlabs.fileupload.attacks.model;
 import java.util.Objects;
 
 /**
- * {@code FileParameterBuilder} is used to build the complex {@code FileParameter} object.
+ * {@code FileInformationProviderBuilder} is used to build the complex {@code
+ * FileInformationProvider} object.
  *
  * @author KSASAN preetkaran20@gmail.com
  */
-public class FileParameterBuilder {
-    private FileParameterImpl fileParameterImpl;
+public class FileInformationProviderBuilder {
+    private FileInformationProviderImpl fileInformationProviderImpl;
 
-    public FileParameterBuilder(String baseFileName) {
+    public FileInformationProviderBuilder(String baseFileName) {
         Objects.requireNonNull(baseFileName, "FileName cannot be null");
-        fileParameterImpl = new FileParameterImpl(baseFileName);
+        fileInformationProviderImpl = new FileInformationProviderImpl(baseFileName);
     }
 
-    public FileParameterBuilder withFileExtensionOperation(
+    public FileInformationProviderBuilder withFileExtensionOperation(
             FileExtensionOperation fileExtensionOperation) {
-        fileParameterImpl.setFileExtensionOperation(fileExtensionOperation);
+        fileInformationProviderImpl.setFileExtensionOperation(fileExtensionOperation);
         return this;
     }
 
-    public FileParameterBuilder withExtension(String providedExtension) {
-        fileParameterImpl.setExtension(providedExtension);
+    public FileInformationProviderBuilder withExtension(String providedExtension) {
+        fileInformationProviderImpl.setExtension(providedExtension);
         return this;
     }
 
-    public FileParameterBuilder withContentType(String contentType) {
-        fileParameterImpl.setContentType(contentType);
+    public FileInformationProviderBuilder withContentType(String contentType) {
+        fileInformationProviderImpl.setContentType(contentType);
         return this;
     }
 
-    public FileParameter build() {
-        if ((fileParameterImpl
+    public FileInformationProvider build() {
+        if ((fileInformationProviderImpl
                                 .getFileExtensionOperation()
                                 .equals(FileExtensionOperation.NO_EXTENSION)
-                        || fileParameterImpl
+                        || fileInformationProviderImpl
                                 .getFileExtensionOperation()
                                 .equals(FileExtensionOperation.ONLY_ORIGINAL_EXTENSION))
-                && fileParameterImpl.getExtension() != null) {
+                && fileInformationProviderImpl.getExtension() != null) {
             throw new RuntimeException(
                     "Invalid combination, For FileExtensionOperation: "
-                            + this.fileParameterImpl.getFileExtensionOperation()
+                            + this.fileInformationProviderImpl.getFileExtensionOperation()
                             + ", ProvidedExtension should be null");
         }
 
-        return fileParameterImpl;
+        return fileInformationProviderImpl;
     }
 }

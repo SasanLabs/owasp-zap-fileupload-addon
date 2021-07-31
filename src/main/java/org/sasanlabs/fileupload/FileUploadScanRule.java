@@ -40,7 +40,7 @@ import org.zaproxy.zap.core.scanner.InputVectorBuilder;
  */
 public class FileUploadScanRule extends AbstractAppParamPlugin {
 
-    private static final int PLUGIN_ID = 110009;
+    private static final int PLUGIN_ID = 40039;
     private static final String NAME = FileUploadI18n.getMessage("fileupload.scanrule.name");
     private static final String DESCRIPTION =
             FileUploadI18n.getMessage("fileupload.scanrule.description");
@@ -84,24 +84,26 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
     protected void scan(List<NameValuePair> nameValuePairs) {
         try {
             boolean isMultipart = false;
+            String originalFileName = null, originalContentType = null;
             if (nameValuePairs != null) {
-                isMultipart =
-                        nameValuePairs.stream()
-                                .anyMatch(
-                                        nameValuePair ->
-                                                nameValuePair.getType()
-                                                                == NameValuePair
-                                                                        .TYPE_MULTIPART_DATA_FILE_NAME
-                                                        || nameValuePair.getType()
-                                                                == NameValuePair
-                                                                        .TYPE_MULTIPART_DATA_FILE_PARAM
-                                                        || nameValuePair.getType()
-                                                                == NameValuePair
-                                                                        .TYPE_MULTIPART_DATA_FILE_CONTENTTYPE);
+                for (NameValuePair nameValuePair : nameValuePairs) {
+                    if (nameValuePair.getType() == NameValuePair.TYPE_MULTIPART_DATA_FILE_NAME) {
+                        originalFileName = nameValuePair.getValue();
+                        isMultipart = true;
+                    } else if (nameValuePair.getType()
+                            == NameValuePair.TYPE_MULTIPART_DATA_FILE_CONTENTTYPE) {
+                        originalContentType = nameValuePair.getValue();
+                        isMultipart = true;
+                    } else if (nameValuePair.getType()
+                            == NameValuePair.TYPE_MULTIPART_DATA_FILE_PARAM) {
+                        isMultipart = true;
+                    }
+                }
             }
             if (isMultipart) {
                 FileUploadAttackExecutor fileUploadAttackExecutor =
-                        new FileUploadAttackExecutor(this.getNewMsg(), this, nameValuePairs);
+                        new FileUploadAttackExecutor(
+                                this, nameValuePairs, originalFileName, originalContentType);
                 fileUploadAttackExecutor.executeAttack();
             }
         } catch (Exception ex) {
@@ -146,6 +148,11 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
 
     public void sendAndRecieve(HttpMessage msg) throws IOException {
         super.sendAndReceive(msg);
+    }
+
+    @Override
+    public HttpMessage getBaseMsg() {
+        return super.getBaseMsg();
     }
 
     @Override

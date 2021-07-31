@@ -16,8 +16,8 @@ package org.sasanlabs.fileupload.matcher;
 import org.parosproxy.paros.network.HttpMessage;
 
 /**
- * {@code ContentMatcher} class is used to match the contents of provided Preflight {@code
- * HttpMessage}
+ * {@code ContentMatcher} class is used to match the contents of provided {@code HttpMessage} with
+ * the expected values
  *
  * @author preetkaran20@gmail.com KSASAN
  */
@@ -25,8 +25,9 @@ import org.parosproxy.paros.network.HttpMessage;
 public interface ContentMatcher {
 
     /**
-     * @param msg Preflight {@code HttpMessage}
-     * @return {@code True} if content of Preflight {@code HttpMessage} matches else {@code False}
+     * @param msg, {@code HttpMessage} for comparing with the expected values
+     * @return {@code True} if {@code HttpMessage} matches with the expected values else {@code
+     *     False}
      */
     boolean match(HttpMessage msg);
 }

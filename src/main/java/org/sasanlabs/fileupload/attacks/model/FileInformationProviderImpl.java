@@ -18,14 +18,14 @@ import java.util.Random;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /** @author KSASAN preetkaran20@gmail.com */
-class FileParameterImpl implements FileParameter {
+class FileInformationProviderImpl implements FileInformationProvider {
 
     private String baseFileName;
     private String extension;
     private String contentType;
     private FileExtensionOperation fileExtensionOperation = FileExtensionOperation.NO_EXTENSION;
 
-    FileParameterImpl(String baseFileName) {
+    FileInformationProviderImpl(String baseFileName) {
         this.baseFileName = baseFileName + (new Random(new Date().getTime()).nextLong());
     }
 
