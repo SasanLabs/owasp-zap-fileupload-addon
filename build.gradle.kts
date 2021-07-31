@@ -41,8 +41,6 @@ zapAddOn {
     manifest {
         author.set("KSASAN preetkaran20@gmail.com")
 		repo.set("https://github.com/SasanLabs/owasp-zap-fileupload-addon/")
-        dependencies {
-        }
     }
 }
 
