@@ -40,7 +40,7 @@ import org.zaproxy.zap.core.scanner.InputVectorBuilder;
  */
 public class FileUploadScanRule extends AbstractAppParamPlugin {
 
-    private static final int PLUGIN_ID = 40039;
+    private static final int PLUGIN_ID = 40041;
     private static final String NAME = FileUploadI18n.getMessage("fileupload.scanrule.name");
     private static final String DESCRIPTION =
             FileUploadI18n.getMessage("fileupload.scanrule.description");
