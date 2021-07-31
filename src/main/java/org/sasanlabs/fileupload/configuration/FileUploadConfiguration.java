@@ -20,7 +20,7 @@ import org.zaproxy.zap.common.VersionedAbstractParam;
  * This class holds configuration related to FileUpload Addon.
  *
  * @author KSASAN preetkaran20@gmail.com
- * @since TODO add version
+ * @since 1.0.0
  */
 public class FileUploadConfiguration extends VersionedAbstractParam {
 

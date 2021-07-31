@@ -20,7 +20,7 @@ import org.parosproxy.paros.Constant;
  * Message Bundle
  *
  * @author KSASAN preetkaran20@gmail.com
- * @since TODO add version
+ * @since 1.0.0
  */
 public class FileUploadI18n {
     private static ResourceBundle message;

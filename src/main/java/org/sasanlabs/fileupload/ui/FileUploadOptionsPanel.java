@@ -38,7 +38,7 @@ import org.sasanlabs.fileupload.i18n.FileUploadI18n;
  * finding vulnerabilities related to FileUpload functionality in the applications.
  *
  * @author KSASAN preetkaran20@gmail.com
- * @since TODO add version
+ * @since 1.0.0
  */
 public class FileUploadOptionsPanel extends AbstractParamPanel {
     private static final long serialVersionUID = 1L;
