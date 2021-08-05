@@ -1,5 +1,5 @@
 # owasp-zap-fileupload-addon 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) ![Java CI with Gradle](https://github.com/SasanLabs/owasp-zap-jwt-addon/workflows/Java%20CI%20with%20Gradle/badge.svg?branch=master)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) ![Java CI with Gradle](https://github.com/SasanLabs/owasp-zap-fileupload-addon/workflows/Java%20CI%20with%20Gradle/badge.svg?branch=master)
 
 This project contains the File Upload scan rule which is used to find the vulnerabilities in File Upload functionality.
 
@@ -19,9 +19,12 @@ parameter, for e.g. `http://<baseurl>/${fileName}`
 2. In some applications the URL to retrieve the uploaded file is present in the file upload request's response. For handling this type of configuration, options panel has `Dynamic Location Configuration` which has 2 parameters `Start Identifier` and `End Identifier`. These identifiers are used to locate the URL within the response.
 3. In some applications the URL to retrieve the uploaded file is present in the response of a different URL which is called a preflight request. E.g. Profile picture URL is part of profile page and hence we need to parse the response of the profile page to find the URL of the profile picture. For handling this type of configuration, the options panel has `Dynamic Location Configuration` which has a `URI Regex`, `Start Identifier`, and `End Identifier`. So the File Upload add-on will invoke the URI mentioned in `URI Regex` and then parse the response using `Start Identifier` and `End Identifier`. `URI Regex` field also supports the dynamic file name by `${fileName}`
 
+### Note:
+This addon fires a lot of requests to the target application hence can impact the performance of the targeted application. So please run this addon in non-prod environment only.
+
 ## Contributing guidelines
 Contributing guidelines are same as [ZAP](https://github.com/zaproxy/zaproxy).
 
 ## Contact Us
-For any Queries/Bugs or Enhancement please raise an issue in this repository or [ZAP](https://github.com/zaproxy/zaproxy).
+For any Queries/Bugs or Enhancement please raise an issue in this repository or ask in [OWASP ZAP Developer Group](https://groups.google.com/g/zaproxy-develop).
 For any other kind of issues please send an email to karan.sasan@owasp.org
