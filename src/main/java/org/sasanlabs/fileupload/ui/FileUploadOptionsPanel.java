@@ -49,8 +49,8 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     // UI components
     private JTextField staticLocationConfigurationURIRegex;
     private JTextField dynamicLocationConfigurationURIRegex;
-    private JTextField dynamicLocationConfigurationStartIdentifier;
-    private JTextField dynamicLocationConfigurationEndIdentifier;
+    private JTextField parseResponseStartIdentifier;
+    private JTextField parseResponseEndIdentifier;
 
     public FileUploadOptionsPanel() {
         super();
@@ -139,39 +139,50 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
                 dynamicLocationConfigurationGridBagConstriants);
         dynamicLocationConfigurationGridBagConstriants.gridy++;
         dynamicLocationConfigurationGridBagConstriants.gridx = 0;
-
-        JLabel dynamicLocationConfigurationStartIdentifierLabel =
-                new JLabel(
-                        FileUploadI18n.getMessage(
-                                "fileupload.settings.urilocator.dynamiclocation.startidentifer"));
-        dynamicLocationConfigurationPanel.add(
-                dynamicLocationConfigurationStartIdentifierLabel,
-                dynamicLocationConfigurationGridBagConstriants);
-        dynamicLocationConfigurationGridBagConstriants.gridx++;
-        dynamicLocationConfigurationStartIdentifier = new JTextField();
-        dynamicLocationConfigurationURIRegex.setColumns(15);
-        dynamicLocationConfigurationPanel.add(
-                dynamicLocationConfigurationStartIdentifier,
-                dynamicLocationConfigurationGridBagConstriants);
-        dynamicLocationConfigurationGridBagConstriants.gridy++;
-        dynamicLocationConfigurationGridBagConstriants.gridx = 0;
-
-        JLabel dynamicLocationConfigurationEndIdentifierLabel =
-                new JLabel(
-                        FileUploadI18n.getMessage(
-                                "fileupload.settings.urilocator.dynamiclocation.endidentifer"));
-        dynamicLocationConfigurationPanel.add(
-                dynamicLocationConfigurationEndIdentifierLabel,
-                dynamicLocationConfigurationGridBagConstriants);
-        dynamicLocationConfigurationGridBagConstriants.gridx++;
-        dynamicLocationConfigurationEndIdentifier = new JTextField();
-        dynamicLocationConfigurationURIRegex.setColumns(15);
-        dynamicLocationConfigurationPanel.add(
-                dynamicLocationConfigurationEndIdentifier,
-                dynamicLocationConfigurationGridBagConstriants);
-        dynamicLocationConfigurationGridBagConstriants.gridy++;
-        dynamicLocationConfigurationGridBagConstriants.gridx = 0;
         return dynamicLocationConfigurationPanel;
+    }
+
+    private JPanel parseResponseConfiguration() {
+        TitledBorder parseResponseConfigurationPanelBorder =
+                new TitledBorder(
+                        FileUploadI18n.getMessage(
+                                "fileupload.settings.urilocator.parseresponseconfiguration.title"));
+        JPanel parseResponseConfigurationPanel = new JPanel();
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        parseResponseConfigurationPanel.setLayout(gridBagLayout);
+        parseResponseConfigurationPanel.setBorder(parseResponseConfigurationPanelBorder);
+        GridBagConstraints parseResponseConfigurationGridBagConstriants = getGridBagConstraints();
+
+        JLabel parseResponseConfigurationStartIdentifierLabel =
+                new JLabel(
+                        FileUploadI18n.getMessage(
+                                "fileupload.settings.urilocator.parseresponseconfiguration.startidentifer"));
+        parseResponseConfigurationPanel.add(
+                parseResponseConfigurationStartIdentifierLabel,
+                parseResponseConfigurationGridBagConstriants);
+        parseResponseConfigurationGridBagConstriants.gridx++;
+        parseResponseStartIdentifier = new JTextField();
+        dynamicLocationConfigurationURIRegex.setColumns(15);
+        parseResponseConfigurationPanel.add(
+                parseResponseStartIdentifier, parseResponseConfigurationGridBagConstriants);
+        parseResponseConfigurationGridBagConstriants.gridy++;
+        parseResponseConfigurationGridBagConstriants.gridx = 0;
+
+        JLabel parseResponseConfigurationEndIdentifierLabel =
+                new JLabel(
+                        FileUploadI18n.getMessage(
+                                "fileupload.settings.urilocator.parseresponseconfiguration.endidentifer"));
+        parseResponseConfigurationPanel.add(
+                parseResponseConfigurationEndIdentifierLabel,
+                parseResponseConfigurationGridBagConstriants);
+        parseResponseConfigurationGridBagConstriants.gridx++;
+        parseResponseEndIdentifier = new JTextField();
+        dynamicLocationConfigurationURIRegex.setColumns(15);
+        parseResponseConfigurationPanel.add(
+                parseResponseEndIdentifier, parseResponseConfigurationGridBagConstriants);
+        parseResponseConfigurationGridBagConstriants.gridy++;
+        parseResponseConfigurationGridBagConstriants.gridx = 0;
+        return parseResponseConfigurationPanel;
     }
 
     private JPanel uriLocatorConfiguration() {
@@ -191,6 +202,9 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
         // Dynamic Configuration
         uriLocatorConfigurationPanel.add(this.dynamicURILocatorConfiguration(), gridBagConstraints);
         gridBagConstraints.gridy++;
+        // Parse Response Configuration
+        uriLocatorConfigurationPanel.add(this.parseResponseConfiguration(), gridBagConstraints);
+        gridBagConstraints.gridy++;
         return uriLocatorConfigurationPanel;
     }
 
@@ -209,8 +223,8 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     private void resetOptionsPanel() {
         staticLocationConfigurationURIRegex.setText("");
         dynamicLocationConfigurationURIRegex.setText("");
-        dynamicLocationConfigurationStartIdentifier.setText("");
-        dynamicLocationConfigurationEndIdentifier.setText("");
+        parseResponseStartIdentifier.setText("");
+        parseResponseEndIdentifier.setText("");
     }
 
     @Override
@@ -222,9 +236,9 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
                 fileUploadConfiguration.getStaticLocationURIRegex());
         dynamicLocationConfigurationURIRegex.setText(
                 fileUploadConfiguration.getDynamicLocationURIRegex());
-        dynamicLocationConfigurationStartIdentifier.setText(
+        parseResponseStartIdentifier.setText(
                 fileUploadConfiguration.getDynamicLocationStartIdentifier());
-        dynamicLocationConfigurationEndIdentifier.setText(
+        parseResponseEndIdentifier.setText(
                 fileUploadConfiguration.getDynamicLocationEndIdentifier());
     }
 
@@ -235,9 +249,9 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
         boolean isDynamicUrlPresent =
                 StringUtils.isNotEmpty(dynamicLocationConfigurationURIRegex.getText());
         boolean isStartIdentifierPresent =
-                StringUtils.isNotEmpty(dynamicLocationConfigurationStartIdentifier.getText());
+                StringUtils.isNotEmpty(parseResponseStartIdentifier.getText());
         boolean isEndIdentifierPresent =
-                StringUtils.isNotEmpty(dynamicLocationConfigurationEndIdentifier.getText());
+                StringUtils.isNotEmpty(parseResponseEndIdentifier.getText());
 
         if (isStaticUrlPresent
                 && (isDynamicUrlPresent || isStartIdentifierPresent || isEndIdentifierPresent)) {
@@ -248,8 +262,13 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
                 || (!isStartIdentifierPresent && isEndIdentifierPresent)) {
             throw new IllegalArgumentException(
                     FileUploadI18n.getMessage(
-                            "fileupload.settings.alert.invalid.dynamicconfigutation"));
+                            "fileupload.settings.alert.invalid.httpresponseparseconfiguration"));
         }
+    }
+
+    @Override
+    public String getHelpIndex() {
+        return "ui.dialog.options.fileupload";
     }
 
     @Override
@@ -261,8 +280,8 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
         fileUploadConfiguration.setDynamicLocationURIRegex(
                 this.dynamicLocationConfigurationURIRegex.getText());
         fileUploadConfiguration.setDynamicLocationStartIdentifier(
-                this.dynamicLocationConfigurationStartIdentifier.getText());
+                this.parseResponseStartIdentifier.getText());
         fileUploadConfiguration.setDynamicLocationEndIdentifier(
-                this.dynamicLocationConfigurationEndIdentifier.getText());
+                this.parseResponseEndIdentifier.getText());
     }
 }

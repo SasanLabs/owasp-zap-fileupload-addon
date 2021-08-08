@@ -165,7 +165,7 @@ public abstract class AttackVector {
         }
         fileUploadScanRule.setParameters(uploadFileMsg, inputVectorBuilder.build());
         try {
-            fileUploadScanRule.sendAndRecieve(uploadFileMsg);
+            fileUploadScanRule.sendAndReceive(uploadFileMsg);
         } catch (IOException ex) {
             throw new FileUploadException("Exception occurred while sending modified message", ex);
         }
@@ -197,7 +197,7 @@ public abstract class AttackVector {
                     this.getUploadedFileHttpMessage(
                             uploadFileMsg,
                             fileUploadAttackExecutor.getOriginalFileName(),
-                            fileUploadAttackExecutor.getFileUploadScanRule()::sendAndRecieve);
+                            fileUploadAttackExecutor.getFileUploadScanRule()::sendAndReceive);
             if (Objects.nonNull(retrieveUploadedFile)
                     && contentMatcher.match(retrieveUploadedFile)) {
                 raiseAlert(

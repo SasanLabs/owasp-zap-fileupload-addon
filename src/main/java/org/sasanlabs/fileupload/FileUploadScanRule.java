@@ -15,7 +15,6 @@ package org.sasanlabs.fileupload;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.core.scanner.AbstractAppParamPlugin;
@@ -48,36 +47,36 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
     private static final String REFERENCE = FileUploadI18n.getMessage("fileupload.scanrule.refs");
     private static final Logger LOGGER = LogManager.getLogger(FileUploadScanRule.class);
 
-    private AtomicInteger maxRequestCount;
+    private int maxRequestCount;
 
     @Override
     public void init() {
         switch (this.getAttackStrength()) {
             case LOW:
-                maxRequestCount = new AtomicInteger(30);
+                maxRequestCount = 30;
                 break;
             case MEDIUM:
-                maxRequestCount = new AtomicInteger(60);
+                maxRequestCount = 60;
                 break;
             case HIGH:
-                maxRequestCount = new AtomicInteger(90);
+                maxRequestCount = 90;
                 break;
             case INSANE:
-                maxRequestCount = new AtomicInteger(150);
+                maxRequestCount = 150;
                 break;
             default:
-                maxRequestCount = new AtomicInteger(60);
+                maxRequestCount = 60;
                 break;
         }
     }
 
     @Override
     public boolean isStop() {
-        return super.isStop() || (this.maxRequestCount.get() <= 0);
+        return super.isStop() || (this.maxRequestCount <= 0);
     }
 
     public void decreaseRequestCount() {
-        this.maxRequestCount.getAndDecrement();
+        this.maxRequestCount--;
     }
 
     @Override
@@ -146,7 +145,8 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
                 .raise();
     }
 
-    public void sendAndRecieve(HttpMessage msg) throws IOException {
+    @Override
+    public void sendAndReceive(HttpMessage msg) throws IOException {
         super.sendAndReceive(msg);
     }
 

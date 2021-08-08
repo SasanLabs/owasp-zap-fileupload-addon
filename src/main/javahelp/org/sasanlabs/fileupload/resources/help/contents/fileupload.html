@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>
+FileUpload addon
+</TITLE>
+</HEAD>
+<BODY>
+<H1>FileUpload</H1>
+This is a File Upload addon which is used to find the vulnerabilities in File Upload functionality.
+<p>
+<H3>Why this addon is needed</H3>
+File upload is becoming a more and more essential part of any application, 
+where the user is able to upload their photo, their CV, or a video showcasing a 
+project they are working on. The application should be able to fend off bogus and
+malicious files in a way to keep the application and the users safe. 
+Generally file upload functionality is quite complex to automate and has huge 
+attack surface hence there is a need to automate the process and also secure it.
+
+<H3>Configuration</H3>
+File upload functionality generally has 2 endpoints, one from where file is uploaded and one 
+from where file is retrieved. It is necessary to know both these endpoints. 
+While Active Scanning an application, file upload endpoint is already known but retrieval 
+endpoint is not known to the scan rule hence there are configuration details specific 
+to the retrieval endpoint.
+
+<H3>Explanation about Options Panel</H3>
+For finding the URL to retrieve/view the uploaded file, here are following options:
+<OL>
+<LI>
+In some applications the URL to retrieve the uploaded file is static and doesn't change or 
+only the file name is changed. For handling this type of configuration, 
+options panel has <B>Static Location Configuration</B> where 
+static URL is added into URI Regex field. URI Regex field also supports the dynamic file name 
+by <B>${fileName}</B>. parameter, for e.g. http://<baseurl>/${fileName}
+</LI>
+<LI>
+In some applications the URL to retrieve the uploaded file is present in the file upload request's response.
+For handling this type of configuration, options panel has <B>Parse Http Response Configuration</B> 
+which has 2 parameters <B>Start Identifier</B> and <B>End Identifier</B>. 
+These identifiers are used to locate the URL within the response.
+</LI>
+<LI>
+In some applications the URL to retrieve the uploaded file is present in the response of a different URL which is called a 
+<B>preflight request</B>. E.g. Profile picture URL is part of profile page and 
+hence we need to parse the response of the profile page to find the URL of the profile picture. 
+For handling this type of configuration, the options panel has <B>Dynamic Location Configuration</B> 
+which has a <B>URI Regex</B> and <B>Parse Http Response Configuration</B> which has <B>Start Identifier</B> and <B>End Identifier</B>. 
+So the File Upload add-on will invoke the URI mentioned in URI Regex and 
+then parse the response using Start Identifier and End Identifier. URI Regex field also 
+supports the dynamic file name by ${fileName}
+</LI>
+</OL>
+
+</BODY>
+</HTML>
