@@ -31,7 +31,11 @@ spotless {
     }
 }
 
-tasks.withType<JavaCompile>().configureEach { options.encoding = "utf-8" }
+tasks.compileJava {
+    dependsOn("spotlessApply")
+}
+
+tasks.withType<JavaCompile>().configureEach { options.encoding = "utf-8"}
 
 version = "1.0.0"
 description = "Detect File upload requests and scan them to find related vulnerabilities"
