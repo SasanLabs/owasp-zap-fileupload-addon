@@ -43,7 +43,7 @@ description = "Detect File upload requests and scan them to find related vulnera
 zapAddOn {
     addOnName.set("File upload Scan Rule")
     addOnStatus.set(AddOnStatus.ALPHA)
-    zapVersion.set("2.11.0-SNAPSHOT")
+    zapVersion.set("2.11.0")
     manifest {
         author.set("KSASAN preetkaran20@gmail.com")
         repo.set("https://github.com/SasanLabs/owasp-zap-fileupload-addon/")
@@ -51,5 +51,5 @@ zapAddOn {
 }
 
 dependencies {
-	compileOnly("org.zaproxy:zap:2.11.0-SNAPSHOT")
+	zap("org.zaproxy:zap:2.11.0-SNAPSHOT")
 }
