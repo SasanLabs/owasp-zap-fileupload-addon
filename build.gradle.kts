@@ -14,6 +14,9 @@ plugins {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+    }
 }
 
 java {
@@ -36,7 +39,7 @@ description = "Detect File upload requests and scan them to find related vulnera
 zapAddOn {
     addOnName.set("File upload Scan Rule")
     addOnStatus.set(AddOnStatus.ALPHA)
-	zapVersion.set("2.11.0-SNAPSHOT")
+    zapVersion.set("2.11.0-SNAPSHOT")
     manifest {
         author.set("KSASAN preetkaran20@gmail.com")
         repo.set("https://github.com/SasanLabs/owasp-zap-fileupload-addon/")
