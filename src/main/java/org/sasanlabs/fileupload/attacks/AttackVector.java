@@ -81,6 +81,7 @@ public abstract class AttackVector {
             uploadedFileRetrievalMsg
                     .getRequestHeader()
                     .setCookies(httpMsg.getRequestHeader().getHttpCookies());
+            uploadedFileRetrievalMsg.setRequestBody("");
             sendAndRecieveHttpMsg.accept(uploadedFileRetrievalMsg);
         } catch (IOException e) {
             throw new FileUploadException(
