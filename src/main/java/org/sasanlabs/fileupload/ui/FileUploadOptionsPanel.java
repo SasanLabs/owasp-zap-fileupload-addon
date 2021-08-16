@@ -268,7 +268,7 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
 
     @Override
     public String getHelpIndex() {
-        return "ui.dialog.options.fileupload";
+        return "fileupload";
     }
 
     @Override
