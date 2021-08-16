@@ -41,7 +41,7 @@ version = "1.0.0"
 description = "Detect File upload requests and scan them to find related vulnerabilities"
 
 zapAddOn {
-    addOnName.set("File upload Scan Rule")
+    addOnName.set("FileUpload")
     addOnStatus.set(AddOnStatus.ALPHA)
     zapVersion.set("2.11.0")
     manifest {
