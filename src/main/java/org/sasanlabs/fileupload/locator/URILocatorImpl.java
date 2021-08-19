@@ -69,13 +69,13 @@ public class URILocatorImpl implements URILocator {
                         .toString()
                         .indexOf(
                                 FileUploadConfiguration.getInstance()
-                                        .getDynamicLocationStartIdentifier());
+                                        .getParseResponseStartIdentifier());
         int endIndex =
                 msg.getResponseBody()
                         .toString()
                         .indexOf(
                                 FileUploadConfiguration.getInstance()
-                                        .getDynamicLocationEndIdentifier());
+                                        .getParseResponseEndIdentifier());
         if (startIndex < 0 || endIndex < 0 || startIndex > endIndex) {
             throw new FileUploadException(
                     "StartIndex or EndIndex configuration is either not present in the response or invalid. Start index:"
@@ -89,7 +89,7 @@ public class URILocatorImpl implements URILocator {
                         .substring(
                                 startIndex
                                         + FileUploadConfiguration.getInstance()
-                                                .getDynamicLocationStartIdentifier()
+                                                .getParseResponseStartIdentifier()
                                                 .length(),
                                 endIndex);
         return this.getCompleteURI(uriRegex, fileName, originalMsg);
@@ -126,10 +126,10 @@ public class URILocatorImpl implements URILocator {
             } else {
                 if (StringUtils.isNotBlank(
                                 FileUploadConfiguration.getInstance()
-                                        .getDynamicLocationStartIdentifier())
+                                        .getParseResponseStartIdentifier())
                         && StringUtils.isNotBlank(
                                 FileUploadConfiguration.getInstance()
-                                        .getDynamicLocationEndIdentifier())) {
+                                        .getParseResponseEndIdentifier())) {
                     try {
                         return this.parseResponseAndGetCompleteURI(msg, fileName, msg);
                     } catch (FileUploadException e) {
