@@ -35,15 +35,15 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
             PARAM_BASE_KEY + ".staticlocation.uriregex";
     private static final String PARAM_DYNAMIC_LOCATION_CONFIGURATION_URI_REGEX =
             PARAM_BASE_KEY + ".dynamiclocation.uriregex";
-    private static final String PARAM_DYNAMIC_LOCATION_CONFIGURATION_START_IDENTIFIER =
-            PARAM_BASE_KEY + ".dynamiclocation.startidentifier";
-    private static final String PARAM_DYNAMIC_LOCATION_CONFIGURATION_END_IDENTIFIER =
-            PARAM_BASE_KEY + ".dynamiclocation.endidentifier";
+    private static final String PARAM_PARSE_RESPONSE_CONFIGURATION_START_IDENTIFIER =
+            PARAM_BASE_KEY + ".parseresponse.startidentifier";
+    private static final String PARAM_PARSE_RESPONSE_CONFIGURATION_END_IDENTIFIER =
+            PARAM_BASE_KEY + ".parseresponse.endidentifier";
 
     private String staticLocationURIRegex;
     private String dynamicLocationURIRegex;
-    private String dynamicLocationStartIdentifier;
-    private String dynamicLocationEndIdentifier;
+    private String parseResponseStartIdentifier;
+    private String parseResponseEndIdentifier;
 
     private static volatile FileUploadConfiguration fileUploadConfiguration;
 
@@ -81,28 +81,28 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
                         PARAM_DYNAMIC_LOCATION_CONFIGURATION_URI_REGEX, dynamicLocationURIRegex);
     }
 
-    public String getDynamicLocationStartIdentifier() {
-        return dynamicLocationStartIdentifier;
+    public String getParseResponseStartIdentifier() {
+        return parseResponseStartIdentifier;
     }
 
-    public void setDynamicLocationStartIdentifier(String dynamicLocationStartIdentifier) {
-        this.dynamicLocationStartIdentifier = dynamicLocationStartIdentifier;
+    public void setParseResponseStartIdentifier(String parseResponseStartIdentifier) {
+        this.parseResponseStartIdentifier = parseResponseStartIdentifier;
         this.getConfig()
                 .setProperty(
-                        PARAM_DYNAMIC_LOCATION_CONFIGURATION_START_IDENTIFIER,
-                        dynamicLocationStartIdentifier);
+                        PARAM_PARSE_RESPONSE_CONFIGURATION_START_IDENTIFIER,
+                        parseResponseStartIdentifier);
     }
 
-    public String getDynamicLocationEndIdentifier() {
-        return dynamicLocationEndIdentifier;
+    public String getParseResponseEndIdentifier() {
+        return parseResponseEndIdentifier;
     }
 
-    public void setDynamicLocationEndIdentifier(String dynamicLocationEndIdentifier) {
-        this.dynamicLocationEndIdentifier = dynamicLocationEndIdentifier;
+    public void setParseResponseEndIdentifier(String parseResponseEndIdentifier) {
+        this.parseResponseEndIdentifier = parseResponseEndIdentifier;
         this.getConfig()
                 .setProperty(
-                        PARAM_DYNAMIC_LOCATION_CONFIGURATION_END_IDENTIFIER,
-                        dynamicLocationEndIdentifier);
+                        PARAM_PARSE_RESPONSE_CONFIGURATION_END_IDENTIFIER,
+                        parseResponseEndIdentifier);
     }
 
     @Override
@@ -121,10 +121,10 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
                 getConfig().getString(PARAM_STATIC_LOCATION_CONFIGURATION_URI_REGEX));
         this.setDynamicLocationURIRegex(
                 getConfig().getString(PARAM_DYNAMIC_LOCATION_CONFIGURATION_URI_REGEX));
-        this.setDynamicLocationStartIdentifier(
-                getConfig().getString(PARAM_DYNAMIC_LOCATION_CONFIGURATION_START_IDENTIFIER));
-        this.setDynamicLocationEndIdentifier(
-                getConfig().getString(PARAM_DYNAMIC_LOCATION_CONFIGURATION_END_IDENTIFIER));
+        this.setParseResponseStartIdentifier(
+                getConfig().getString(PARAM_PARSE_RESPONSE_CONFIGURATION_START_IDENTIFIER));
+        this.setParseResponseEndIdentifier(
+                getConfig().getString(PARAM_PARSE_RESPONSE_CONFIGURATION_END_IDENTIFIER));
     }
 
     @Override

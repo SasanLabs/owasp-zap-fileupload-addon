@@ -237,9 +237,8 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
         dynamicLocationConfigurationURIRegex.setText(
                 fileUploadConfiguration.getDynamicLocationURIRegex());
         parseResponseStartIdentifier.setText(
-                fileUploadConfiguration.getDynamicLocationStartIdentifier());
-        parseResponseEndIdentifier.setText(
-                fileUploadConfiguration.getDynamicLocationEndIdentifier());
+                fileUploadConfiguration.getParseResponseStartIdentifier());
+        parseResponseEndIdentifier.setText(fileUploadConfiguration.getParseResponseEndIdentifier());
     }
 
     @Override
@@ -257,12 +256,16 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
                 && (isDynamicUrlPresent || isStartIdentifierPresent || isEndIdentifierPresent)) {
             throw new IllegalArgumentException(
                     FileUploadI18n.getMessage(
-                            "fileupload.settings.alert.static.dynamicconfiguration.both.present"));
+                            "fileupload.settings.alert.static.dynamicconfiguration.parseconfiguration.present"));
         } else if ((isStartIdentifierPresent && !isEndIdentifierPresent)
                 || (!isStartIdentifierPresent && isEndIdentifierPresent)) {
             throw new IllegalArgumentException(
                     FileUploadI18n.getMessage(
                             "fileupload.settings.alert.invalid.httpresponseparseconfiguration"));
+        } else if (isDynamicUrlPresent && !isStartIdentifierPresent) {
+            throw new IllegalArgumentException(
+                    FileUploadI18n.getMessage(
+                            "fileupload.settings.alert.invalid.dynamicconfiguration.parseidentifier.not.present"));
         }
     }
 
@@ -279,9 +282,9 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
                 this.staticLocationConfigurationURIRegex.getText());
         fileUploadConfiguration.setDynamicLocationURIRegex(
                 this.dynamicLocationConfigurationURIRegex.getText());
-        fileUploadConfiguration.setDynamicLocationStartIdentifier(
+        fileUploadConfiguration.setParseResponseStartIdentifier(
                 this.parseResponseStartIdentifier.getText());
-        fileUploadConfiguration.setDynamicLocationEndIdentifier(
+        fileUploadConfiguration.setParseResponseEndIdentifier(
                 this.parseResponseEndIdentifier.getText());
     }
 }

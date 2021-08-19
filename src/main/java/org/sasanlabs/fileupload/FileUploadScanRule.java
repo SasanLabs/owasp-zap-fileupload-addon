@@ -15,6 +15,7 @@ package org.sasanlabs.fileupload;
 
 import java.io.IOException;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.parosproxy.paros.core.scanner.AbstractAppParamPlugin;
@@ -22,6 +23,7 @@ import org.parosproxy.paros.core.scanner.Category;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
+import org.sasanlabs.fileupload.configuration.FileUploadConfiguration;
 import org.sasanlabs.fileupload.i18n.FileUploadI18n;
 import org.zaproxy.zap.core.scanner.InputVector;
 import org.zaproxy.zap.core.scanner.InputVectorBuilder;
@@ -79,6 +81,19 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
         this.maxRequestCount--;
     }
 
+    private boolean isConfigured() {
+        return StringUtils.isNotBlank(
+                        FileUploadConfiguration.getInstance().getStaticLocationURIRegex())
+                || StringUtils.isNotBlank(
+                        FileUploadConfiguration.getInstance().getDynamicLocationURIRegex())
+                || (StringUtils.isNotBlank(
+                                FileUploadConfiguration.getInstance()
+                                        .getParseResponseStartIdentifier())
+                        && StringUtils.isNotBlank(
+                                FileUploadConfiguration.getInstance()
+                                        .getParseResponseEndIdentifier()));
+    }
+
     @Override
     protected void scan(List<NameValuePair> nameValuePairs) {
         try {
@@ -99,7 +114,7 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
                     }
                 }
             }
-            if (isMultipart) {
+            if (isMultipart && isConfigured()) {
                 FileUploadAttackExecutor fileUploadAttackExecutor =
                         new FileUploadAttackExecutor(
                                 this, nameValuePairs, originalFileName, originalContentType);
