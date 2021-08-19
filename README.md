@@ -18,6 +18,7 @@ parameter, for e.g. `http://<baseurl>/${fileName}`
 2. In some applications the URL to retrieve the uploaded file is present in the file upload request's response. For handling this type of configuration, options panel has `Parse Http Response Configuration` which has 2 parameters `Start Identifier` and `End Identifier`. These identifiers are used to locate the URL within the response.
 3. In some applications the URL to retrieve the uploaded file is present in the response of a different URL which is called a preflight request. E.g. Profile picture URL is part of profile page and hence we need to parse the response of the profile page to find the URL of the profile picture. For handling this type of configuration, the options panel has `Dynamic Location Configuration` which has a `URI Regex` and `Parse Http Response Configuration` which has `Start Identifier`, and `End Identifier`. So the File Upload add-on will invoke the URI mentioned in `URI Regex` and then parse the response using `Start Identifier` and `End Identifier`. `URI Regex` field also supports the dynamic file name by `${fileName}`
 
+For detailed information on FileUpload add-on's configuration see following video: [OWASP ZAP FileUpload addon](https://www.youtube.com/watch?v=3bHjrpbLQmA)
 ### Note:
 This addon fires a lot of requests to the target application hence can impact the performance of the targeted application. So please run this addon in non-prod environment only.
 
