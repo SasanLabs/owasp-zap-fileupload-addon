@@ -28,3 +28,6 @@ Contributing guidelines are same as [ZAP](https://github.com/zaproxy/zaproxy).
 ## Contact Us
 For any Queries/Bugs or Enhancement please raise an issue in this repository or ask in [OWASP ZAP Developer Group](https://groups.google.com/g/zaproxy-develop).
 For any other kind of issues please send an email to karan.sasan@owasp.org
+
+## Special Thanks
+This addon is highly inspired from [Upload-Scanner](https://github.com/portswigger/upload-scanner) and uses many concepts from Upload-Scanner extension.
