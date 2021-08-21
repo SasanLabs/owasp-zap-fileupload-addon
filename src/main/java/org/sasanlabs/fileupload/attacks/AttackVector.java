@@ -43,7 +43,7 @@ import org.zaproxy.zap.core.scanner.InputVectorBuilder;
  */
 public abstract class AttackVector {
 
-    private static final Logger LOGGER = LogManager.getLogger(EicarAntivirusTestFileUpload.class);
+    private static final Logger LOGGER = LogManager.getLogger(AttackVector.class);
 
     /**
      * In general, for file upload functionalities, file is uploaded from one endpoint and retrieved
