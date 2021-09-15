@@ -53,18 +53,25 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
 
     @Override
     public void init() {
+        if (!this.isConfigured()) {
+            getParent()
+                    .pluginSkipped(
+                            this,
+                            FileUploadI18n.getMessage(
+                                    "fileupload.configuration.not.present.skipping.plugin"));
+        }
         switch (this.getAttackStrength()) {
             case LOW:
-                maxRequestCount = 30;
+                maxRequestCount = 40;
                 break;
             case MEDIUM:
-                maxRequestCount = 60;
+                maxRequestCount = 70;
                 break;
             case HIGH:
-                maxRequestCount = 90;
+                maxRequestCount = 110;
                 break;
             case INSANE:
-                maxRequestCount = 150;
+                maxRequestCount = 200;
                 break;
             default:
                 maxRequestCount = 60;
@@ -114,7 +121,7 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
                     }
                 }
             }
-            if (isMultipart && isConfigured()) {
+            if (isMultipart) {
                 FileUploadAttackExecutor fileUploadAttackExecutor =
                         new FileUploadAttackExecutor(
                                 this, nameValuePairs, originalFileName, originalContentType);
