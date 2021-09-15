@@ -46,6 +46,22 @@ public abstract class AttackVector {
     private static final Logger LOGGER = LogManager.getLogger(EicarAntivirusTestFileUpload.class);
 
     /**
+     * @param httpMsg, HttpMessage containing uploaded file's request and response
+     * @param fileName, uploaded file's name
+     * @param sendAndRecieveHttpMsg, consumer to send and Receive {@code HttpMessage}
+     * @return URI of the uploaded file
+     * @throws FileUploadException, in case of failure in retrieval of uploaded file.
+     */
+    protected URI getUploadedFileURI(
+            HttpMessage httpMsg,
+            String fileName,
+            ConsumerWithException<HttpMessage, IOException> sendAndRecieveHttpMsg)
+            throws FileUploadException {
+        return new URILocatorImpl()
+                .get(httpMsg, fileName, (httpmessage) -> sendAndRecieveHttpMsg.accept(httpmessage));
+    }
+
+    /**
      * In general, for file upload functionalities, file is uploaded from one endpoint and retrieved
      * from another endpoint. This method finds the url of the file retrieval endpoint, invokes that
      * endpoint to retrieve the uploaded file and returns the {@code HttpMessage}.
@@ -65,13 +81,7 @@ public abstract class AttackVector {
         HttpMessage uploadedFileRetrievalMsg = new HttpMessage();
         URI uri;
         try {
-            uri =
-                    new URILocatorImpl()
-                            .get(
-                                    httpMsg,
-                                    fileName,
-                                    (httpmessage) -> sendAndRecieveHttpMsg.accept(httpmessage));
-
+            uri = this.getUploadedFileURI(httpMsg, fileName, sendAndRecieveHttpMsg);
             if (Objects.isNull(uri)) {
                 return null;
             }
