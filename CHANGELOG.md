@@ -2,6 +2,13 @@
 All notable changes to this add-on will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [1.1.0] - 2021-09-16
+ - Scan rule for uploading
+ 	- HTACCESS file
+ 	- PHP and its variants
+ 	- JPEG AND GIF images with PHP snippet
+
 ## [1.0.1] - 2021-08-19
  - Minor change
    - Scan rule will only execute if add-on configuration is specified.

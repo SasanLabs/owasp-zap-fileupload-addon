@@ -22,8 +22,10 @@ import java.util.List;
 import java.util.Map;
 import org.parosproxy.paros.core.scanner.Plugin.AttackStrength;
 import org.parosproxy.paros.network.HttpMessage;
+import org.sasanlabs.fileupload.FileUploadUtils;
 import org.sasanlabs.fileupload.attacks.AttackVector;
 import org.sasanlabs.fileupload.attacks.FileUploadAttackExecutor;
+import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
 import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
@@ -64,6 +66,12 @@ public class ImageWithPHPSnippetFileUpload extends AttackVector {
         return payloads;
     }
 
+    private static final List<FileInformationProvider> FILE_PARAMETERS_DEFAULT =
+            SimplePHPFileUpload.getDefaultFileParameters(BASE_FILE_NAME);
+    static final List<FileInformationProvider> FILE_PARAMETERS_EXTENDED =
+            FileUploadUtils.getFileInformationProvidersPHP(
+                    BASE_FILE_NAME, SimplePHPFileUpload.PHP_VARIANT_EXTENSIONS_EXTENDED);
+
     @Override
     public boolean execute(FileUploadAttackExecutor fileUploadAttackExecutor)
             throws FileUploadException {
@@ -80,7 +88,7 @@ public class ImageWithPHPSnippetFileUpload extends AttackVector {
                         this.genericAttackExecutor(
                                 fileUploadAttackExecutor,
                                 requestPayload,
-                                SimplePHPFileUpload.FILE_PARAMETERS_DEFAULT,
+                                FILE_PARAMETERS_DEFAULT,
                                 new ContainsExpectedValueMatcher(FILE_EXPECTED_VALUE),
                                 vulnerabilityType);
 
@@ -93,7 +101,7 @@ public class ImageWithPHPSnippetFileUpload extends AttackVector {
                             this.genericAttackExecutor(
                                     fileUploadAttackExecutor,
                                     requestPayload,
-                                    SimplePHPFileUpload.FILE_PARAMETERS_EXTENDED,
+                                    FILE_PARAMETERS_EXTENDED,
                                     new ContainsExpectedValueMatcher(FILE_EXPECTED_VALUE),
                                     vulnerabilityType);
                 }

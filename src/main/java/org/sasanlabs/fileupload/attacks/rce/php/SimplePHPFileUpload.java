@@ -29,8 +29,9 @@ import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 
 /**
- * Important links for learning about PHP File Upload: 1.
- * https://www.acunetix.com/websitesecurity/upload-forms-threat/ 2.
+ * Important links for learning about PHP File Upload:
+ *
+ * <p>1. https://www.acunetix.com/websitesecurity/upload-forms-threat/ 2.
  * https://github.com/SasanLabs/VulnerableApp-php/blob/main/src/FileUploadVulnerability/FileUpload.php
  *
  * <p>This entire scan rule is tested against {@link https://github.com/SasanLabs/VulnerableApp-php}
@@ -51,31 +52,31 @@ public class SimplePHPFileUpload extends AttackVector {
     private static final ContentMatcher CONTENT_MATCHER =
             new ContainsExpectedValueMatcher("SimplePHPFileUpload_SasanLabs_ZAP_Identifier");
 
-    private static List<FileInformationProvider> getDefaultFileParameters() {
+    static List<FileInformationProvider> getDefaultFileParameters(String baseFileName) {
         List<FileInformationProvider> fileInformationProviders = new ArrayList<>();
         FileUploadUtils.getFileInformationProvidersPHP(
-                PHP_UPLOADED_FILE_BASE_NAME, PHP_VARIANT_EXTENSIONS_DEFAULT);
+                baseFileName, PHP_VARIANT_EXTENSIONS_DEFAULT);
         fileInformationProviders.add(
-                new FileInformationProviderBuilder(PHP_UPLOADED_FILE_BASE_NAME)
+                new FileInformationProviderBuilder(baseFileName)
                         .withExtension(PHP_FILE_EXTENSION + FileUploadUtils.NULL_BYTE_CHARACTER)
                         .withFileExtensionOperation(
                                 FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                         .build());
         fileInformationProviders.add(
-                new FileInformationProviderBuilder(PHP_UPLOADED_FILE_BASE_NAME)
+                new FileInformationProviderBuilder(baseFileName)
                         .withExtension(PHP_FILE_EXTENSION + FileUploadUtils.NULL_BYTE_CHARACTER)
                         .withContentType("application/x-httpd-php")
                         .withFileExtensionOperation(
                                 FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                         .build());
         fileInformationProviders.add(
-                new FileInformationProviderBuilder(PHP_UPLOADED_FILE_BASE_NAME)
+                new FileInformationProviderBuilder(baseFileName)
                         .withExtension(PHP_FILE_EXTENSION + "%00")
                         .withFileExtensionOperation(
                                 FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                         .build());
         fileInformationProviders.add(
-                new FileInformationProviderBuilder(PHP_UPLOADED_FILE_BASE_NAME)
+                new FileInformationProviderBuilder(baseFileName)
                         .withExtension(PHP_FILE_EXTENSION + "%00")
                         .withContentType("application/x-httpd-php")
                         .withFileExtensionOperation(
@@ -84,8 +85,9 @@ public class SimplePHPFileUpload extends AttackVector {
         return fileInformationProviders;
     }
 
-    static final List<FileInformationProvider> FILE_PARAMETERS_DEFAULT = getDefaultFileParameters();
-    static final List<FileInformationProvider> FILE_PARAMETERS_EXTENDED =
+    private static final List<FileInformationProvider> FILE_PARAMETERS_DEFAULT =
+            getDefaultFileParameters(PHP_UPLOADED_FILE_BASE_NAME);
+    private static final List<FileInformationProvider> FILE_PARAMETERS_EXTENDED =
             FileUploadUtils.getFileInformationProvidersPHP(
                     PHP_UPLOADED_FILE_BASE_NAME, PHP_VARIANT_EXTENSIONS_EXTENDED);
 
