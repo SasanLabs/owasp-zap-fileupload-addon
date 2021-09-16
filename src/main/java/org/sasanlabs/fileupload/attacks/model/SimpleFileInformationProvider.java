@@ -15,6 +15,7 @@ package org.sasanlabs.fileupload.attacks.model;
 
 import java.util.function.Function;
 
+/** @author KSASAN preetkaran20@gmail.com */
 public class SimpleFileInformationProvider implements FileInformationProvider {
 
     private Function<String, String> fileNameFunction;
