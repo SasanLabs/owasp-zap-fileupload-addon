@@ -58,7 +58,8 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
                     .pluginSkipped(
                             this,
                             FileUploadI18n.getMessage(
-                                    "fileupload.configuration.not.present.skipping.plugin"));
+                                    "fileupload.configuration.not.present.skipping.scanrule"));
+            return;
         }
         switch (this.getAttackStrength()) {
             case LOW:
