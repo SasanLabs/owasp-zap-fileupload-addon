@@ -62,19 +62,19 @@ public class FileUploadScanRule extends AbstractAppParamPlugin {
         }
         switch (this.getAttackStrength()) {
             case LOW:
-                maxRequestCount = 40;
+                maxRequestCount = 75;
                 break;
             case MEDIUM:
-                maxRequestCount = 70;
+                maxRequestCount = 150;
                 break;
             case HIGH:
-                maxRequestCount = 110;
+                maxRequestCount = 250;
                 break;
             case INSANE:
-                maxRequestCount = 200;
+                maxRequestCount = 450;
                 break;
             default:
-                maxRequestCount = 60;
+                maxRequestCount = 150;
                 break;
         }
     }

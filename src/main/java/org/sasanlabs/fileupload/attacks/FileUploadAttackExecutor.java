@@ -51,10 +51,10 @@ public class FileUploadAttackExecutor {
                     new SimpleJSPFileUpload(),
                     new SimpleJSPXFileUpload(),
                     new ImageWithJSPSnippetFileUpload(),
-                    new EicarAntivirusTestFileUpload(),
                     new HTAccessFileUpload(),
                     new SimplePHPFileUpload(),
-                    new ImageWithPHPSnippetFileUpload());
+                    new ImageWithPHPSnippetFileUpload(),
+                    new EicarAntivirusTestFileUpload());
 
     public FileUploadAttackExecutor(
             FileUploadScanRule fileUploadScanRule,

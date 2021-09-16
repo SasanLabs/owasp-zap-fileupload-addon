@@ -81,14 +81,16 @@ public class HTAccessFileUpload extends AttackVector {
             ConsumerWithException<HttpMessage, IOException> sendAndRecieveHttpMsg)
             throws FileUploadException {
         URI uri = super.getUploadedFileURI(httpMsg, fileName, sendAndRecieveHttpMsg);
-        if (uri != null) {
-            try {
+        try {
+            if (uri != null && uri.getPath().lastIndexOf(FileUploadUtils.SLASH) != -1) {
+
                 uri.setPath(
                         uri.getPath()
-                                .substring(0, uri.getPath().lastIndexOf(FileUploadUtils.SLASH)));
-            } catch (URIException e) {
-                throw new FileUploadException("Unable to set the URI fragment", e);
+                                .substring(
+                                        0, uri.getPath().lastIndexOf(FileUploadUtils.SLASH) + 1));
             }
+        } catch (URIException e) {
+            throw new FileUploadException("Unable to set the URI fragment", e);
         }
         return uri;
     }
