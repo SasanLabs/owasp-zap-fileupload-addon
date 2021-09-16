@@ -248,8 +248,6 @@ public interface FileUploadUtils {
                  * AddHandler application/x-httpd-php .php</code> and if the file ends with the
                  * original extension but has .php in the name then also php will be executed For
                  * more information: https://www.acunetix.com/websitesecurity/upload-forms-threat/
-                 * and
-                 * https://github.com/SasanLabs/VulnerableApp-php/blob/main/src/FileUploadVulnerability/FileUpload.php#L276
                  */
                 new FileInformationProviderBuilder(baseFileName)
                         .withExtension(phpExtension)

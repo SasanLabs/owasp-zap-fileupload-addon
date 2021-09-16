@@ -31,11 +31,14 @@ import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 
 /**
- * Important documents or links to learn about .htaccess file: 1.
- * https://serverfault.com/questions/780459/load-time-impact-of-htaccess 2.
- * https://cwiki.apache.org/confluence/display/HTTPD/Htaccess 3.
- * https://www.nginx.com/resources/wiki/start/topics/examples/likeapache-htaccess/ 4.
- * https://www.danielmorell.com/guides/htaccess-seo/basics/dont-use-htaccess-unless-you-must
+ * Important documents or links to learn about .htaccess file:
+ *
+ * <ol>
+ *   <li>https://serverfault.com/questions/780459/load-time-impact-of-htaccess
+ *   <li>https://cwiki.apache.org/confluence/display/HTTPD/Htaccess
+ *   <li>https://www.nginx.com/resources/wiki/start/topics/examples/likeapache-htaccess/
+ *   <li>https://www.danielmorell.com/guides/htaccess-seo/basics/dont-use-htaccess-unless-you-must
+ * </ol>
  *
  * @author KSASAN preetkaran20@gmail.com
  */
