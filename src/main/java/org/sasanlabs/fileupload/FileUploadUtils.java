@@ -13,6 +13,7 @@
  */
 package org.sasanlabs.fileupload;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -209,5 +210,67 @@ public interface FileUploadUtils {
                         .withFileExtensionOperation(
                                 FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
                         .build());
+    }
+
+    /**
+     * Provides the list of FileInformationProviders for PHP by baseFileName and php extension
+     *
+     * @param baseFileName, base file name of uploaded php file.
+     * @param phpExtension, extension of the uploaded php file.
+     * @return list of FileInformationProvider for PHP
+     */
+    static List<FileInformationProvider> getFileInformationProvidersByExtensionPHP(
+            String baseFileName, String phpExtension) {
+        return Arrays.asList(
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(phpExtension)
+                        .withFileExtensionOperation(FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(phpExtension)
+                        .withContentType("application/x-httpd-php")
+                        .withFileExtensionOperation(FileExtensionOperation.ONLY_PROVIDED_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(phpExtension)
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                        .build(),
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(phpExtension)
+                        .withContentType("application/x-httpd-php")
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.PREFIX_ORIGINAL_EXTENSION)
+                        .build(),
+
+                /**
+                 * If .htaccess has following configuration <code>
+                 * AddHandler application/x-httpd-php .php</code> and if the file ends with the
+                 * original extension but has .php in the name then also php will be executed For
+                 * more information: https://www.acunetix.com/websitesecurity/upload-forms-threat/
+                 */
+                new FileInformationProviderBuilder(baseFileName)
+                        .withExtension(phpExtension)
+                        .withFileExtensionOperation(
+                                FileExtensionOperation.SUFFIX_ORIGINAL_EXTENSION)
+                        .build());
+    }
+
+    /**
+     * Provides the list of FileInformationProvider for PHP provided the baseFileName and list of
+     * php extension variants
+     *
+     * @param baseFileName, base file name of uploaded php file.
+     * @param phpExtension, extension of the uploaded php file.
+     * @return list of FileInformationProvider for PHP
+     */
+    static List<FileInformationProvider> getFileInformationProvidersPHP(
+            String baseFileName, List<String> extensions) {
+        List<FileInformationProvider> fileInformationProviders = new ArrayList<>();
+        for (String extension : extensions) {
+            fileInformationProviders.addAll(
+                    getFileInformationProvidersByExtensionPHP(baseFileName, extension));
+        }
+        return fileInformationProviders;
     }
 }

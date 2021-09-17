@@ -21,9 +21,12 @@ import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
 import org.sasanlabs.fileupload.attacks.antivirus.EicarAntivirusTestFileUpload;
+import org.sasanlabs.fileupload.attacks.apache.htaccess.HTAccessFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.jsp.ImageWithJSPSnippetFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.jsp.SimpleJSPFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.jsp.SimpleJSPXFileUpload;
+import org.sasanlabs.fileupload.attacks.rce.php.ImageWithPHPSnippetFileUpload;
+import org.sasanlabs.fileupload.attacks.rce.php.SimplePHPFileUpload;
 import org.sasanlabs.fileupload.attacks.xss.HtmlFileUpload;
 import org.sasanlabs.fileupload.attacks.xss.SVGFileUpload;
 import org.sasanlabs.fileupload.exception.FileUploadException;
@@ -48,6 +51,9 @@ public class FileUploadAttackExecutor {
                     new SimpleJSPFileUpload(),
                     new SimpleJSPXFileUpload(),
                     new ImageWithJSPSnippetFileUpload(),
+                    new HTAccessFileUpload(),
+                    new SimplePHPFileUpload(),
+                    new ImageWithPHPSnippetFileUpload(),
                     new EicarAntivirusTestFileUpload());
 
     public FileUploadAttackExecutor(

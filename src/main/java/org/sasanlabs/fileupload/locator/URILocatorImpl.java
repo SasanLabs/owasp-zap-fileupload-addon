@@ -101,7 +101,6 @@ public class URILocatorImpl implements URILocator {
             String fileName,
             ConsumerWithException<HttpMessage, IOException> sendAndRecieve)
             throws FileUploadException {
-        URI uri = null;
         try {
             if (StringUtils.isNotBlank(
                     FileUploadConfiguration.getInstance().getStaticLocationURIRegex())) {
@@ -141,6 +140,6 @@ public class URILocatorImpl implements URILocator {
         } catch (IOException ex) {
             throw new FileUploadException(ex);
         }
-        return uri;
+        return null;
     }
 }
