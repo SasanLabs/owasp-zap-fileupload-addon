@@ -24,7 +24,6 @@ import org.parosproxy.paros.core.scanner.Alert;
 import org.parosproxy.paros.core.scanner.NameValuePair;
 import org.parosproxy.paros.network.HttpMessage;
 import org.sasanlabs.fileupload.FileUploadScanRule;
-import org.sasanlabs.fileupload.attacks.antivirus.EicarAntivirusTestFileUpload;
 import org.sasanlabs.fileupload.attacks.model.FileInformationProvider;
 import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;

@@ -50,5 +50,5 @@ zapAddOn {
 }
 
 dependencies {
-	zap("org.zaproxy:zap:2.11.0-SNAPSHOT")
+	zap("org.zaproxy:zap:2.11.0")
 }
