@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2023 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -52,6 +53,8 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     private JTextField parseResponseStartIdentifier;
     private JTextField parseResponseEndIdentifier;
 
+    private JCheckBox sendRequestsAfterFindingVulnerability;
+
     public FileUploadOptionsPanel() {
         super();
         this.setName(FileUploadI18n.getMessage("fileupload.settings.title"));
@@ -72,7 +75,14 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
 
     private void init(JPanel settingsPanel) {
         settingsPanel.add(uriLocatorConfiguration());
+        settingsPanel.add(buildSendRequestsAfterFindingVulnerabilityCheckbox());
         footerPanel.add(getResetButton());
+    }
+
+    private JCheckBox buildSendRequestsAfterFindingVulnerabilityCheckbox() {
+        sendRequestsAfterFindingVulnerability =
+                new JCheckBox("Continue Sending Requests After Vulnerability Reported");
+        return sendRequestsAfterFindingVulnerability;
     }
 
     private JButton getResetButton() {
