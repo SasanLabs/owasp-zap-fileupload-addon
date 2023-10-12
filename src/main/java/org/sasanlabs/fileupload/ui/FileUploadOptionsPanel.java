@@ -82,6 +82,7 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     private JCheckBox buildSendRequestsAfterFindingVulnerabilityCheckbox() {
         sendRequestsAfterFindingVulnerability =
                 new JCheckBox("Continue Sending Requests After Vulnerability Reported");
+        sendRequestsAfterFindingVulnerability.setSelected(false);
         return sendRequestsAfterFindingVulnerability;
     }
 
@@ -235,6 +236,7 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
         dynamicLocationConfigurationURIRegex.setText("");
         parseResponseStartIdentifier.setText("");
         parseResponseEndIdentifier.setText("");
+        sendRequestsAfterFindingVulnerability.setSelected(false);
     }
 
     @Override
