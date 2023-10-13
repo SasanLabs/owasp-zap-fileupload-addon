@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2023 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -29,6 +29,7 @@ import org.sasanlabs.fileupload.attacks.rce.php.ImageWithPHPSnippetFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.php.SimplePHPFileUpload;
 import org.sasanlabs.fileupload.attacks.xss.HtmlFileUpload;
 import org.sasanlabs.fileupload.attacks.xss.SVGFileUpload;
+import org.sasanlabs.fileupload.configuration.FileUploadConfiguration;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
@@ -70,8 +71,13 @@ public class FileUploadAttackExecutor {
     }
 
     public boolean executeAttack() throws FileUploadException {
+        Boolean shouldSendRequestsAfterFindingVulnerability = FileUploadConfiguration
+                .getInstance()
+                .getSendRequestsAfterFindingVulnerability();
+
         for (AttackVector attackVector : attackVectors) {
-            if (this.fileUploadScanRule.isStop()) {
+            if (!shouldSendRequestsAfterFindingVulnerability &&
+                    this.fileUploadScanRule.isStop()) {
                 return false;
             } else {
                 if (attackVector.execute(this)) {
