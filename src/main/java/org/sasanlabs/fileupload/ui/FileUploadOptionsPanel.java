@@ -298,5 +298,7 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
                 this.parseResponseStartIdentifier.getText());
         fileUploadConfiguration.setParseResponseEndIdentifier(
                 this.parseResponseEndIdentifier.getText());
+        fileUploadConfiguration.setSendRequestsAfterFindingVulnerability(
+                this.sendRequestsAfterFindingVulnerability.isSelected());
     }
 }
