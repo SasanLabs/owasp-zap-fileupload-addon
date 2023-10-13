@@ -109,6 +109,10 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
                         parseResponseEndIdentifier);
     }
 
+    public Boolean getSendRequestsAfterFindingVulnerability() {
+        return sendRequestsAfterFindingVulnerability;
+    }
+
     public void setSendRequestsAfterFindingVulnerability(boolean shouldSendRequestsAfterFindingVulnerability) {
         sendRequestsAfterFindingVulnerability = shouldSendRequestsAfterFindingVulnerability;
         this.getConfig()
