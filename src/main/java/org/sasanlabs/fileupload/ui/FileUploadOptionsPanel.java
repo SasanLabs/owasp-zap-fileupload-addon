@@ -287,7 +287,7 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     }
 
     @Override
-    public void saveParam(Object optionParams) throws Exception {
+    public void saveParam(Object optionParams) {
         FileUploadConfiguration fileUploadConfiguration =
                 ((OptionsParam) optionParams).getParamSet(FileUploadConfiguration.class);
         fileUploadConfiguration.setStaticLocationURIRegex(
