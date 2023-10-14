@@ -29,7 +29,6 @@ import org.sasanlabs.fileupload.attacks.rce.php.ImageWithPHPSnippetFileUpload;
 import org.sasanlabs.fileupload.attacks.rce.php.SimplePHPFileUpload;
 import org.sasanlabs.fileupload.attacks.xss.HtmlFileUpload;
 import org.sasanlabs.fileupload.attacks.xss.SVGFileUpload;
-import org.sasanlabs.fileupload.configuration.FileUploadConfiguration;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
 /**
@@ -71,13 +70,8 @@ public class FileUploadAttackExecutor {
     }
 
     public boolean executeAttack() throws FileUploadException {
-        Boolean shouldSendRequestsAfterFindingVulnerability = FileUploadConfiguration
-                .getInstance()
-                .getSendRequestsAfterFindingVulnerability();
-
         for (AttackVector attackVector : attackVectors) {
-            if (!shouldSendRequestsAfterFindingVulnerability &&
-                    this.fileUploadScanRule.isStop()) {
+            if (this.fileUploadScanRule.isStop()) {
                 return false;
             } else {
                 if (attackVector.execute(this)) {
