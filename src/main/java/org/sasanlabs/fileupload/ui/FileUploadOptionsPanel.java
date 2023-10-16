@@ -251,6 +251,8 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
         parseResponseStartIdentifier.setText(
                 fileUploadConfiguration.getParseResponseStartIdentifier());
         parseResponseEndIdentifier.setText(fileUploadConfiguration.getParseResponseEndIdentifier());
+        sendRequestsAfterFindingVulnerability.setSelected(
+                fileUploadConfiguration.getSendRequestsAfterFindingVulnerability());
     }
 
     @Override
