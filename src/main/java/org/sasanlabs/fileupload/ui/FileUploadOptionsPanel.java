@@ -80,16 +80,15 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     }
 
     private JLabel buildSendRequestsAfterFindingVulnerabilityCheckbox() {
-        JLabel label =
+        JLabel SendRequestsAfterFindingVulnerabilityLabel =
                 new JLabel(
                         FileUploadI18n.getMessage(
                                 "fileupload.settings.checkbox.sendrequestsaftervulnerability"));
 
         sendRequestsAfterFindingVulnerability = new JCheckBox();
+        SendRequestsAfterFindingVulnerabilityLabel.add(sendRequestsAfterFindingVulnerability);
 
-        label.add(sendRequestsAfterFindingVulnerability);
-
-        return label;
+        return SendRequestsAfterFindingVulnerabilityLabel;
     }
 
     private JButton getResetButton() {
