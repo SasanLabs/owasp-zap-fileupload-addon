@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2023 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -52,6 +53,8 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     private JTextField parseResponseStartIdentifier;
     private JTextField parseResponseEndIdentifier;
 
+    private JCheckBox sendRequestsAfterFindingVulnerability;
+
     public FileUploadOptionsPanel() {
         super();
         this.setName(FileUploadI18n.getMessage("fileupload.settings.title"));
@@ -72,7 +75,23 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
 
     private void init(JPanel settingsPanel) {
         settingsPanel.add(uriLocatorConfiguration());
+        settingsPanel.add(buildSendRequestsAfterFindingVulnerabilityCheckbox());
         footerPanel.add(getResetButton());
+    }
+
+    private JPanel buildSendRequestsAfterFindingVulnerabilityCheckbox() {
+        JPanel sendRequestsAfterFindingVulnerabilityPanel = new JPanel();
+        sendRequestsAfterFindingVulnerabilityPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        JLabel sendRequestsAfterFindingVulnerabilityLabel =
+                new JLabel(
+                        FileUploadI18n.getMessage(
+                                "fileupload.settings.checkbox.sendrequestsaftervulnerability"));
+
+        sendRequestsAfterFindingVulnerability = new JCheckBox();
+        sendRequestsAfterFindingVulnerabilityPanel.add(sendRequestsAfterFindingVulnerabilityLabel);
+        sendRequestsAfterFindingVulnerabilityPanel.add(sendRequestsAfterFindingVulnerability);
+
+        return sendRequestsAfterFindingVulnerabilityPanel;
     }
 
     private JButton getResetButton() {
@@ -225,6 +244,7 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
         dynamicLocationConfigurationURIRegex.setText("");
         parseResponseStartIdentifier.setText("");
         parseResponseEndIdentifier.setText("");
+        sendRequestsAfterFindingVulnerability.setSelected(false);
     }
 
     @Override
@@ -239,6 +259,8 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
         parseResponseStartIdentifier.setText(
                 fileUploadConfiguration.getParseResponseStartIdentifier());
         parseResponseEndIdentifier.setText(fileUploadConfiguration.getParseResponseEndIdentifier());
+        sendRequestsAfterFindingVulnerability.setSelected(
+                fileUploadConfiguration.getSendRequestsAfterFindingVulnerability());
     }
 
     @Override
@@ -275,7 +297,7 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
     }
 
     @Override
-    public void saveParam(Object optionParams) throws Exception {
+    public void saveParam(Object optionParams) {
         FileUploadConfiguration fileUploadConfiguration =
                 ((OptionsParam) optionParams).getParamSet(FileUploadConfiguration.class);
         fileUploadConfiguration.setStaticLocationURIRegex(
@@ -286,5 +308,7 @@ public class FileUploadOptionsPanel extends AbstractParamPanel {
                 this.parseResponseStartIdentifier.getText());
         fileUploadConfiguration.setParseResponseEndIdentifier(
                 this.parseResponseEndIdentifier.getText());
+        fileUploadConfiguration.setSendRequestsAfterFindingVulnerability(
+                this.sendRequestsAfterFindingVulnerability.isSelected());
     }
 }

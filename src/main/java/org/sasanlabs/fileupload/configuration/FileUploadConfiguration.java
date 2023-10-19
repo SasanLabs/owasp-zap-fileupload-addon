@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2023 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -39,11 +39,15 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
             PARAM_BASE_KEY + ".parseresponse.startidentifier";
     private static final String PARAM_PARSE_RESPONSE_CONFIGURATION_END_IDENTIFIER =
             PARAM_BASE_KEY + ".parseresponse.endidentifier";
+    private static final String PARAM_SEND_REQUESTS_AFTER_FINDING_VULNERABILITY_IDENTIFIER =
+            PARAM_BASE_KEY + ".sendrequests";
 
     private String staticLocationURIRegex;
     private String dynamicLocationURIRegex;
     private String parseResponseStartIdentifier;
     private String parseResponseEndIdentifier;
+
+    private Boolean sendRequestsAfterFindingVulnerability;
 
     private static volatile FileUploadConfiguration fileUploadConfiguration;
 
@@ -105,6 +109,18 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
                         parseResponseEndIdentifier);
     }
 
+    public Boolean getSendRequestsAfterFindingVulnerability() {
+        return sendRequestsAfterFindingVulnerability;
+    }
+
+    public void setSendRequestsAfterFindingVulnerability(boolean shouldSendRequestsAfterFindingVulnerability) {
+        sendRequestsAfterFindingVulnerability = shouldSendRequestsAfterFindingVulnerability;
+        this.getConfig()
+                .setProperty(
+                        PARAM_SEND_REQUESTS_AFTER_FINDING_VULNERABILITY_IDENTIFIER,
+                        shouldSendRequestsAfterFindingVulnerability);
+    }
+
     @Override
     protected String getConfigVersionKey() {
         return CONFIG_VERSION_KEY;
@@ -125,6 +141,8 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
                 getConfig().getString(PARAM_PARSE_RESPONSE_CONFIGURATION_START_IDENTIFIER));
         this.setParseResponseEndIdentifier(
                 getConfig().getString(PARAM_PARSE_RESPONSE_CONFIGURATION_END_IDENTIFIER));
+        this.setSendRequestsAfterFindingVulnerability(
+                getConfig().getBoolean(PARAM_SEND_REQUESTS_AFTER_FINDING_VULNERABILITY_IDENTIFIER));
     }
 
     @Override
