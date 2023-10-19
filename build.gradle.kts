@@ -33,7 +33,7 @@ tasks.compileJava {
 
 tasks.withType<JavaCompile>().configureEach { options.encoding = "utf-8"}
 
-version = "1.1.0"
+version = "1.2.0"
 description = "Detect File upload requests and scan them to find related vulnerabilities"
 
 zapAddOn {
