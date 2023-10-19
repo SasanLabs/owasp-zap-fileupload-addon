@@ -2,9 +2,11 @@
 All notable changes to this add-on will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-
 ## Unreleased
+
+## [1.2.0] - 2023-10-19
  - Ensure i18n resources are always initialized.
+ - Disable stoping of addon after finding vulnerability #19
 
 ## [1.1.0] - 2021-09-16
  - Scan rule for uploading:
