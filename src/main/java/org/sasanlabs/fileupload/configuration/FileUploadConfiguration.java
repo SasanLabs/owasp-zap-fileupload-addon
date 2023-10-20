@@ -47,7 +47,7 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
     private String parseResponseStartIdentifier;
     private String parseResponseEndIdentifier;
 
-    private Boolean sendRequestsAfterFindingVulnerability;
+    private boolean sendRequestsAfterFindingVulnerability;
 
     private static volatile FileUploadConfiguration fileUploadConfiguration;
 
@@ -109,7 +109,7 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
                         parseResponseEndIdentifier);
     }
 
-    public Boolean getSendRequestsAfterFindingVulnerability() {
+    public boolean getSendRequestsAfterFindingVulnerability() {
         return sendRequestsAfterFindingVulnerability;
     }
 
@@ -142,7 +142,7 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
         this.setParseResponseEndIdentifier(
                 getConfig().getString(PARAM_PARSE_RESPONSE_CONFIGURATION_END_IDENTIFIER));
         this.setSendRequestsAfterFindingVulnerability(
-                getConfig().getBoolean(PARAM_SEND_REQUESTS_AFTER_FINDING_VULNERABILITY_IDENTIFIER));
+                getBoolean(PARAM_SEND_REQUESTS_AFTER_FINDING_VULNERABILITY_IDENTIFIER, false));
     }
 
     @Override
