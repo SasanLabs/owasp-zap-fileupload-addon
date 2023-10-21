@@ -72,7 +72,7 @@ public class FileUploadAttackExecutor {
 
     public boolean executeAttack() throws FileUploadException {
 
-        Boolean shouldSendRequestsAfterFindingVulnerability =
+        boolean shouldSendRequestsAfterFindingVulnerability =
                 FileUploadConfiguration.getInstance().getSendRequestsAfterFindingVulnerability();
 
         for (AttackVector attackVector : attackVectors) {
