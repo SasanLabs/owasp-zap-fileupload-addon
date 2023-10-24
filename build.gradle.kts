@@ -43,6 +43,7 @@ zapAddOn {
     manifest {
         author.set("KSASAN preetkaran20@gmail.com")
         repo.set("https://github.com/SasanLabs/owasp-zap-fileupload-addon/")
+        url.set("https://www.zaproxy.org/blog/2021-08-20-zap-fileupload-addon/")
     }
 }
 
