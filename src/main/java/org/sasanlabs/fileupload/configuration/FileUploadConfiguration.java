@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 SasanLabs
+ * Copyright 2024 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -113,7 +113,8 @@ public class FileUploadConfiguration extends VersionedAbstractParam {
         return sendRequestsAfterFindingVulnerability;
     }
 
-    public void setSendRequestsAfterFindingVulnerability(boolean shouldSendRequestsAfterFindingVulnerability) {
+    public void setSendRequestsAfterFindingVulnerability(
+            boolean shouldSendRequestsAfterFindingVulnerability) {
         sendRequestsAfterFindingVulnerability = shouldSendRequestsAfterFindingVulnerability;
         this.getConfig()
                 .setProperty(

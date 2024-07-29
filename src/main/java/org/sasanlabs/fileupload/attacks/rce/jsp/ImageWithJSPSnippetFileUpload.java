@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2024 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -30,7 +30,9 @@ import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 
-/** @author preetkaran20@gmail.com KSASAN */
+/**
+ * @author preetkaran20@gmail.com KSASAN
+ */
 public class ImageWithJSPSnippetFileUpload extends AttackVector {
 
     private static final String GIF_IMAGE_JSP_INJECTED_IN_EXIF_BASE64_ENCODED =

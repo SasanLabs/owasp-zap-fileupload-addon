@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2024 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -15,7 +15,9 @@ package org.sasanlabs.fileupload.attacks.model;
 
 import java.util.function.Function;
 
-/** @author KSASAN preetkaran20@gmail.com */
+/**
+ * @author KSASAN preetkaran20@gmail.com
+ */
 public class SimpleFileInformationProvider implements FileInformationProvider {
 
     private Function<String, String> fileNameFunction;
@@ -36,5 +38,6 @@ public class SimpleFileInformationProvider implements FileInformationProvider {
     @Override
     public String getContentType(String originalContentType) {
         return this.contentTypeFunction.apply(originalContentType);
-    };
+    }
+    ;
 }

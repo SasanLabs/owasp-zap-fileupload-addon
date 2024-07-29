@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2024 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -30,7 +30,9 @@ import org.sasanlabs.fileupload.attacks.model.VulnerabilityType;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.impl.ContainsExpectedValueMatcher;
 
-/** @author KSASAN preetkaran20@gmail.com */
+/**
+ * @author KSASAN preetkaran20@gmail.com
+ */
 public class ImageWithPHPSnippetFileUpload extends AttackVector {
     private static final String GIF_IMAGE_PHP_INJECTED_IN_EXIF_BASE64_ENCODED =
             "R0lGODlhAQABAIAAAP///wAAACH5BAAAAAAAIf5JPD9waHAgZWNobyAiSW1hZ2VXaXRoUEhQU25pcHBldEZpbGVVcGxvYWRfIi4iU2FzYW5MYWJzX1pBUF9JZGVudGlmaWVyIiA/PgAsAAAAAAEAAQAAAgJEAQA7";

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2024 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,7 +17,9 @@ import java.util.Date;
 import java.util.Random;
 import org.sasanlabs.fileupload.exception.FileUploadException;
 
-/** @author KSASAN preetkaran20@gmail.com */
+/**
+ * @author KSASAN preetkaran20@gmail.com
+ */
 class FileInformationProviderImpl implements FileInformationProvider {
 
     private String baseFileName;
