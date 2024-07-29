@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2024 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -27,7 +27,9 @@ import org.sasanlabs.fileupload.exception.FileUploadException;
 import org.sasanlabs.fileupload.matcher.ContentMatcher;
 import org.sasanlabs.fileupload.matcher.impl.MD5HashResponseMatcher;
 
-/** @author KSASAN preetkaran20@gmail.com */
+/**
+ * @author KSASAN preetkaran20@gmail.com
+ */
 public class SimpleJSPXFileUpload extends AttackVector {
 
     private static final String JSPX_UPLOADED_FILE_BASE_NAME = "SimpleJSPXFileUpload_";

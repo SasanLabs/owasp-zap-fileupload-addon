@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2024 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -31,7 +31,8 @@ public interface FileInformationProvider {
      */
     default String getContentType(String originalContentType) {
         return originalContentType;
-    };
+    }
+    ;
 
     /**
      * Represents the file name.

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 SasanLabs
+ * Copyright 2024 SasanLabs
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,7 +13,9 @@
  */
 package org.sasanlabs.fileupload.function;
 
-/** @author preetkaran20@gmail.com KSASAN */
+/**
+ * @author preetkaran20@gmail.com KSASAN
+ */
 @FunctionalInterface
 public interface ConsumerWithException<T, E extends Exception> {
     void accept(T val) throws E;
