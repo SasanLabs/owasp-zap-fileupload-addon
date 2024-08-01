@@ -27,6 +27,8 @@ This addon fires a lot of requests to the target application hence can impact th
 ## Contributing guidelines
 Contributing guidelines are same as [ZAP](https://github.com/zaproxy/zaproxy).
 
+For enhancing/developing or debugging the Addon: [video tutorial](https://www.youtube.com/watch?v=1AlacNHHaFg&t=1s)
+
 ## Contact Us
 For any Queries/Bugs or Enhancement please raise an issue in this repository or ask in [OWASP ZAP Developer Group](https://groups.google.com/g/zaproxy-develop).
 For any other kind of issues please send an email to karan.sasan@owasp.org
